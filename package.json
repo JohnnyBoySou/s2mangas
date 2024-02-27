@@ -22,6 +22,7 @@
     "expo-linear-gradient": "~12.7.2",
     "expo-splash-screen": "~0.26.4",
     "expo-status-bar": "~1.11.1",
+    "moti": "^0.28.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.73.4",
@@ -29,10 +30,12 @@
     "react-native-gesture-handler": "~2.14.0",
     "react-native-modalize": "^2.1.1",
     "react-native-paper": "4.9.2",
+    "react-native-reanimated": "~3.6.2",
     "react-native-safe-area-context": "4.8.2",
     "react-native-web": "~0.19.6",
     "react-navigation": "4.1.1",
-    "styled-components": "*"
+    "styled-components": "*",
+    "expo-av": "~13.10.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

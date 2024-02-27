@@ -1,13 +1,16 @@
 import React, { useState, useEffect,  } from 'react';
+import axios from 'axios';
 import { Column, Row, Title, Label, } from '../../theme/global';
-import { FlatList, Image,  } from 'react-native';
+import { FlatList, Image, TouchableOpacity,  } from 'react-native';
 import { Skeleton } from 'moti/skeleton'
-import requestNews from '../../api/manga/news';
+import requestLasted from '../../api/manga/lasted';
+import { useNavigation } from '@react-navigation/native';
 
-export default function NewsComponent() {
+
+export default function LastedComponent() {
     const [data, setData] = useState([]);
     useEffect(() => {
-        requestNews().then((res) => {
+        requestLasted().then((res) => {
             setData(res.mangas);
         })
     }, [])
@@ -15,8 +18,8 @@ export default function NewsComponent() {
         return (
             <Column style={{ marginHorizontal: 20, }}>
                 {data.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
-                <Title>Novos capítulos</Title>
-                <Label>Última atualização à {data[0].release_date}</Label>
+                <Title>Recém adicionados</Title>
+                <Label>Acabaram de entrar no catálogo</Label>
                 </Column>}
                 <FlatList
                     style={{ marginVertical: 16, marginHorizontal: -20, }}
@@ -35,26 +38,13 @@ export default function NewsComponent() {
 
 
 const Card = React.memo(({ item }) => {
+    const navigation = useNavigation();
     return (
-        <Row style={{marginRight: 16,}}>
-            <Column style={{ backgroundColor: "#303030", borderRadius: 6,  padding: 12, justifyContent: 'center' }}>
-                <Image source={{ uri: item.capa }} style={{ width: 86, height: 132, borderRadius: 6,}} />
-            </Column>
-            <Column style={{ backgroundColor: "#262626", borderTopRightRadius: 6, borderBottomRightRadius: 6, width: 182, padding: 12, alignSelf: 'center', }}>
-                <Row style={{flexWrap: 'wrap'}}>
-                    {item?.categories.map((chapter) => (
-                    <Label key={chapter} style={{ fontSize: 12, }}>• {chapter} </Label>
-                    ))}
-                </Row>
-                <Title style={{ fontSize: 18, marginVertical: 4, }}>{item?.name.slice(0,34)}</Title>
-                <Row style={{flexWrap: 'wrap', marginBottom: 8,}}>
-                    {item?.newchapters.map((chapter) => (
-                    <Label key={chapter} style={{ fontSize: 12, backgroundColor: "#525252", padding: 6, borderRadius: 4, marginRight: 4,}}>{chapter} </Label>
-                    ))}
-                </Row>
-                <Label style={{ fontSize: 12, }}>Atualizado à {item?.release_date}</Label>
-            </Column>
-        </Row>
+        <TouchableOpacity onPress={() => { navigation.navigate('MangaDetails', {id: item.id });}}  style={{ backgroundColor: "#303030", borderRadius: 6, width: 162, marginRight: 16, padding: 12, paddingBottom: 20, }}>
+            <Image source={{ uri: item.capa }} style={{ width: 102, height: 152, borderRadius: 6, alignSelf: 'center', marginBottom: 6, }} />
+            <Title style={{ fontSize: 18, }}>{item?.name.slice(0,12)}</Title>
+            <Label style={{ fontSize: 14, }}>{item?.score} • {item?.type}</Label>
+        </TouchableOpacity>
     )
 });
 

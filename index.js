@@ -6,6 +6,10 @@ import "@expo/metro-runtime";
 
 if (Platform.OS == "android") {
   registerRootComponent(App);
-} else {
+}
+else if (Platform.OS === 'web') {
+  global._frameTimestamp = null
+}
+else {
   AppRegistry.registerComponent(appName, () => App);
 }
