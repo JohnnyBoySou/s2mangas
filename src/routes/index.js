@@ -8,6 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import HomePage from '../pages/home';
 import MangalistDetailsPage from '../pages/mangalists/details';
 import MangaDetailsPage from '../pages/manga/details';
+import MangaPages from '../pages/manga/pages';
 
 SplashScreen.preventAutoHideAsync();
 const Stack = createStackNavigator();
@@ -43,6 +44,7 @@ export default function Router() {
             <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="MangalistDetails" component={MangalistDetailsPage} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
             <Stack.Screen name="MangaDetails" component={MangaDetailsPage} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
+            <Stack.Screen name="MangaPages" component={MangaPages} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
         </Stack.Navigator>
     </NavigationContainer>
    );

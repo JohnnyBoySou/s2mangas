@@ -65,7 +65,7 @@ export default function MangalistDetailsPage({ route, navigation }) {
                     style={{marginTop: 20,}}
                     data={item.mangas_ids}
                     keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => <Card item={item} />}
+                    renderItem={({ item }) => <Card navigation={navigation} item={item} />}
                 />
             </Scroll>
         </Main>
@@ -73,7 +73,7 @@ export default function MangalistDetailsPage({ route, navigation }) {
 }
 
 
-const Card = ({ item }) => {
+const Card = ({ item, navigation }) => {
   return(
     <Row style={{borderTopColor: "#303030", borderTopWidth: 2,  paddingVertical: 10, marginHorizontal: 20, justifyContent: 'space-between',  alignItems: 'center',}}>
         <Row style={{width: '70%', alignItems: 'center',}}>

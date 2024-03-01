@@ -1,8 +1,9 @@
 import React, { useState, useEffect,  } from 'react';
 import { Column, Row, Title, Label, } from '../../theme/global';
-import { FlatList, Image,  } from 'react-native';
+import { FlatList, Image, TouchableOpacity } from 'react-native';
 import { Skeleton } from 'moti/skeleton'
 import requestNews from '../../api/manga/news';
+import { useNavigation } from '@react-navigation/native';
 
 export default function NewsComponent() {
     const [data, setData] = useState([]);
@@ -35,8 +36,10 @@ export default function NewsComponent() {
 
 
 const Card = React.memo(({ item }) => {
+    
+    const navigation = useNavigation();
     return (
-        <Row style={{marginRight: 16,}}>
+        <TouchableOpacity onPress={() => { navigation.navigate('MangaDetails', {id: item.id });}} style={{marginRight: 16, flexDirection: 'row',}}>
             <Column style={{ backgroundColor: "#303030", borderRadius: 6,  padding: 12, justifyContent: 'center' }}>
                 <Image source={{ uri: item.capa }} style={{ width: 86, height: 132, borderRadius: 6,}} />
             </Column>
@@ -54,7 +57,7 @@ const Card = React.memo(({ item }) => {
                 </Row>
                 <Label style={{ fontSize: 12, }}>Atualizado à {item?.release_date}</Label>
             </Column>
-        </Row>
+        </TouchableOpacity>
     )
 });
 

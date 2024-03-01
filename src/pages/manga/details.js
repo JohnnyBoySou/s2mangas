@@ -7,6 +7,9 @@ import requestManga from '../../api/manga/details';
 import requestChapters from '../../api/manga/chapters';
 import requestSimilar from '../../api/manga/similar';
 
+import { useNavigation } from '@react-navigation/native';
+import { Skeleton } from 'moti/skeleton';
+
 export default function MangaDetailsPage({ route, navigation }) {
     const id = route.params.id;
     const [item, setItem] = useState();
@@ -95,32 +98,33 @@ export default function MangaDetailsPage({ route, navigation }) {
                         style={{ marginTop: 20, }}
                         data={chapters?.slice(0, 5)}
                         keyExtractor={(item) => item.number}
-                        renderItem={({ item }) => <Card item={item} />}
+                        renderItem={({ item }) => <Card item={item} id={id} />}
                     />
                 </Column>
                 <Column style={{ marginTop: 20, paddingHorizontal: 12, paddingVertical: 12, borderRadius: 8, marginHorizontal: 20, backgroundColor: "#262626", marginBottom: 20, }}>
                     <Title style={{ fontSize: 24, marginTop: 8, }}>Todos ({item?.chapters})</Title>
                     <Label style={{}}>Confira todos capítulos</Label>
-                   <ListChapters chapters={chapters}/>
+                   <ListChapters chapters={chapters} id={id}/>
                 </Column>
             </Scroll>
         </Main>
     )
 }
 
-const Card = ({ item }) => {
+const Card = ({ item, id }) => {
+    const navigation = useNavigation();
     return (
         <Row style={{ backgroundColor: "#363636", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 6, }}>
             <Title style={{ fontSize: 22, marginLeft: 20, }}>#{item?.number}</Title>
             <Label>{item?.date}</Label>
-            <TouchableOpacity style={{ backgroundColor: '#303030', padding: 12, borderRadius: 100, marginRight: 10, }} onPress={() => navigation.navigate('MangaDetails', { id: item.id })}>
+            <TouchableOpacity onPress={() => navigation.navigate('MangaPages', {chapter: item.number, id: id,})} style={{ backgroundColor: '#303030', padding: 12, borderRadius: 100, marginRight: 10, }} >
                 <Feather name="bookmark" size={24} color="#fff" />
             </TouchableOpacity>
         </Row>
     )
 }
 
-const ListChapters = ({ chapters }) => {
+const ListChapters = ({ chapters, id }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -151,7 +155,7 @@ const ListChapters = ({ chapters }) => {
                 style={{ marginTop: 20, }}
                 data={currentItems}
                 keyExtractor={(item) => item.number}
-                renderItem={({ item }) => <Card item={item} />}
+                renderItem={({ item }) => <Card item={item} id={id}/>}
             />
             <Pagination
                 itemsPerPage={itemsPerPage}
@@ -163,3 +167,12 @@ const ListChapters = ({ chapters }) => {
         </Column>
     );
 };
+
+
+const SkeletonBody = () => {
+  return(
+    <Column>
+        <Skeleton width={200} height={200}  radius={4} />
+    </Column>
+  )
+}

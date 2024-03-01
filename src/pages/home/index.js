@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { TouchableOpacity, Image, } from 'react-native';
-import { Column, Label, Title, Row, Main, Scroll, View } from '../../theme/global';
+import { Column, Label, Title, Row, Main, Scroll, } from '../../theme/global';
 import { ThemeContext } from "styled-components/native";
-import MangalistComponent, { MangalistLastedComponent, MangalistRateComponent, MangalistWeekendComponent } from '../../components/lists/mangalist';
+import { MangalistLastedComponent, MangalistRateComponent, MangalistWeekendComponent } from '../../components/lists/mangalist';
+import { LinearGradient } from 'expo-linear-gradient';
+
 import NavBar from '../../components/navbar';
 import NewsComponent from '../../components/lists/news';
 import LastedComponent from './../../components/lists/lasted';
@@ -24,13 +26,16 @@ export default function HomePage() {
                 {type === 'Tudo' &&  <Column style={{ paddingHorizontal: 20, }}>
                         <NavBar/>
                         <Column style={{ position: 'relative', alignItems: 'center', justifyContent: 'center', marginTop: 80, }}>
+                            <LinearGradient colors={['#ED274A', '#FF620A', '#E0CA3C']} style={{ width: 200, height: 200, position: 'absolute',  alignSelf: 'center', borderRadius: 100, }} />
+               
                             <Image source={require('../../assets/imgs/blur1.png')} style={{ position: 'absolute', width: 400, height: 400, }} />
-                            <Image source={{ uri: user.avatar }} style={{ width: 150, height: 150, alignSelf: 'center', borderRadius: 100, }} />
+                            <Image source={{ uri: user.avatar }} style={{ width: 170, height: 170, alignSelf: 'center', borderRadius: 100, borderWidth: 6, borderColor: "#262626"}} />
                         </Column>
-                        <Title style={{ fontSize: 46, marginVertical: 12, textAlign: 'center', fontFamily: font.black, zIndex: 99,}}>{hello}, {"\n"}{user?.name}</Title>
+                        <Title style={{ fontSize: 46, textAlign: 'center', fontFamily: font.black, zIndex: 99, marginTop: 20,}}>{hello},</Title>
+                        <Title style={{ fontSize: 46, textAlign: 'center', fontFamily: font.black, zIndex: 99,}}>{user?.name}</Title>
                     </Column>}
 
-                <Row style={{ marginBottom: 15,  backgroundColor: color.background, padding: 12, paddingTop: 40, marginTop: -40,}}>
+                <Row style={{ marginBottom: 15,  backgroundColor: color.background, padding: 12, paddingTop: 40, marginTop: -20,}}>
                         <TouchableOpacity onPress={() => { setType('Tudo') }} style={{ paddingVertical: 10, paddingHorizontal: 24, marginLeft: 10, backgroundColor: type === 'Tudo' ? color.light : color.off, borderRadius: 100, }}>
                             <Label style={{ color: type === 'Tudo' ? color.off : color.title, fontFamily: type === 'Tudo' ? font.bold : font.book, }}>Tudo</Label>
                         </TouchableOpacity>
