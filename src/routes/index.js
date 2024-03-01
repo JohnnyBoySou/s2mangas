@@ -10,6 +10,9 @@ import MangalistDetailsPage from '../pages/mangalists/details';
 import MangaDetailsPage from '../pages/manga/details';
 import MangaPages from '../pages/manga/pages';
 import NovidadesPage from '../pages/novidades';
+import Onboarding from '../pages/onboarding/index';
+import ContinuePage from '../pages/continue';
+import PreferencesPage from './../pages/preferences/index';
 
 SplashScreen.preventAutoHideAsync();
 const Stack = createStackNavigator();
@@ -47,6 +50,10 @@ export default function Router() {
             <Stack.Screen name="MangalistDetails" component={MangalistDetailsPage} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
             <Stack.Screen name="MangaDetails" component={MangaDetailsPage} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
             <Stack.Screen name="MangaPages" component={MangaPages} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
+            <Stack.Screen name="Onboarding" component={Onboarding} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
+            <Stack.Screen name="Continue" component={ContinuePage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
+            <Stack.Screen name="Preferences" component={PreferencesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
+
         </Stack.Navigator>
     </NavigationContainer>
    );

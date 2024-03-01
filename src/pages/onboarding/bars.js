@@ -14,14 +14,12 @@ export function Bars({current, color}) {
                   toValue: 20, // Valor final da largura
                   duration: 200, // Duração da animação em milissegundos
                   useNativeDriver: false, // Use o driver JS para animação
-                  easing: EasingNode.linear,
                 }).start();
              
             Animated.timing(widthAnimation1, {
                     toValue: 40, // Valor final da largura
                     duration: 500, // Duração da animação em milissegundos
                     useNativeDriver: false, // Use o driver JS para animação
-                    easing: EasingNode.linear,
                   }).start();
 
 
@@ -31,20 +29,17 @@ export function Bars({current, color}) {
                   toValue: 40, // Valor final da largura
                   duration: 500, // Duração da animação em milissegundos
                   useNativeDriver: false, // Use o driver JS para animação
-                  easing: EasingNode.linear,
                 }).start();
             Animated.timing(widthAnimation1, {
                     toValue: 20, // Valor final da largura
                     duration: 200, // Duração da animação em milissegundos
                     useNativeDriver: false, // Use o driver JS para animação
-                    easing: EasingNode.linear,
                   }).start();    
 
             Animated.timing(widthAnimation3, {
                     toValue: 20, // Valor final da largura
                     duration: 200, // Duração da animação em milissegundos
                     useNativeDriver: false, // Use o driver JS para animação
-                    easing: EasingNode.linear,
                   }).start();    
 
         }
@@ -53,14 +48,12 @@ export function Bars({current, color}) {
                   toValue: 20, // Valor final da largura
                   duration: 200, // Duração da animação em milissegundos
                   useNativeDriver: false, // Use o driver JS para animação
-                  easing: EasingNode.linear,
                 }).start();
             
             Animated.timing(widthAnimation3, {
                   toValue: 40, // Valor final da largura
                   duration: 500, // Duração da animação em milissegundos
                   useNativeDriver: false, // Use o driver JS para animação
-                  easing: EasingNode.linear,
                 }).start();
         }
         else if(current === 3){
@@ -68,14 +61,12 @@ export function Bars({current, color}) {
                   toValue: 20, // Valor final da largura
                   duration: 200, // Duração da animação em milissegundos
                   useNativeDriver: false, // Use o driver JS para animação
-                  easing: EasingNode.linear,
                 }).start();
             
             Animated.timing(widthAnimation4, {
                   toValue: 40, // Valor final da largura
                   duration: 500, // Duração da animação em milissegundos
                   useNativeDriver: false, // Use o driver JS para animação
-                  easing: EasingNode.linear,
                 }).start();
         }
      }

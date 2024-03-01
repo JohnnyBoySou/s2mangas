@@ -1,10 +1,10 @@
 import React from 'react';
 import { Column, Row, Title, Label, } from '../../theme/global';
-import { Image } from 'react-native';
+import { Image, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign } from '@expo/vector-icons';
 
-export default function ContinueReading() {
+export default function ContinueReading({navigation}) {
   const porcentage = 40;
   return (
     <Column style={{ paddingHorizontal: 20, marginBottom: 20, }}>
@@ -27,11 +27,11 @@ export default function ContinueReading() {
         </Column>
 
         <Column style={{ height: 12 }} />
-        <Column style={{ backgroundColor: '#F0E3BF', padding: 12, borderRadius: 12, height: 80, flexGrow: 1, justifyContent: 'center', overflow: 'hidden'}}>
+        <Pressable onPress={() => navigation.navigate('Continue')} style={{ backgroundColor: '#F0E3BF', padding: 12, borderRadius: 12, height: 80, flexGrow: 1, justifyContent: 'center', overflow: 'hidden'}}>
           <Title style={{color: "#000", letterSpacing: -1,}}>Bora {"\n"}Continuar</Title>
           <Image source={{ uri: 'https://i.pinimg.com/564x/c5/c9/5c/c5c95c2bb5fe6643208c3650bc32abd6.jpg' }} style={{ width: 60, height: 80, borderRadius: 4, right: 20, position: 'absolute', bottom: 0, transform: [{ rotate: '-25deg' }] }} />
           <AntDesign name="arrowright" size={24} color="#000" />
-        </Column>
+        </Pressable>
       </Column>
     </Row>
 
