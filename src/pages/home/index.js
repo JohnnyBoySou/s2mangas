@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { TouchableOpacity, Image, } from 'react-native';
+import { TouchableOpacity, Image, ScrollView, } from 'react-native';
 import { Column, Label, Title, Row, Main, Scroll, } from '../../theme/global';
 import { ThemeContext } from "styled-components/native";
 import { MangalistLastedComponent, MangalistRateComponent, MangalistWeekendComponent } from '../../components/lists/mangalist';
@@ -19,7 +19,7 @@ export default function HomePage() {
     const [type, setType] = useState('Tudo');
 
     return (
-        <Main >
+        <Main>
             <Scroll stickyHeaderIndices={[1]}>
                 {type === 'Mangas' && <Column style={{ width: 100, height: 50}}/>}
                 {type === 'Mangalist' && <Column style={{ width: 100, height: 50}}/>}
@@ -42,34 +42,53 @@ export default function HomePage() {
                         <TouchableOpacity onPress={() => { setType('Mangas') }} style={{ paddingVertical: 10, marginHorizontal: 12, paddingHorizontal: 24, backgroundColor: type === 'Mangas' ? color.light : color.off, borderRadius: 100, }}>
                             <Label style={{ color: type === 'Mangas' ? color.off : color.title, fontFamily: type === 'Mangas' ? font.bold : font.book, }}>Mangás</Label>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { setType('Mangalist') }} style={{ paddingVertical: 10, paddingHorizontal: 24, backgroundColor: type === 'Mangalist' ? color.light : color.off, borderRadius: 100, }}>
+                        <TouchableOpacity onPress={() => { setType('Mangalist') }} style={{marginRight: 12, paddingVertical: 10, paddingHorizontal: 24, backgroundColor: type === 'Mangalist' ? color.light : color.off, borderRadius: 100, }}>
                             <Label style={{ color: type === 'Mangalist' ? color.off : color.title, fontFamily: type === 'Mangalist' ? font.bold : font.book, }}>Mangalist</Label>
                         </TouchableOpacity>
+                        <TouchableOpacity onPress={() => { setType('Mangalist') }} style={{ }}>
+                            <Image source={{ uri: user.avatar }} style={{ width: 42, height: 42, alignSelf: 'center', borderRadius: 100, }} />
+                        </TouchableOpacity>
                  </Row>
-
                {type === 'Tudo' && <Column>
                     <ContinueReading />
+                    <Spacer/>
                     <NewsComponent />
+                    <Spacer/>
                     <LastedComponent />
+                    <Spacer/>
                     <RateComponent />
+                    <Spacer/>
                     <MangalistWeekendComponent />
+                    <Spacer/>
                     <WeekendComponent/>
+                    <Spacer/>
                 </Column>}
 
                 {type === 'Mangas' && <Column>
                     <WeekendComponent/>
+                    <Spacer/>
                     <RateComponent />
+                    <Spacer/>
                     <NewsComponent />
+                    <Spacer/>
                     <LastedComponent />
+                    <Spacer/>
                 </Column>}
 
                 {type === 'Mangalist' && <Column>
+                    <Spacer/>
                     <MangalistLastedComponent />
+                    <Spacer/>
                     <MangalistWeekendComponent />
+                    <Spacer/>
                     <MangalistRateComponent/>
+                    <Spacer/>
                 </Column>}
 
             </Scroll>
         </Main>
     )
 }
+
+
+const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width }} />

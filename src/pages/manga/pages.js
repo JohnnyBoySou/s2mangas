@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Scroll, Main, Column } from '../../theme/global';
-import { Pressable, FlatList, Dimensions } from 'react-native';
+import { Pressable, FlatList, Dimensions, Image } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import requestPages from '../../api/manga/pages';
-import { Image } from 'expo-image';
+import { Image as Webp } from 'expo-image';
+import { Skeleton } from 'moti/skeleton';
 
 
 export default function MangaPages({ route, navigation }) {
     const {id, chapter} = route.params;
     const [item, setItem] = useState();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const requestData = async () => {
             requestPages(chapter, id).then((response) => {
                 setItem(response)
+                console.log(response)
                 setLoading(false);
             })
         };
@@ -26,9 +28,6 @@ export default function MangaPages({ route, navigation }) {
         setLoading(true);
     }
 
-    const cl = item?.type === 'MANGA' ? "#FFA8B7" : item?.type === 'MANHWA' ? "#BBD2FF" : item?.type === 'MANHUA' ? "#BFFFC6" : '#FFF';
-    const rl = item?.status === 'Finalizado' ? '#BFFFC6' : '#FFC7A8'
-
     return (
         <Main>
             <Scroll >
@@ -37,14 +36,13 @@ export default function MangaPages({ route, navigation }) {
                         <AntDesign name="arrowleft" size={32} color="#fff" />
                     </Pressable>
                 </Row>
-
-            <ListPages pages={item?.images} />
+                {loading ? <Column><Skeleton width={300} height={600} radius={6} /><Skeleton width={300} height={600} radius={6} /></Column> :  <ListPages item={item} />}
             </Scroll>
         </Main>
     )
 }
 
-const Images = ({ item }) => {
+const Images = ({ item, format }) => {
     const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
     useEffect(() => {
@@ -60,18 +58,21 @@ const Images = ({ item }) => {
 
     return (
         <Column>
-            <Image source={{ uri: item }} resizeMode='contain' style={{ width: imageSize.width, height: imageSize.height, margin: 10 }} contentFit="cover" transition={1000}/>
+        <Image source={{ uri: item }} resizeMode='cover' style={{ width: imageSize.width, height: imageSize.height, margin: 10 }} /> 
         </Column>
     );
 }
 
-const ListPages = ({ pages }) => {1
+const ListPages = ({ item }) => {
+    const pages = item?.images
+    const format = item?.format
+
     return (
             <FlatList
                 style={{ marginTop: 20, }}
                 data={pages}
                 keyExtractor={(item) => item.toString()}
-                renderItem={({ item }) => <Images item={item} />}
+                renderItem={({ item }) => <Images format={format} item={item} />}
             />
     );
 };
