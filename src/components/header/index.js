@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import { Image, Pressable,} from 'react-native';
 import { Column, Label, Row, Title } from '../../theme/global'
 import { LinearGradient } from 'expo-linear-gradient';
 import { AnimatePresence, MotiImage, MotiView, useAnimationState } from 'moti';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { getPreferences } from '../../api/user/preferences';
 
-export default function Header() {
-    const user = { name: 'Khevi', avatar: 'https://i.pinimg.com/564x/4b/8e/60/4b8e60f3475cdf18cf6f916ef4220e82.jpg' }
+function Header() {
+    const [user, setUser] = useState();
     const hello = new Date().getHours() < 12 ? 'Bom dia' : new Date().getHours() < 18 ? 'Boa tarde' : 'Boa noite';
- 
     const [toggleIsOpen, setToggleIsOpen] = useState(false);
     const toggleAnimation = useAnimationState({
         close: {
@@ -18,7 +18,6 @@ export default function Header() {
             height: 150,
         },
         });
-
     const handleOpenToggle = () => {
       toggleAnimation.transitionTo('open');
       setToggleIsOpen(true)
@@ -27,7 +26,13 @@ export default function Header() {
         toggleAnimation.transitionTo('close');
         setToggleIsOpen(false)
       }
-    
+      useEffect(() => {
+        const fecthData = async () => {
+            const res = await getPreferences()
+            setUser(res)
+        }
+        fecthData()
+      }, [])
 
     return(
         <Column>
@@ -35,7 +40,7 @@ export default function Header() {
                 <Pressable style={{ alignItems: 'center', justifyContent: 'center', marginTop: 80, }} onPress={toggleIsOpen ? handleCloseToggle : handleOpenToggle}>
                         <LinearGradient colors={['#ED274A', '#FF620A', '#E0CA3C']} style={{ width: 200, height: 200, position: 'absolute',  alignSelf: 'center', borderRadius: 100, }} />
                         <Image source={require('../../assets/imgs/blur1.png')} style={{ position: 'absolute', width: 400, height: 400, }} />
-                        <MotiImage source={{ uri: user.avatar }} style={{ width: 170, height: 170, alignSelf: 'center', borderRadius: 100, borderWidth: 6, borderColor: "#262626"}} 
+                        <MotiImage source={{ uri: user?.avatar }} style={{ width: 170, height: 170, alignSelf: 'center', borderRadius: 100, borderWidth: 6, borderColor: "#262626"}} 
                             resizeMode='cover'
                             from={{ opacity: 0, scale: 0.5, }} 
                             animate={{ opacity: 1, scale: 1, }} 
@@ -74,3 +79,5 @@ export default function Header() {
         </Column>
     )
 }
+
+export default memo(Header);

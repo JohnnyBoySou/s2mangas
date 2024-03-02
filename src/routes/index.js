@@ -53,7 +53,6 @@ export default function Router() {
             <Stack.Screen name="Onboarding" component={Onboarding} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Continue" component={ContinuePage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Preferences" component={PreferencesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
-
         </Stack.Navigator>
     </NavigationContainer>
    );

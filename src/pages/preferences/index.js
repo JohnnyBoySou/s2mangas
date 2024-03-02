@@ -14,8 +14,9 @@ import { ThemeContext } from 'styled-components/native'
 import { Column, Row } from '../../theme/global'
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import axios from 'axios';
+import { createPreferences } from '../../api/user/preferences';
 
-export default function PreferencesPage({ navigation, route, ...props }) {
+export default function PreferencesPage({ navigation, route, }) {
   const [geral, setGeral] = useState();
   const [geralbg, setGeralbg] = useState();
   useEffect(() => {
@@ -31,10 +32,8 @@ export default function PreferencesPage({ navigation, route, ...props }) {
 
   const { color, font } = useContext(ThemeContext)
   const [name, setName] = useState('');
-  const [picture, setPicture] = useState();
+  const [avatar, setAvatar] = useState();
   const [capa, setCapa] = useState();
-  const [capaUrl, setCapaUrl] = useState();
-  const [url, setUrl] = useState();
   const [bio, setBio] = useState('');
 
   const [step, setStep] = useState(1);
@@ -56,7 +55,7 @@ export default function PreferencesPage({ navigation, route, ...props }) {
       }
     }
     else if (step == 2) {
-      if (picture) {
+      if (avatar) {
         setStep(3)
       }
     } else if (step == 3) {
@@ -66,13 +65,25 @@ export default function PreferencesPage({ navigation, route, ...props }) {
     }
     else if (step == 4) {
       if (selectedItems.length >= 1) {
-        const params = { "items": selectedItems, "name": name, "picture": picture, "capa": capa, "bio": bio }
-       // setCurrentAvatar(picture)
-       // setCurrentCapa(capa)
-      //  requestFeedByCategories(params.items)
-      //  requestPreferences('create', params).then(response => {
-       //   navigation.navigate('Async')
-      //  })
+        const params = {
+          "items": selectedItems, 
+          "name": name, 
+          "avatar": avatar, 
+          "capa": capa, 
+          "bio": bio,  
+          "progress": [],
+          "complete": [],
+          "likes": [],
+          "follows": [],
+          "marks": [],
+          "coins": 100,
+          "diamonds": 5,
+        }
+        createPreferences(params).then(res => {
+          if(res){
+            navigation.navigate('Home')
+          }
+        })
       }
     }
   }
@@ -111,11 +122,11 @@ export default function PreferencesPage({ navigation, route, ...props }) {
                   <Row style={{ marginTop: 20, }}>
                     <Column style={{ width: 130, marginTop: 40, }}>
                       {geral?.slice(0, 6).map((pic, index) => (
-                        <TouchableOpacity key={index} onPress={() => { setPicture(pic); setUrl(pic) }} >
+                        <TouchableOpacity key={index} onPress={() => {  setAvatar(pic) }} >
                           <Animated.Image
                             entering={FadeInDown.delay(index * 200)}
                             source={{ uri: pic }}
-                            style={{ flexGrow: 1, aspectRatio: 1, transform: [{ scale: url === pic ? 1.2 : 1 }], height: 124, marginBottom: 10, borderRadius: 100, borderWidth: 4, borderColor: url === pic ? color.primary : color.off, }}
+                            style={{ flexGrow: 1, aspectRatio: 1, transform: [{ scale: avatar === pic ? 1.2 : 1 }], height: 124, marginBottom: 10, borderRadius: 100, borderWidth: 4, borderColor: avatar === pic ? color.primary : color.off, }}
                           />
                         </TouchableOpacity>
                       ))}
@@ -123,11 +134,11 @@ export default function PreferencesPage({ navigation, route, ...props }) {
 
                     <Column style={{ width: 130 }}>
                       {geral?.slice(6, 12).map((pic, index) => (
-                        <TouchableOpacity key={index} onPress={() => { setPicture(pic); setUrl(pic) }} >
+                        <TouchableOpacity key={index} onPress={() => { setAvatar(pic) }} >
                           <Animated.Image
                             entering={FadeInDown.delay(index * 400)}
                             source={{ uri: pic }}
-                            style={{ flexGrow: 1, aspectRatio: 1, transform: [{ scale: url === pic ? 1.2 : 1 }], height: 124, marginBottom: 10, borderRadius: 100, borderWidth: 4, borderColor: url === pic ? color.primary : color.off, }}
+                            style={{ flexGrow: 1, aspectRatio: 1, transform: [{ scale: avatar === pic ? 1.2 : 1 }], height: 124, marginBottom: 10, borderRadius: 100, borderWidth: 4, borderColor: avatar === pic ? color.primary : color.off, }}
                           />
                         </TouchableOpacity>
                       ))}
@@ -135,11 +146,11 @@ export default function PreferencesPage({ navigation, route, ...props }) {
 
                     <Column style={{ width: 130, marginTop: 70, }}>
                       {geral?.slice(12, 20).map((pic, index) => (
-                        <TouchableOpacity key={index} onPress={() => { setPicture(pic); setUrl(pic) }} >
+                        <TouchableOpacity key={index} onPress={() => { setAvatar(pic) }} >
                           <Animated.Image
                             entering={FadeInDown.delay(index * 600)}
                             source={{ uri: pic }}
-                            style={{ flexGrow: 1, aspectRatio: 1, transform: [{ scale: url === pic ? 1.2 : 1 }], height: 124, marginBottom: 10, borderRadius: 100, borderWidth: 4, borderColor: url === pic ? color.primary : color.off, }}
+                            style={{ flexGrow: 1, aspectRatio: 1, transform: [{ scale: avatar === pic ? 1.2 : 1 }], height: 124, marginBottom: 10, borderRadius: 100, borderWidth: 4, borderColor: avatar === pic ? color.primary : color.off, }}
                           />
                         </TouchableOpacity>
                       ))}
@@ -163,11 +174,11 @@ export default function PreferencesPage({ navigation, route, ...props }) {
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     <Column style={{ width: 50, }} />
                     {geralbg?.slice(0, 5).map((pic, index) => (
-                      <TouchableOpacity key={index} onPress={() => { setCapa(pic); setCapaUrl(pic); }}>
+                      <TouchableOpacity key={index} onPress={() => {  setCapa(pic); }}>
                         <Animated.Image
                           entering={FadeInDown.delay(index * 200)}
                           source={{ uri: pic }}
-                          style={{ flexGrow: 1, width: 260, height: 180, margin: 10, borderRadius: 8, borderWidth: 4, borderColor: capaUrl === pic ? color.primary : color.off, }}
+                          style={{ flexGrow: 1, width: 260, height: 180, margin: 10, borderRadius: 8, borderWidth: 4, borderColor: capa === pic ? color.primary : color.off, }}
                         />
                       </TouchableOpacity>
                     ))}
@@ -175,11 +186,11 @@ export default function PreferencesPage({ navigation, route, ...props }) {
 
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     {geralbg?.slice(5, 10).map((pic, index) => (
-                      <TouchableOpacity key={index} onPress={() => { setCapa(pic); setCapaUrl(pic); }}>
+                      <TouchableOpacity key={index} onPress={() => { setCapa(pic);  }}>
                         <Animated.Image
                           entering={FadeInDown.delay(index * 200)}
                           source={{ uri: pic }}
-                          style={{ flexGrow: 1, width: 260, height: 180, margin: 10, borderRadius: 8, borderWidth: 4, borderColor: capaUrl === pic ? color.primary : color.off, }}
+                          style={{ flexGrow: 1, width: 260, height: 180, margin: 10, borderRadius: 8, borderWidth: 4, borderColor: capa === pic ? color.primary : color.off, }}
                         />
                       </TouchableOpacity>
                     ))}
@@ -189,11 +200,11 @@ export default function PreferencesPage({ navigation, route, ...props }) {
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     <Column style={{ width: 20, }} />
                     {geralbg?.slice(10, 15).map((pic, index) => (
-                      <TouchableOpacity key={index} onPress={() => { setCapa(pic); setCapaUrl(pic); }}>
+                      <TouchableOpacity key={index} onPress={() => { setCapa(pic);  }}>
                         <Animated.Image
                           entering={FadeInDown.delay(index * 200)}
                           source={{ uri: pic }}
-                          style={{ flexGrow: 1, width: 260, height: 180, margin: 10, borderRadius: 8, borderWidth: 4, borderColor: capaUrl === pic ? color.primary : color.off, }}
+                          style={{ flexGrow: 1, width: 260, height: 180, margin: 10, borderRadius: 8, borderWidth: 4, borderColor: capa === pic ? color.primary : color.off, }}
                         />
                       </TouchableOpacity>
                     ))}
@@ -210,19 +221,17 @@ export default function PreferencesPage({ navigation, route, ...props }) {
               <Column style={{ marginTop: 20, }}>
                 <Title>O que você quer ver?</Title>
                 <Label>Escolha até {8 - Number(selectedItems.length)} opções</Label>
-
                 <Spacing />
                 <Column>
                   <Label style={{ fontSize: 24, color: color.title, textAlign: 'left', marginBottom: 10, }}>Genêros</Label>
                   <Row style={{ justifyContent: 'space-between', flexWrap: 'wrap', marginBottom: 50, }}>
                     {tags?.map((item, index) =>
                       <TouchableOpacity key={index} onPress={() => handleItemClick(item)} style={{ width: '48%', justifyContent: 'center', marginBottom: 12, borderRadius: 6, height: 100, backgroundColor: !selectedItems.some(selectedItem => selectedItem.id === item.id) ? item?.color : '#ED274A', overflow: 'hidden', borderWidth: !selectedItems.some(selectedItem => selectedItem.id === item.id) ? 0 : 3, borderColor: !selectedItems.some(selectedItem => selectedItem.id === item.id) ? '#000' : '#fff', }}>
-                        <Title style={{ fontSize: 24, fontFamily: font.medium, zIndex: 999, marginHorizontal: 12, textAlign: 'left' }}>{item.name}</Title>
+                        <Title style={{ fontSize: 24, fontFamily: font.medium, zIndex: 999, marginHorizontal: 12, textAlign: 'left' }}>{item?.name}</Title>
                         <Image style={{ width: 60, height: 80, borderRadius: 12, position: 'absolute', right: -10, bottom: -10, transform: [{ rotateZ: '-24deg' }], }} source={{ uri: item?.img }} />
                       </TouchableOpacity>
                     )}
                   </Row>
-
                 </Column>
               </Column>
             </Animated.View>}
