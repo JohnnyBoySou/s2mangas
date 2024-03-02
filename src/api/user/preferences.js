@@ -2,8 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 async function getPreferences() {
   try {
-    const preferences =
-      JSON.parse(await AsyncStorage.getItem("preferences")) || [];
+    const preferences = JSON.parse(await AsyncStorage.getItem("@settings")) || [];
     return preferences;
   } catch (error) {
     console.error("Error getting preferences:", error);
@@ -14,7 +13,7 @@ async function getPreferences() {
 async function editPreferences(updatedPreferences) {
   try {
     const preferences = { ...updatedPreferences };
-    await AsyncStorage.setItem("preferences", JSON.stringify(preferences));
+    await AsyncStorage.setItem("@settings", JSON.stringify(preferences));
     return true;
   } catch (error) {
     console.error("Error editing preferences:", error);
@@ -24,7 +23,7 @@ async function editPreferences(updatedPreferences) {
 
 async function createPreferences(preferences) {
   try {
-    await AsyncStorage.setItem("preferences", JSON.stringify(preferences));
+    await AsyncStorage.setItem("@settings", JSON.stringify(preferences));
     return true;
   } catch (error) {
     console.error("Error creating preference:", error);
@@ -34,7 +33,7 @@ async function createPreferences(preferences) {
 
 async function excludePreferences() {
   try {
-    await AsyncStorage.removeItem("preferences");
+    await AsyncStorage.removeItem("@settings");
     return true;
   } catch (error) {
     console.error("Error excluding preference ", error);

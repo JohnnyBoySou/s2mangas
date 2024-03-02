@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Pressable, } from 'react-native';
 import { Column, Label, Row, Main, Scroll, } from '../../theme/global';
 import { ThemeContext } from "styled-components/native";
@@ -10,10 +10,21 @@ import RateComponent from '../../components/lists/rate';
 import WeekendComponent from '../../components/lists/weekend';
 import ContinueReading from '../../components/reading/continue';
 import Header from '../../components/header';
+import { getPreferences } from '../../api/user/preferences';
 
 export default function HomePage({ navigation }) {
     const { color, font } = useContext(ThemeContext);
     const [type, setType] = useState('Tudo');
+
+
+    useEffect(() => {
+        const fecthData = async () => {
+          let res = await getPreferences()
+          console.log(res)
+        }
+        fecthData()
+        
+    },[])
 
     return (
         <Main>
