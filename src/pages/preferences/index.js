@@ -119,43 +119,15 @@ export default function PreferencesPage({ navigation, route, }) {
                 <Title>Escolha um avatar</Title>
                 <Label>A sua representação no estilo Mangá</Label>
                 <ScrollView style={{ marginHorizontal: -24, alignSelf: 'center', }}>
-                  <Row style={{ marginTop: 20, }}>
-                    <Column style={{ width: 130, marginTop: 40, }}>
-                      {geral?.slice(0, 6).map((pic, index) => (
+                  <Row style={{ marginTop: 20, flexWrap: 'wrap', alignItems: 'center', alignContent: 'center', justifyContent: 'center',}}>
+                      {geral?.map((pic, index) => (
                         <TouchableOpacity key={index} onPress={() => {  setAvatar(pic) }} >
-                          <Animated.Image
-                            entering={FadeInDown.delay(index * 200)}
+                          <Image
                             source={{ uri: pic }}
-                            style={{ flexGrow: 1, aspectRatio: 1, transform: [{ scale: avatar === pic ? 1.2 : 1 }], height: 124, marginBottom: 10, borderRadius: 100, borderWidth: 4, borderColor: avatar === pic ? color.primary : color.off, }}
+                            style={{ aspectRatio: 1, transform: [{ scale: avatar === pic ? 1.2 : 1 }], height: 124, margin: 10, borderRadius: 100, borderWidth: 4, borderColor: avatar === pic ? color.primary : color.off, }}
                           />
                         </TouchableOpacity>
                       ))}
-                    </Column>
-
-                    <Column style={{ width: 130 }}>
-                      {geral?.slice(6, 12).map((pic, index) => (
-                        <TouchableOpacity key={index} onPress={() => { setAvatar(pic) }} >
-                          <Animated.Image
-                            entering={FadeInDown.delay(index * 400)}
-                            source={{ uri: pic }}
-                            style={{ flexGrow: 1, aspectRatio: 1, transform: [{ scale: avatar === pic ? 1.2 : 1 }], height: 124, marginBottom: 10, borderRadius: 100, borderWidth: 4, borderColor: avatar === pic ? color.primary : color.off, }}
-                          />
-                        </TouchableOpacity>
-                      ))}
-                    </Column>
-
-                    <Column style={{ width: 130, marginTop: 70, }}>
-                      {geral?.slice(12, 20).map((pic, index) => (
-                        <TouchableOpacity key={index} onPress={() => { setAvatar(pic) }} >
-                          <Animated.Image
-                            entering={FadeInDown.delay(index * 600)}
-                            source={{ uri: pic }}
-                            style={{ flexGrow: 1, aspectRatio: 1, transform: [{ scale: avatar === pic ? 1.2 : 1 }], height: 124, marginBottom: 10, borderRadius: 100, borderWidth: 4, borderColor: avatar === pic ? color.primary : color.off, }}
-                          />
-                        </TouchableOpacity>
-                      ))}
-                    </Column>
-
                   </Row>
 
 
@@ -175,8 +147,7 @@ export default function PreferencesPage({ navigation, route, }) {
                     <Column style={{ width: 50, }} />
                     {geralbg?.slice(0, 5).map((pic, index) => (
                       <TouchableOpacity key={index} onPress={() => {  setCapa(pic); }}>
-                        <Animated.Image
-                          entering={FadeInDown.delay(index * 200)}
+                        <Image
                           source={{ uri: pic }}
                           style={{ flexGrow: 1, width: 260, height: 180, margin: 10, borderRadius: 8, borderWidth: 4, borderColor: capa === pic ? color.primary : color.off, }}
                         />
@@ -187,8 +158,7 @@ export default function PreferencesPage({ navigation, route, }) {
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     {geralbg?.slice(5, 10).map((pic, index) => (
                       <TouchableOpacity key={index} onPress={() => { setCapa(pic);  }}>
-                        <Animated.Image
-                          entering={FadeInDown.delay(index * 200)}
+                        <Image
                           source={{ uri: pic }}
                           style={{ flexGrow: 1, width: 260, height: 180, margin: 10, borderRadius: 8, borderWidth: 4, borderColor: capa === pic ? color.primary : color.off, }}
                         />
@@ -201,8 +171,7 @@ export default function PreferencesPage({ navigation, route, }) {
                     <Column style={{ width: 20, }} />
                     {geralbg?.slice(10, 15).map((pic, index) => (
                       <TouchableOpacity key={index} onPress={() => { setCapa(pic);  }}>
-                        <Animated.Image
-                          entering={FadeInDown.delay(index * 200)}
+                        <Image
                           source={{ uri: pic }}
                           style={{ flexGrow: 1, width: 260, height: 180, margin: 10, borderRadius: 8, borderWidth: 4, borderColor: capa === pic ? color.primary : color.off, }}
                         />
@@ -220,15 +189,13 @@ export default function PreferencesPage({ navigation, route, }) {
             <Animated.View entering={FadeInUp}>
               <Column style={{ marginTop: 20, }}>
                 <Title>O que você quer ver?</Title>
-                <Label>Escolha até {8 - Number(selectedItems.length)} opções</Label>
+                <Label>Restam {8 - Number(selectedItems.length)} opções</Label>
                 <Spacing />
                 <Column>
-                  <Label style={{ fontSize: 24, color: color.title, textAlign: 'left', marginBottom: 10, }}>Genêros</Label>
-                  <Row style={{ justifyContent: 'space-between', flexWrap: 'wrap', marginBottom: 50, }}>
+                  <Row style={{flexWrap: 'wrap', marginBottom: 50, justifyContent: 'center' }}>
                     {tags?.map((item, index) =>
-                      <TouchableOpacity key={index} onPress={() => handleItemClick(item)} style={{ width: '48%', justifyContent: 'center', marginBottom: 12, borderRadius: 6, height: 100, backgroundColor: !selectedItems.some(selectedItem => selectedItem.id === item.id) ? item?.color : '#ED274A', overflow: 'hidden', borderWidth: !selectedItems.some(selectedItem => selectedItem.id === item.id) ? 0 : 3, borderColor: !selectedItems.some(selectedItem => selectedItem.id === item.id) ? '#000' : '#fff', }}>
-                        <Title style={{ fontSize: 24, fontFamily: font.medium, zIndex: 999, marginHorizontal: 12, textAlign: 'left' }}>{item?.name}</Title>
-                        <Image style={{ width: 60, height: 80, borderRadius: 12, position: 'absolute', right: -10, bottom: -10, transform: [{ rotateZ: '-24deg' }], }} source={{ uri: item?.img }} />
+                      <TouchableOpacity key={index} onPress={() => handleItemClick(item)} style={{justifyContent: 'center', paddingHorizontal: 12, paddingVertical: 10, marginBottom: 12, marginRight: 12, borderRadius: 100,  backgroundColor: !selectedItems.some(selectedItem => selectedItem.id === item.id) ? "#303030" : '#ED274A', }}>
+                        <Title style={{ fontSize: 24, fontFamily: font.book, zIndex: 999, marginHorizontal: 12, textAlign: 'left' }}>{item?.name}</Title>
                       </TouchableOpacity>
                     )}
                   </Row>

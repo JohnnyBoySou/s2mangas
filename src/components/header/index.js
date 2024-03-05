@@ -50,7 +50,7 @@ function Header() {
             </MotiView>
 
             <Title style={{ fontSize: 46, textAlign: 'center', fontFamily:'Font_Black', zIndex: 99, marginTop: 20,}}>{hello},</Title>
-            <Title style={{ fontSize: 46, textAlign: 'center', fontFamily:'Font_Black', zIndex: 99,}}>{user?.name}</Title>
+            <Title style={{ fontSize: 46, textAlign: 'center', fontFamily:'Font_Black', zIndex: 99, marginTop: -10,}}>{user?.name}</Title>
             <AnimatePresence>
                 <MotiView state={toggleAnimation} transition={{type: 'timing'}} style={{ width: '100%', height: 10, backgroundColor: '#262626', borderRadius: 12, marginBottom: 20, marginTop: 20, height: 0,}}>
                     <Column style={{padding: 12,}}>

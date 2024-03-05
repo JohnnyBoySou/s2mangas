@@ -12,14 +12,17 @@ import MangaPages from '../pages/manga/pages';
 import NovidadesPage from '../pages/novidades';
 import ContinuePage from '../pages/continue';
 import PreferencesPage from './../pages/preferences/index';
-import { getPreferences } from '../api/user/preferences';
 import OnboardingPage from '../pages/onboarding/index';
+import AsyncStatic from '../pages/async';
+import CollectionsPage from './../pages/collections/index';
+import CollectionDetailsPage from './../pages/collections/details';
+
 
 SplashScreen.preventAutoHideAsync();
 const Stack = createStackNavigator();
 
 export default function Router() {
-  const [initialRoute, setInitialRoute] = useState('Onboarding');
+  
   const [fontsLoaded, setFontsLoaded] = useState(false);
   useEffect(() => {
     async function loadFonts() {
@@ -34,15 +37,7 @@ export default function Router() {
       finally{setFontsLoaded(true)}
     }
     loadFonts();
-    const fechtData = async () => {
-      const user = await getPreferences()
-      if(user?.name){
-        setInitialRoute('Home')
-      }else{
-        setInitialRoute('Onboarding')
-      }
-    }
-    fechtData()
+   
 
   }, []);
 
@@ -59,7 +54,7 @@ export default function Router() {
 
   return (
     <NavigationContainer>
-        <Stack.Navigator initialRouteName={initialRoute} screenOptions={{headerShown: false,}} >
+        <Stack.Navigator initialRouteName="Home" screenOptions={{headerShown: false,}} >
             <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Novidades" component={NovidadesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="MangalistDetails" component={MangalistDetailsPage} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
@@ -68,6 +63,9 @@ export default function Router() {
             <Stack.Screen name="Onboarding" component={OnboardingPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Continue" component={ContinuePage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Preferences" component={PreferencesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
+            <Stack.Screen name="AsyncStatic" component={AsyncStatic} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
+            <Stack.Screen name="Collections" component={CollectionsPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
+            <Stack.Screen name="CollectionDetails" component={CollectionDetailsPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
         </Stack.Navigator>
     </NavigationContainer>
    );

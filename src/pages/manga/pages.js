@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Scroll, Main, Column } from '../../theme/global';
+import { Row, Scroll, Main, Column, Title } from '../../theme/global';
 import { Pressable, FlatList, Dimensions, Image } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import requestPages from '../../api/manga/pages';
@@ -36,7 +36,18 @@ export default function MangaPages({ route, navigation }) {
                         <AntDesign name="arrowleft" size={32} color="#fff" />
                     </Pressable>
                 </Row>
-                {loading ? <Column><Skeleton width={300} height={600} radius={6} /><Skeleton width={300} height={600} radius={6} /></Column> :  <ListPages item={item} />}
+
+                <Column>
+                <Image src='https://www.s2mangas.com/_next/image?url=https%3A%2F%2Fi.pinimg.com%2F564x%2F1e%2F9b%2Fbc%2F1e9bbcd802874129776a08f548b39b65.jpg&w=384&q=75' style={{ width: 200, height: 300, margin: 10, objectFit: 'cover', borderRadius: 12, transform: [{rotateX: '12deg'}] }} />
+                <Title>Gerando páginas</Title>
+                    <Skeleton width={300} height={600} radius={6} /><Skeleton width={300} height={600} radius={6} />
+                </Column>
+
+                {loading ? <Column>
+                <Title>Gerando páginas</Title>
+                    <Skeleton width={300} height={600} radius={6} /><Skeleton width={300} height={600} radius={6} />
+                </Column> :  <ListPages item={item} />}
+                
             </Scroll>
         </Main>
     )

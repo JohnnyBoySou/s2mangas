@@ -15,16 +15,17 @@ import { getPreferences } from '../../api/user/preferences';
 export default function HomePage({ navigation }) {
     const { color, font } = useContext(ThemeContext);
     const [type, setType] = useState('Tudo');
-
-
-    useEffect(() => {
-        const fecthData = async () => {
-          let res = await getPreferences()
-          console.log(res)
-        }
-        fecthData()
-        
-    },[])
+    useEffect(() =>{
+        const fechtData = async () => {
+            const user = await getPreferences()
+            if(user?.name){
+              navigation.navigate('Home')
+            }else{
+              navigation.navigate('Onboarding')
+            }
+          }
+          fechtData()
+    }, [])
 
     return (
         <Main>
@@ -34,14 +35,17 @@ export default function HomePage({ navigation }) {
                 {type === 'Tudo' && <Column style={{ paddingHorizontal: 20, }}><NavBar/><Header/></Column>}
 
                 <Row style={{ marginBottom: 15, backgroundColor: color.background, padding: 12, paddingTop: 40, marginTop: -20, zIndex: 99, }}>
-                    <Pressable onPress={() => { setType('Tudo') }} style={{ paddingVertical: 10, paddingHorizontal: 24, marginLeft: 10, backgroundColor: type === 'Tudo' ? color.light : color.off, borderRadius: 100, zIndex: 99,}}>
+                    <Pressable onPress={() => { setType('Tudo') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Tudo' ? color.light : color.off, borderRadius: 100, zIndex: 99,}}>
                         <Label style={{ color: type === 'Tudo' ? color.off : color.title, fontFamily: type === 'Tudo' ? font.bold : font.book, }}>Tudo</Label>
                     </Pressable>
-                    <Pressable onPress={() => { setType('Mangas') }} style={{ paddingVertical: 10, marginHorizontal: 12, paddingHorizontal: 24, backgroundColor: type === 'Mangas' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
+                    <Pressable onPress={() => { setType('Mangas') }} style={{ paddingVertical: 10, marginHorizontal: 8, paddingHorizontal: 16, backgroundColor: type === 'Mangas' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
                         <Label style={{ color: type === 'Mangas' ? color.off : color.title, fontFamily: type === 'Mangas' ? font.bold : font.book, }}>Mangás</Label>
                     </Pressable>
-                    <Pressable onPress={() => { setType('Mangalist') }} style={{ marginRight: 12, paddingVertical: 10, paddingHorizontal: 24, backgroundColor: type === 'Mangalist' ? color.light : color.off, borderRadius: 100, zIndex: 99,}}>
+                    <Pressable onPress={() => { setType('Mangalist') }} style={{ marginRight: 8, paddingVertical: 10, paddingHorizontal: 16, backgroundColor: type === 'Mangalist' ? color.light : color.off, borderRadius: 100, zIndex: 99,}}>
                         <Label style={{ color: type === 'Mangalist' ? color.off : color.title, fontFamily: type === 'Mangalist' ? font.bold : font.book, }}>Mangalist</Label>
+                    </Pressable>
+                    <Pressable onPress={() => { setType('Collections'); navigation.navigate('CollectionDetails') }} style={{ marginRight: 8, paddingVertical: 10, paddingHorizontal: 16, backgroundColor: type === 'Collections' ? color.light : color.off, borderRadius: 100, zIndex: 99,}}>
+                        <Label style={{ color: type === 'Collections' ? color.off : color.title, fontFamily: type === 'Collections' ? font.bold : font.book, }}>Coleções</Label>
                     </Pressable>
                 </Row>
 
