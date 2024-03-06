@@ -5,12 +5,15 @@ import { Main } from '../../theme/global';
 const AsyncStatic = ({navigation}) => {
     useEffect(() =>{
         const fechtData = async () => {
-            const user = await getPreferences()
-            if(user?.name){
-              navigation.navigate('Home')
-            }else{
-              navigation.navigate('Onboarding')
-            }
+            getPreferences().then(
+              res => {
+                if(res?.name){
+                  navigation.navigate('Home')
+                }else{
+                  navigation.navigate('Onboarding')
+                }
+              }
+            )
           }
           fechtData()
     }, [])

@@ -37,8 +37,6 @@ export default function Router() {
       finally{setFontsLoaded(true)}
     }
     loadFonts();
-   
-
   }, []);
 
   useEffect(() => {
@@ -49,12 +47,9 @@ export default function Router() {
   if (!fontsLoaded) {
     return null;
   }
-
-
-
   return (
     <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home" screenOptions={{headerShown: false,}} >
+        <Stack.Navigator initialRouteName="AsyncStatic" screenOptions={{headerShown: false,}} >
             <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Novidades" component={NovidadesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="MangalistDetails" component={MangalistDetailsPage} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
