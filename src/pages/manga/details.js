@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Column, Row, Title, Label, Scroll, Main } from '../../theme/global';
-import { Image, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+import { Image, TouchableOpacity, Dimensions, FlatList, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { AntDesign, FontAwesome5, Feather, Ionicons } from '@expo/vector-icons';
+import { AntDesign, FontAwesome5, Feather, Ionicons, Fontisto, FontAwesome } from '@expo/vector-icons';
 import requestManga from '../../api/manga/details';
 import requestChapters from '../../api/manga/chapters';
 import requestSimilar from '../../api/manga/similar';
 
 import { useNavigation } from '@react-navigation/native';
 import { Skeleton } from 'moti/skeleton';
+import { AnimatePresence, MotiView } from 'moti';
+import { addComplete, addFollow, addLike, removeComplete, removeFollow, removeLike, verifyComplete, verifyFollow, verifyLiked } from '../../api/user/preferences';
 
 export default function MangaDetailsPage({ route, navigation }) {
     const id = route.params.id;
@@ -30,12 +32,78 @@ export default function MangaDetailsPage({ route, navigation }) {
             requestSimilar(id).then((response) => {
                 setSimilar(response.mangas)
             })
+            verifyLiked(id).then((response) => {
+                setLiked(response)
+            })
+            verifyComplete(id).then((response) => {
+                setCompleted(response)
+            })
+            verifyFollow(id).then((response) => {
+                setFollow(response)
+            })
         };
         requestData()
 
     }, [])
-    const handleLike = () => {
+    const [liked, setLiked] = useState();
+    const handleLike = async () => {
+        if (liked) {
+            removeLike(id).then(
+                res => setLiked(false)
+            )
+        } else {
+            const itm = {
+                name: item.name,
+                capa: item.capa,
+                rate: item.rate,
+                type: item.type,
+                id: item.id,
+            };
+            addLike(itm).then(
+                res => setLiked(true)
+            )
+        }
     }
+    const [completed, setCompleted] = useState();
+    const handleComplete = () => {
+        if (completed) {
+            removeComplete(item?.id).then((r) => {
+                if (r) setCompleted(false);
+            });
+        } else {
+            const itm = {
+                name: item.name,
+                capa: item.capa,
+                rate: item.rate,
+                type: item.type,
+                id: item.id,
+            };
+            addComplete(itm).then((r) => {
+                if (r) setCompleted(true);
+            });
+        }
+    };
+
+    const [follow, setFollow] = useState();
+    const handleFollow = () => {
+        if (follow) {
+            removeFollow(item?.id).then((r) => {
+                if (r) setFollow(false);
+            });
+        } else {
+            const itm = {
+                name: item.name,
+                capa: item.capa,
+                rate: item.rate,
+                type: item.type,
+                id: item.id,
+            };
+            addFollow(itm).then((r) => {
+                if (r) setFollow(true);
+            });
+        }
+    };
+
     const handlePlay = () => {
         navigation.navigate('MangaPages', { chapter: 1, id: id, })
     }
@@ -82,24 +150,59 @@ export default function MangaDetailsPage({ route, navigation }) {
                         <Column style={{ marginRight: 20, }}>
                             <Image source={{ uri: reaction_image }} alt='reaction manga' width={54} height={54} />
                         </Column>
-                        <Column style={{flexGrow: 1,}}>
-                            <Title style={{ color: "#000", fontFamily: 'Font_Bold',}}>{reaction}</Title>
-                            <Label style={{ color: "#303030", width: 170, fontSize: 16,}}>{reaction_desc}</Label>
+                        <Column style={{ flexGrow: 1, }}>
+                            <Title style={{ color: "#000", fontFamily: 'Font_Bold', }}>{reaction}</Title>
+                            <Label style={{ color: "#303030", width: 170, fontSize: 16, }}>{reaction_desc}</Label>
                         </Column>
                         <Row style={{ backgroundColor: "#ffffff50", justifyContent: 'center', alignItems: 'center', borderRadius: 100, paddingHorizontal: 14, paddingVertical: 8, }}>
-                            <AntDesign name="staro" size={16} color="#000"  />
-                            <Label style={{ fontFamily: 'Font_Medium', fontSize: 24, color: "#000", marginLeft: 6,}}>{item?.rate === 'Rate this mangas' ? 'Sem nota' : item?.rate}</Label>
+                            <AntDesign name="staro" size={16} color="#000" />
+                            <Label style={{ fontFamily: 'Font_Medium', fontSize: 24, color: "#000", marginLeft: 6, }}>{item?.rate === 'Rate this mangas' ? 'Sem nota' : item?.rate}</Label>
                         </Row>
                     </Row>
 
                     <Row style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 15, }}>
                         <Row style={{ justifyContent: 'center', alignItems: 'center', }}>
-                            <TouchableOpacity onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
-                                <AntDesign name="hearto" size={24} color="#d4d4d4" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                            <Pressable onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                                {liked ? <AnimatePresence>
+                                    <MotiView from={{ scale: 0, opacity: 0, }} animate={{ scale: 1, opacity: 1, }} transition={{ type: 'spring', duration: 500, }}>
+                                        <AntDesign name='heart' size={32} color="#EB5757" />
+                                    </MotiView>
+                                </AnimatePresence> :
+                                    <MotiView from={{ rotation: -45, opacity: 0, }} animate={{ rotation: 0, opacity: 1, }} transition={{ type: 'timing', duration: 500, }}>
+                                        <AntDesign name='hearto' size={32} color="#d4d4d4" />
+                                    </MotiView>}
+
+                            </Pressable>
+                            <TouchableOpacity style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
                                 <Ionicons name="add-circle-outline" size={24} color="#d4d4d4" />
                             </TouchableOpacity>
+
+                            <Pressable onPress={handleComplete} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                                {completed ?
+                                <AnimatePresence>
+                                <MotiView from={{ scale: 0, opacity: 0, }}  animate={{ scale: 1, opacity: 1, }} transition={{ type: 'spring', duration: 500,  }}>
+                                    <Ionicons name='checkmark-done-circle' size={32} color="#27AE60" />
+                                </MotiView> 
+                                </AnimatePresence> :
+                                <MotiView from={{ scale: 1.5, opacity: 0, }}  animate={{ scale: 1,  opacity: 1, }}  transition={{ type: 'timing', duration: 500,  }}>
+                                    <Ionicons name='checkmark-done-circle-outline' size={32} color="#d4d4d4" />
+                                </MotiView>}
+                            </Pressable>
+                            <Pressable onPress={handleFollow} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                                {follow ?
+                                <AnimatePresence>
+                                <MotiView from={{ scale: 0, rotate: '-45deg', opacity: 0, }}  animate={{ scale: 1, rotate: '0deg', opacity: 1, }} transition={{ type: 'spring', duration: 500,  }}>
+                                    <FontAwesome name='bell' size={26} color="#27AE60" />
+                                </MotiView> 
+                                </AnimatePresence> :
+                                <MotiView from={{ rotate: '45deg', opacity: 0, }}  animate={{ rotate: '0deg',  opacity: 1, }}  transition={{ type: 'timing', duration: 500,  }}>
+                                    <FontAwesome name='bell-o' size={26} color="#d4d4d4" />
+                                </MotiView>}
+                            </Pressable>
+
+
+
+
                         </Row>
                         <Row style={{ justifyContent: 'center', alignItems: 'center', }}>
                             <TouchableOpacity onPress={handlePlay} style={{ backgroundColor: "#ED274A", width: 52, marginLeft: 10, height: 52, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>

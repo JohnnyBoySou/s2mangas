@@ -12,7 +12,7 @@ async function getPreferences() {
 
 async function editPreferences(updatedPreferences) {
   try {
-    const preferences = { ...updatedPreferences };
+    const preferences = { ...getPreferences(), ...updatedPreferences };
     await AsyncStorage.setItem("@settings", JSON.stringify(preferences));
     return true;
   } catch (error) {
@@ -41,17 +41,14 @@ async function excludePreferences() {
   }
 }
 
-
-//valor de preferences
-//{"avatar": "https://i.pinimg.com/736x/19/26/6e/19266e9d39db046491e8313efc921d2e.jpg", "bio": "Lindi", "capa": "https://i.pinimg.com/736x/2e/a6/05/2ea6059269801a40d2794d4492e199b8.jpg", "coins": 100, "complete": [], "diamonds": 5, "follows": [], "likes": [], "marks": [], "name": "Johnny", "progress": []}
-function addLike(array) {
+async function addLike(array) {
   try {
-    const preferences = getPreferences();
+    const preferences = await getPreferences();
     if (!preferences.likes) {
       preferences.likes = [];
     }
     preferences.likes = preferences.likes.concat(array);
-    editPreferences(preferences);
+    await editPreferences(preferences);
     return true;
   } catch (error) {
     console.error("Error adding likes array:", error);
@@ -59,24 +56,24 @@ function addLike(array) {
   }
 }
 
-function verifyLiked(id) {
+async function verifyLiked(id) {
   try {
-    const preferences = getPreferences();
-    return preferences.likes && preferences.likes.filter((manga) => manga.id === id);
+    const preferences = await getPreferences();
+    return preferences.likes && preferences.likes.some((manga) => manga.id === id);
   } catch (error) {
     console.error("Error verifying liked manga:", error);
     return false;
   }
 }
 
-function removeLike(id) {
+async function removeLike(id) {
   try {
-    const preferences = getPreferences();
+    const preferences = await getPreferences();
     if (!preferences.likes) {
       preferences.likes = [];
     }
     preferences.likes = preferences.likes.filter((manga) => manga.id !== id);
-    editPreferences(preferences);
+    await editPreferences(preferences);
     return true;
   } catch (error) {
     console.error("Error removing like:", error);
@@ -86,14 +83,14 @@ function removeLike(id) {
 
 
 
-function addComplete(manga) {
+async function addComplete(manga) {
   try {
-    const preferences = getPreferences();
+    const preferences = await getPreferences();
     if (!preferences.complete) {
       preferences.complete = [];
     }
     preferences.complete.push(manga);
-    editPreferences(preferences);
+    await editPreferences(preferences);
     return true;
   } catch (error) {
     console.error("Error adding complete manga:", error);
@@ -101,24 +98,24 @@ function addComplete(manga) {
   }
 }
 
-function verifyComplete(id) {
+async function verifyComplete(id) {
   try {
-    const preferences = getPreferences();
-    return preferences.complete && preferences.complete.some((manga) => manga.id === id);
+    const preferences = await getPreferences();
+    return  preferences.complete && preferences.complete.some((manga) => manga.id === id);
   } catch (error) {
     console.error("Error verifying complete manga:", error);
     return false;
   }
 }
 
-function removeComplete(id) {
+async function removeComplete(id) {
   try {
-    const preferences = getPreferences();
+    const preferences = await getPreferences();
     if (!preferences.complete) {
       preferences.complete = [];
     }
     preferences.complete = preferences.complete.filter((manga) => manga.id !== id);
-    editPreferences(preferences);
+    await editPreferences(preferences);
     return true;
   } catch (error) {
     console.error("Error removing complete manga:", error);
@@ -127,11 +124,54 @@ function removeComplete(id) {
 }
 
 
+
+async function addFollow(manga) {
+  try {
+    const preferences = await getPreferences();
+    if (!preferences.follow) {
+      preferences.follow = [];
+    }
+    preferences.follow.push(manga);
+    await editPreferences(preferences);
+    return true;
+  } catch (error) {
+    console.error("Error adding follow manga:", error);
+    return false;
+  }
+}
+
+async function verifyFollow(id) {
+  try {
+    const preferences = await getPreferences();
+    return  preferences.follow && preferences.follow.some((manga) => manga.id === id);
+  } catch (error) {
+    console.error("Error verifying follow manga:", error);
+    return false;
+  }
+}
+
+async function removeFollow(id) {
+  try {
+    const preferences = await getPreferences();
+    if (!preferences.follow) {
+      preferences.follow = [];
+    }
+    preferences.follow = preferences.follow.filter((manga) => manga.id !== id);
+    await editPreferences(preferences);
+    return true;
+  } catch (error) {
+    console.error("Error removing follow manga:", error);
+    return false;
+  }
+}
+
+
+
 export {
   createPreferences,
   getPreferences,
   editPreferences,
-  excludePreferences, //pronto
+  excludePreferences, 
   
   addLike,
   removeLike,
@@ -140,15 +180,15 @@ export {
   addComplete,
   removeComplete,
   verifyComplete,
+
+  addFollow,
+  removeFollow,
+  verifyFollow, 
   
-  dislikeManga,
-  dislikeAllManga, //pronto
   addMark,
   removeMark,
   getMarks,
-  addFollow,
-  removeFollow,
-  verifyFollow, //pronto
+ 
 };
 
 
@@ -305,94 +345,5 @@ function getMarks(manga) {
   } catch (error) {
     console.error("Error getting marks:", error);
     return [];
-  }
-}
-
-function addFollow(manga) {
-  try {
-    const preferences = getPreferences();
-    if (!preferences.follow.some((item) => item.id === manga.id)) {
-      preferences.follow.push(manga);
-      editPreferences(preferences);
-    }
-    return true;
-  } catch (error) {
-    console.error("Error liking manga:", error);
-    return false;
-  }
-}
-
-function removeFollow(id) {
-  try {
-    const preferences = getPreferences();
-    preferences.follow = preferences.follow.filter((manga) => manga.id !== id);
-    editPreferences(preferences);
-    return true;
-  } catch (error) {
-    console.error("Error disliking manga:", error);
-    return false;
-  }
-}
-
-function verifyFollow(id) {
-  try {
-    const preferences = getPreferences();
-    return preferences.follow.some((manga) => manga.id === id);
-  } catch (error) {
-    console.error("Error verifying liked manga:", error);
-    return false;
-  }
-}
-
-function editFollow(manga, chapter) {
-  try {
-    const preferences = getPreferences();
-    const follow = preferences.follows.find((follow) => follow.manga === manga);
-    if (follow) {
-      follow.chapter = chapter;
-      editPreferences(preferences);
-      return true;
-    } else {
-      console.error("Follow not found");
-      return false;
-    }
-  } catch (error) {
-    console.error("Error editing follow:", error);
-    return false;
-  }
-}
-
-function addCompletee(manga) {
-  try {
-    const preferences = getPreferences();
-    preferences.complete.push(manga);
-    editPreferences(preferences);
-    return true;
-  } catch (error) {
-    console.error("Error setting complete:", error);
-    return false;
-  }
-}
-
-function removeCompletee(id) {
-  try {
-    const preferences = getPreferences();
-    preferences.complete = preferences.complete.filter(
-      (item) => item.id !== id
-    );
-    editPreferences(preferences);
-    return true;
-  } catch (error) {
-    console.error("Error removing complete:", error);
-    return false;
-  }
-}
-function verifyCompletee(id) {
-  try {
-    const preferences = getPreferences();
-    return preferences.complete.some((manga) => manga.id === id);
-  } catch (error) {
-    console.error("Error verifying complete manga:", error);
-    return false;
   }
 }

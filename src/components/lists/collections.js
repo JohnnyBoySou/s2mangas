@@ -1,29 +1,44 @@
 import React, { useState, useEffect,  } from 'react';
 import { Column, Row, Title, Label, } from '../../theme/global';
-import { FlatList, Image, TouchableOpacity } from 'react-native';
+import { FlatList, Pressable,  } from 'react-native';
 import { Skeleton } from 'moti/skeleton'
-import requestNews from '../../api/manga/news';
+import Card from './card';
+import { listCollections } from '../../api/collections';
 import { useNavigation } from '@react-navigation/native';
+import { MotiImage } from 'moti';
 
-export default function NewsComponent() {
+export default function CollectionsComponent() {
+    const navigation = useNavigation();
     const [data, setData] = useState([]);
     useEffect(() => {
-        requestNews().then((res) => {
-            setData(res.mangas);
+        listCollections().then((res) => {
+            setData(res);
         })
     }, [])
 
         return (
             <Column style={{ marginHorizontal: 20, }}>
-                {data.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
-                <Title>Novos capítulos</Title>
-                <Label>Última atualização à {data[0].release_date}</Label>
+                {data.length === 0  ? <Column>
+                <Title>Você ainda não tem coleções</Title>
+                <Label>Salve suas coleções para ver aqui</Label>
+                <Row style={{ marginVertical: 30, alignSelf: 'center',}}>
+                        <Column style={{ transform: [{ rotate: '12deg', }] }}><MotiImage source={{ uri: 'https://i.pinimg.com/564x/d3/86/3a/d3863a8d0ff7930aeecd8377fd912b1a.jpg' }} style={{ width: 120, height: 180, borderRadius: 8, }} /></Column>
+                        <Column style={{ transform: [{ rotate: '0deg', }], borderWidth: 8, borderColor: "#171717", borderRadius: 16, marginHorizontal: -30, }}><MotiImage source={{ uri: 'https://i.pinimg.com/236x/67/a1/3c/67a13cf926bfab690a113c2d3eac779e.jpg' }} style={{ width: 120, height: 180, borderRadius: 8, }} /></Column>
+                        <Column style={{ transform: [{ rotate: '-12deg', }], borderWidth: 8, borderColor: "#171717", borderRadius: 16, }}><MotiImage source={{ uri: 'https://i.pinimg.com/564x/9c/93/8f/9c938f6ffd7510629bc36ebec7a1e5c6.jpg' }} style={{ width: 120, height: 180, borderRadius: 8, }} /></Column>
+                    </Row>
+
+                <Pressable onPress={() => navigation.navigate('Collections')} style={{ padding: 12, backgroundColor: "#fff", borderRadius: 100, paddingHorizontal: 20, alignSelf:'center',  }}>
+                    <Label style={{ color: "#000", }}>Criar coleção</Label>
+                </Pressable>
+                </Column> : 
+                <Column>
+                <Title>Suas coleções</Title>
+                <Label>Veja o que você salvou</Label>
                 </Column>}
                 <FlatList
                     style={{ marginVertical: 16, marginHorizontal: -20, }}
                     data={data}
                     ListHeaderComponent={<Column style={{ width: 20, }} />}
-                    ListEmptyComponent={<Loading/>}
                     keyExtractor={item => item.id}
                     renderItem={({ item }) => <Card item={item} />}
                     horizontal
@@ -33,33 +48,6 @@ export default function NewsComponent() {
         );
 }
 
-
-
-const Card = React.memo(({ item }) => {
-    
-    const navigation = useNavigation();
-    return (
-        <TouchableOpacity onPress={() => { navigation.navigate('MangaDetails', {id: item.id });}} style={{marginRight: 16, flexDirection: 'row',}}>
-            <Column style={{ backgroundColor: "#303030", borderRadius: 6,  padding: 12, justifyContent: 'center' }}>
-                <Image source={{ uri: item.capa }} style={{ width: 86, height: 132, borderRadius: 6,}} />
-            </Column>
-            <Column style={{ backgroundColor: "#262626", borderTopRightRadius: 6, borderBottomRightRadius: 6, width: 182, padding: 12, alignSelf: 'center', }}>
-                <Row style={{flexWrap: 'wrap'}}>
-                    {item?.categories.map((chapter) => (
-                    <Label key={chapter} style={{ fontSize: 12, }}>• {chapter} </Label>
-                    ))}
-                </Row>
-                <Title style={{ fontSize: 18, marginVertical: 4, }}>{item?.name.slice(0,34)}</Title>
-                <Row style={{flexWrap: 'wrap', marginBottom: 8,}}>
-                    {item?.newchapters?.slice(0, 4)?.map((chapter) => (
-                    <Label key={chapter} style={{ fontSize: 12, backgroundColor: "#525252", padding: 6, borderRadius: 4, marginRight: 4,}}>{chapter} </Label>
-                    ))}
-                </Row>
-                <Label style={{ fontSize: 12, }}>Atualizado à {item?.release_date}</Label>
-            </Column>
-        </TouchableOpacity>
-    )
-});
 
 const Loading = () => {
     return (

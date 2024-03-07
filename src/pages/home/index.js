@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Pressable, } from 'react-native';
+import { Pressable, Dimensions} from 'react-native';
 import { Column, Label, Row, Main, Scroll, } from '../../theme/global';
 import { ThemeContext } from "styled-components/native";
 import { MangalistLastedComponent, MangalistRateComponent, MangalistWeekendComponent } from '../../components/lists/mangalist';
@@ -11,18 +11,27 @@ import WeekendComponent from '../../components/lists/weekend';
 import ContinueReading from '../../components/reading/continue';
 import Header from '../../components/header';
 import { getPreferences } from '../../api/user/preferences';
+import { MotiImage } from 'moti';
+import CollectionsComponent from '../../components/lists/collections';
+const { width, height } = Dimensions.get('window');
+
 
 export default function HomePage({ navigation }) {
     const { color, font } = useContext(ThemeContext);
     const [type, setType] = useState('Tudo');
+    const [user, setUser] = useState();
     useEffect(() =>{
         const fechtData = async () => {
-            const user = await getPreferences()
-            if(user?.name){
-              navigation.navigate('Home')
-            }else{
-              navigation.navigate('Onboarding')
-            }
+            getPreferences().then(
+                (user) => {
+                    console.log(user)
+                    if(user?.name){
+                        setUser(user)
+                    }else{
+                      navigation.navigate('Onboarding')
+                    }
+                }
+            )
           }
           fechtData()
     }, [])
@@ -54,6 +63,8 @@ export default function HomePage({ navigation }) {
                     <ContinueReading navigation={navigation} />
                     <Spacer />
                     <NewsComponent />
+                    <Spacer />
+                    <CollectionsComponent />
                     <Spacer />
                     <LastedComponent />
                     <Spacer />

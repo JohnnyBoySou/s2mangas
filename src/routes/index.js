@@ -16,6 +16,7 @@ import OnboardingPage from '../pages/onboarding/index';
 import AsyncStatic from '../pages/async';
 import CollectionsPage from './../pages/collections/index';
 import CollectionDetailsPage from './../pages/collections/details';
+import AccountPage from '../pages/account';
 
 
 SplashScreen.preventAutoHideAsync();
@@ -49,7 +50,7 @@ export default function Router() {
   }
   return (
     <NavigationContainer>
-        <Stack.Navigator initialRouteName="AsyncStatic" screenOptions={{headerShown: false,}} >
+        <Stack.Navigator initialRouteName="Home" screenOptions={{headerShown: false,}} >
             <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Novidades" component={NovidadesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="MangalistDetails" component={MangalistDetailsPage} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
@@ -61,6 +62,7 @@ export default function Router() {
             <Stack.Screen name="AsyncStatic" component={AsyncStatic} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Collections" component={CollectionsPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="CollectionDetails" component={CollectionDetailsPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
+            <Stack.Screen name="Account" component={AccountPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
         </Stack.Navigator>
     </NavigationContainer>
    );
