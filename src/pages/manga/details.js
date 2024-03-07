@@ -173,9 +173,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                                     </MotiView>}
 
                             </Pressable>
-                            <TouchableOpacity style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
-                                <Ionicons name="add-circle-outline" size={24} color="#d4d4d4" />
-                            </TouchableOpacity>
+                           
 
                             <Pressable onPress={handleComplete} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
                                 {completed ?
@@ -192,14 +190,16 @@ export default function MangaDetailsPage({ route, navigation }) {
                                 {follow ?
                                 <AnimatePresence>
                                 <MotiView from={{ scale: 0, rotate: '-45deg', opacity: 0, }}  animate={{ scale: 1, rotate: '0deg', opacity: 1, }} transition={{ type: 'spring', duration: 500,  }}>
-                                    <FontAwesome name='bell' size={26} color="#27AE60" />
+                                    <FontAwesome name='bell' size={26} color="#719fdd" />
                                 </MotiView> 
                                 </AnimatePresence> :
                                 <MotiView from={{ rotate: '45deg', opacity: 0, }}  animate={{ rotate: '0deg',  opacity: 1, }}  transition={{ type: 'timing', duration: 500,  }}>
                                     <FontAwesome name='bell-o' size={26} color="#d4d4d4" />
                                 </MotiView>}
                             </Pressable>
-
+                            <Pressable style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                                <Ionicons name="add-circle-outline" size={32} color="#d4d4d4" />
+                            </Pressable>
 
 
 

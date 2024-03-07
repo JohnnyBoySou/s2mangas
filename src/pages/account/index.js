@@ -1,28 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Main, Scroll, Title, Label, Row, Column, } from '../../theme/global';
-import { Pressable, FlatList, TextInput, Image, ScrollView } from 'react-native';
+import { Pressable, FlatList, Image, ScrollView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
-import { MotiImage, MotiView } from 'moti';
 import { Skeleton } from 'moti/skeleton';
-import { Modalize } from 'react-native-modalize';
-import { requestCollectionsBackground } from '../../api/shop/collections';
-import { createCollection, listCollections, removeAllCollections } from './../../api/collections/index';
 import { useNavigation } from '@react-navigation/native';
 import { getPreferences } from '../../api/user/preferences';
 
 export default function AccountPage({ navigation }) {
     const [loading, setLoading] = useState();
-    const [loadingCreate, setLoadingCreate] = useState(false);
     const [type, setType] = useState('Progress');
-    const [collections, setCollections] = useState([]);
     if (loading) {
         return <SkeletonBody />
     }
-    const modalCreate = useRef(null);
-    const openCreate = () => { modalCreate.current?.open(); }
-
-    function formatarData(data) {  const meses = [  'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez' ];  const dia = data.getDate();const mes = meses[data.getMonth()];const ano = data.getFullYear();  return `${dia} de ${mes}, ${ano}`;}
-
     const [complete, setComplete] = useState([]);
     const [progress, setProgress] = useState([]);
     const [like, setLike] = useState([]);
@@ -33,22 +22,16 @@ export default function AccountPage({ navigation }) {
         const fetchData = () => {
             setLoading(true)
             getPreferences().then(res => {
-                console.log(res.complete) 
                 setComplete(res.complete)
-                console.log(res.progress)
                 setProgress(res.progress)
-                console.log(res.likes)
                 setLike(res.likes)
-                console.log(res.follows)
-                setFollow(res.follows)
-                console.log(res.marks)
+                setFollow(res.follow)
                 setMarks(res.marks)
-            }
-            )
+            })
             setLoading(false)
         }
         fetchData();
-    }, [loadingCreate]);
+    }, [loading]);
 
 
     return (
@@ -82,7 +65,7 @@ export default function AccountPage({ navigation }) {
                 </ScrollView>
 
 
-                {!loading && <Column style={{marginHorizontal: 20,}}>
+                {loading && <Column style={{marginHorizontal: 20,}}>
                     <Row style={{ marginVertical: 30, alignSelf: 'center',}}>
                             <Column style={{ transform: [{ rotate: '-12deg', }],  width: 120, height: 180, borderRadius: 16, backgroundColor: "#262626"}} />
                             <Column style={{ transform: [{ rotate: '-12deg', }], borderWidth: 8, borderColor: "#171717", borderRadius: 16, marginHorizontal: -30,  width: 120, height: 180,  backgroundColor: "#262626" }}/>
@@ -144,10 +127,6 @@ export default function AccountPage({ navigation }) {
                 }
             </Scroll>
 
-            <Modalize ref={modalCreate} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
-                <Column style={{ padding: 20, }}>
-                </Column>
-            </Modalize>
             <Pressable   style={{ zIndex: 99, position: 'absolute', bottom: 30, right: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: "#fff", width: 50, height: 50, borderRadius: 100, }}>
                 <AntDesign name="arrowup" size={24} color="#000" />
             </Pressable>

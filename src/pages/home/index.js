@@ -22,8 +22,7 @@ export default function HomePage({ navigation }) {
     const [user, setUser] = useState();
     useEffect(() =>{
         const fechtData = async () => {
-            getPreferences().then(
-                (user) => {
+            getPreferences().then(user => {
                     console.log(user)
                     if(user?.name){
                         setUser(user)
@@ -101,3 +100,4 @@ export default function HomePage({ navigation }) {
 
 
 const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width }} />
+

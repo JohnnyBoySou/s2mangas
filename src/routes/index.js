@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, } from 'react';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { createStackNavigator, TransitionPresets, } from '@react-navigation/stack';
@@ -18,12 +17,10 @@ import CollectionsPage from './../pages/collections/index';
 import CollectionDetailsPage from './../pages/collections/details';
 import AccountPage from '../pages/account';
 
-
 SplashScreen.preventAutoHideAsync();
 const Stack = createStackNavigator();
 
 export default function Router() {
-  
   const [fontsLoaded, setFontsLoaded] = useState(false);
   useEffect(() => {
     async function loadFonts() {
@@ -50,7 +47,7 @@ export default function Router() {
   }
   return (
     <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home" screenOptions={{headerShown: false,}} >
+        <Stack.Navigator initialRouteName="AsyncStatic" screenOptions={{headerShown: false,}} >
             <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Novidades" component={NovidadesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="MangalistDetails" component={MangalistDetailsPage} options={{...TransitionPresets.SlideFromRightIOS   , }}/>

@@ -1,8 +1,7 @@
-import React, { useState, useEffect,  } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { Column, Row, Title, Label, } from '../../theme/global';
-import { FlatList, Pressable,  } from 'react-native';
+import { FlatList, Pressable, Image } from 'react-native';
 import { Skeleton } from 'moti/skeleton'
-import Card from './card';
 import { listCollections } from '../../api/collections';
 import { useNavigation } from '@react-navigation/native';
 import { MotiImage } from 'moti';
@@ -78,3 +77,14 @@ const Loading = () => {
 }
 const Spacer = ({ height = 16 }) => <Column style={{ height }} />
 
+
+const Card = memo(({ item }) => {
+    const navigation = useNavigation();
+    return (
+        <Pressable onPress={() => { navigation.navigate('MangaDetails', {id: item.id });}} style={{ backgroundColor: "#303030", borderRadius: 6, width: 162, marginRight: 16, padding: 12, }}>
+            <Image source={{ uri: item.capa }} style={{ width: 142, height: 142, borderRadius: 6, alignSelf: 'center', marginBottom: 6, }} />
+            <Title style={{ fontSize: 18, }}>{item?.name.slice(0,12)}</Title>
+            <Label style={{ fontSize: 14, }}>{item?.mangas.length} • {item?.date}</Label>
+        </Pressable>
+    )
+})
