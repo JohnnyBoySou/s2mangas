@@ -24,6 +24,7 @@ export default function CollectionsPage({ navigation }) {
     useEffect(() => {
         const fetchBack = async () => {
             requestCollectionsBackground().then(res => {
+                console.log(res)
                 setBackgrounds(res);
             })
         }
@@ -41,17 +42,18 @@ export default function CollectionsPage({ navigation }) {
             id: Math.random().toString(36).substring(7),
             name: name,
             capa: capa,
-            mangas: [{ "id": "radio-storm", "name": "Boruto: Naruto Next Generations", "capa": "https://i.pinimg.com/564x/f2/08/27/f208270bcd5f5dfeeba8f5872d314622.jpg", "rate": 4.5, "type": 'Mangá' }, { "rate": 4.5, "type": 'Mangá', "id": "black-clover", "name": "Black Clover", "capa": "https://img.lermanga.org/B/black-clover/capa.jpg" },],
+            mangas: [],
             date: formatarData(new Date()),
         }
-        if(name?.length < 1 && capa?.length < 1) {
-            setError('Preencha o nome e a capa.')
-            return setLoadingCreate(false);}
-        else{
+        if (name?.length < 1 && capa?.length < 1) {
+            setError('Preencha o nome e a capa.');
+            setLoadingCreate(false);
+            return;
+        } else {
             createCollection(coll).then(res => {
-                setLoadingCreate(false)
+                setLoadingCreate(false);
                 modalCreate.current?.close();
-            })
+            });
         }
     }
 

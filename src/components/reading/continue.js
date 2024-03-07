@@ -1,7 +1,6 @@
 import React from 'react';
 import { Column, Row, Title, Label, } from '../../theme/global';
 import { Image, Pressable } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign } from '@expo/vector-icons';
 
 export default function ContinueReading({navigation}) {
@@ -15,7 +14,6 @@ export default function ContinueReading({navigation}) {
       <Column style={{ backgroundColor: '#ffc2cd', padding: 12, borderRadius: 12, height: 200, width: '40%', overflow: 'hidden' }}>
         <Title style={{ fontSize: 24, marginBottom: 12, fontFamily: 'Font_Book', color: "#000",}}>Jujutsu Kaisen</Title>
         <Image source={{ uri: 'https://i.pinimg.com/736x/20/39/a6/2039a646e7a023e78ac80ad6a894bed0.jpg' }} style={{ width: 90, height: 130, borderRadius: 4, alignSelf: 'center', position: 'absolute', zIndex: 2, bottom: -20, transform: [{ rotate: '-12deg' }] }} />
-        <Column  style={{ width: 90, backgroundColor: "#505050", height: 130, borderRadius: 4, alignSelf: 'center', position: 'absolute', bottom: -12, left: 14, transform: [{ rotate: '-12deg' }] }} />
       </Column>
       <Column style={{ width: 12 }} />
 

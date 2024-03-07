@@ -9,13 +9,13 @@ export default function NewsComponent() {
     const [data, setData] = useState([]);
     useEffect(() => {
         requestNews().then((res) => {
-            setData(res.mangas);
+            setData(res?.mangas);
         })
     }, [])
 
         return (
             <Column style={{ marginHorizontal: 20, }}>
-                {data.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
+                {data?.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
                 <Title>Novos capítulos</Title>
                 <Label>Última atualização à {data[0].release_date}</Label>
                 </Column>}

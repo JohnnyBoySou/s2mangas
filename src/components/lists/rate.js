@@ -16,7 +16,7 @@ export default function RateComponent() {
 
         return (
             <Column style={{ marginHorizontal: 20, }}>
-                {data.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
+                {data?.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
                 <Title>Melhores notas</Title>
                 <Label>Os mais bem avaliados</Label>
                 </Column>}

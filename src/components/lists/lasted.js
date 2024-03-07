@@ -16,7 +16,7 @@ export default function LastedComponent() {
 
         return (
             <Column style={{ marginHorizontal: 20, }}>
-                {data.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
+                {data?.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
                 <Title>Recém adicionados</Title>
                 <Label>Acabaram de entrar no catálogo</Label>
                 </Column>}

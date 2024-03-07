@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Main, Scroll, Title, Label, Row, Column, } from '../../theme/global';
 import { Pressable, FlatList, Image, ScrollView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
@@ -34,9 +34,18 @@ export default function AccountPage({ navigation }) {
     }, [loading]);
 
 
+    const ScrollButtons = useRef(null);
+    const ScrollMain = useRef(null)
+    const scrollToBottom = () => {
+        ScrollButtons.current.scrollToEnd({ animated: true });
+    }
+    const scrollToStart = () => { 
+        ScrollButtons.current.scrollTo({ x: 0, y: 0, animated: true });
+     }
+
     return (
         <Main>
-            <Scroll>
+            <Scroll ref={ScrollMain}>
                 <Row style={{ marginTop: 50, justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 20, }}>
                     <Pressable style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }} onPress={() => navigation.goBack()} >
                         <AntDesign name="arrowleft" size={32} color="#fff" />
@@ -46,16 +55,16 @@ export default function AccountPage({ navigation }) {
                     </Pressable>
                 </Row>
 
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <ScrollView ref={ScrollButtons} horizontal showsHorizontalScrollIndicator={false}>
 
                 <Row style={{ marginHorizontal: 20, marginVertical: 20, justifyContent: 'center', alignItems: 'center', }}>
                     <Pressable onPress={() => { setType('Progress') }} style={{ paddingVertical: 10, paddingHorizontal: 18,  marginRight: 12, backgroundColor: type === 'Progress' ? "#fff" : "#303030", borderRadius: 40, }}>
                         <Title style={{ color: type === 'Progress' ? "#000" : "#d7d7d7", fontSize: 18, textAlign: 'center', }}>Em progresso</Title>
                     </Pressable>
-                    <Pressable onPress={() => { setType('Like') }} style={{ paddingVertical: 10, marginRight: 12, paddingHorizontal: 18, backgroundColor: type === 'Like' ? "#fff" : "#303030", borderRadius: 40, }}>
+                    <Pressable onPress={() => { setType('Like'); scrollToStart() }} style={{ paddingVertical: 10, marginRight: 12, paddingHorizontal: 18, backgroundColor: type === 'Like' ? "#fff" : "#303030", borderRadius: 40, }}>
                         <Title style={{ color: type === 'Like' ? "#000" : "#d7d7d7", fontSize: 18, textAlign: 'center', }}>Curtidos</Title>
                     </Pressable>
-                    <Pressable onPress={() => { setType('Complete') }} style={{ paddingVertical: 10, marginRight: 12, paddingHorizontal: 18, backgroundColor: type === 'Complete' ? "#fff" : "#303030", borderRadius: 40, }}>
+                    <Pressable onPress={() => { setType('Complete'); scrollToBottom() }} style={{ paddingVertical: 10, marginRight: 12, paddingHorizontal: 18, backgroundColor: type === 'Complete' ? "#fff" : "#303030", borderRadius: 40, }}>
                         <Title style={{ color: type === 'Complete' ? "#000" : "#d7d7d7", fontSize: 18, textAlign: 'center', }}>Completos</Title>
                     </Pressable>
                     <Pressable onPress={() => { setType('Follow') }} style={{ paddingVertical: 10, marginRight: 12, paddingHorizontal: 18, backgroundColor: type === 'Follow' ? "#fff" : "#303030", borderRadius: 40, }}>
@@ -127,7 +136,7 @@ export default function AccountPage({ navigation }) {
                 }
             </Scroll>
 
-            <Pressable   style={{ zIndex: 99, position: 'absolute', bottom: 30, right: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: "#fff", width: 50, height: 50, borderRadius: 100, }}>
+            <Pressable onPress={() => {ScrollMain.current.scrollTo({ x: 0, y: 0, animated: true });}}    style={{ zIndex: 99, position: 'absolute', bottom: 30, right: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: "#fff", width: 50, height: 50, borderRadius: 100, }}>
                 <AntDesign name="arrowup" size={24} color="#000" />
             </Pressable>
         </Main>

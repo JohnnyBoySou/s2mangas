@@ -15,7 +15,7 @@ export default function WeekendComponent() {
 
         return (
             <Column style={{ marginHorizontal: 20, }}>
-                {data.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
+                {data?.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
                 <Title>Em alta</Title>
                 <Label>Mais lidos da semana</Label>
                 </Column>}

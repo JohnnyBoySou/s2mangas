@@ -11,6 +11,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Skeleton } from 'moti/skeleton';
 import { AnimatePresence, MotiView } from 'moti';
 import { addComplete, addFollow, addLike, removeComplete, removeFollow, removeLike, verifyComplete, verifyFollow, verifyLiked } from '../../api/user/preferences';
+import ModalAddCollection from '../../components/modal/collection';
+import { Modalize } from 'react-native-modalize';
 
 export default function MangaDetailsPage({ route, navigation }) {
     const id = route.params.id;
@@ -83,7 +85,6 @@ export default function MangaDetailsPage({ route, navigation }) {
             });
         }
     };
-
     const [follow, setFollow] = useState();
     const handleFollow = () => {
         if (follow) {
@@ -103,10 +104,7 @@ export default function MangaDetailsPage({ route, navigation }) {
             });
         }
     };
-
-    const handlePlay = () => {
-        navigation.navigate('MangaPages', { chapter: 1, id: id, })
-    }
+    const handlePlay = () => {  navigation.navigate('MangaPages', { chapter: 1, id: id, }) }
 
     const cl = item?.type === 'MANGA' ? "#FFA8B7" : item?.type === 'MANHWA' ? "#BBD2FF" : item?.type === 'MANHUA' ? "#BFFFC6" : '#FFF';
     const reaction = item?.rate >= 4 ? 'Ótimo' : item?.rate >= 3 ? 'Bom' : item?.rate <= 2 ? 'Ruim' : 'Regular';
@@ -114,6 +112,9 @@ export default function MangaDetailsPage({ route, navigation }) {
     const reaction_image = reaction === 'Ótimo' ? 'https://em-content.zobj.net/source/samsung/380/smiling-face-with-heart-eyes_1f60d.png' : reaction === 'Bom' ? 'https://em-content.zobj.net/source/microsoft/379/smiling-face-with-smiling-eyes_1f60a.png' : reaction === 'Ruim' ? 'https://em-content.zobj.net/source/microsoft/379/skull_1f480.png' : 'https://em-content.zobj.net/source/microsoft/379/sparkles_2728.png';
     const reaction_desc = reaction === 'Ótimo' ? 'Um mangá fantástico, pode ler sem medo!' : reaction === 'Bom' ? 'A galera está gostando dsse mangá!' : reaction === 'Ruim' ? 'Não está agradando a maioria das pessoas' : 'Não podemos opinar no momento'
 
+
+
+    const modalAdd = useRef();
 
     if (loading) return <Main><Scroll><LinearGradient colors={['#404040', 'transparent']} style={{ width: '100%', height: 300, position: 'absolute', top: 0, left: 0, }} /><SkeletonBody /></Scroll></Main>
     return (
@@ -197,7 +198,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                                     <FontAwesome name='bell-o' size={26} color="#d4d4d4" />
                                 </MotiView>}
                             </Pressable>
-                            <Pressable style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                            <Pressable onPress={() => {modalAdd.current?.open()}}  style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
                                 <Ionicons name="add-circle-outline" size={32} color="#d4d4d4" />
                             </Pressable>
 
@@ -228,6 +229,11 @@ export default function MangaDetailsPage({ route, navigation }) {
                     <ListChapters chapters={chapters} id={id} />
                 </Column>
             </Scroll>
+            <Modalize ref={modalAdd} modalHeight={600} handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
+                <Column>
+                    <ModalAddCollection/>
+                </Column>
+            </Modalize>
         </Main>
     )
 }
