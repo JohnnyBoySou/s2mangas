@@ -76,6 +76,7 @@ export default function PreferencesPage({ navigation, route, }) {
           "likes": [],
           "follows": [],
           "marks": [],
+          "history": [],
           "coins": 100,
           "diamonds": 5,
         }
@@ -119,12 +120,12 @@ export default function PreferencesPage({ navigation, route, }) {
                 <Title>Escolha um avatar</Title>
                 <Label>A sua representação no estilo Mangá</Label>
                 <ScrollView style={{ marginHorizontal: -24, alignSelf: 'center', }}>
-                  <Row style={{ marginTop: 20, flexWrap: 'wrap', alignItems: 'center', alignContent: 'center', justifyContent: 'center',}}>
+                  <Row style={{ marginTop: 20, flexWrap: 'wrap',  justifyContent: 'center',}}>
                       {geral?.map((pic, index) => (
                         <TouchableOpacity key={index} onPress={() => {  setAvatar(pic) }} >
                           <Image
                             source={{ uri: pic }}
-                            style={{ aspectRatio: 1, transform: [{ scale: avatar === pic ? 1.2 : 1 }], height: 124, margin: 10, borderRadius: 100, borderWidth: 4, borderColor: avatar === pic ? color.primary : color.off, }}
+                            style={{ aspectRatio: 1, transform: [{ scale: avatar === pic ? 1.2 : 1 }], height: 100, margin: 6, borderRadius: 100, borderWidth: 4, borderColor: avatar === pic ? color.primary : color.off, }}
                           />
                         </TouchableOpacity>
                       ))}
@@ -194,8 +195,8 @@ export default function PreferencesPage({ navigation, route, }) {
                 <Column>
                   <Row style={{flexWrap: 'wrap', marginBottom: 50, justifyContent: 'center' }}>
                     {tags?.map((item, index) =>
-                      <TouchableOpacity key={index} onPress={() => handleItemClick(item)} style={{justifyContent: 'center', paddingHorizontal: 12, paddingVertical: 10, marginBottom: 12, marginRight: 12, borderRadius: 100,  backgroundColor: !selectedItems.some(selectedItem => selectedItem.id === item.id) ? "#303030" : '#ED274A', }}>
-                        <Title style={{ fontSize: 24, fontFamily: font.book, zIndex: 999, marginHorizontal: 12, textAlign: 'left' }}>{item?.name}</Title>
+                      <TouchableOpacity key={index} onPress={() => handleItemClick(item)} style={{justifyContent: 'center', paddingHorizontal: 12, paddingVertical: 10, marginBottom: 12, marginRight: 8, borderRadius: 100,  backgroundColor: !selectedItems.some(selectedItem => selectedItem.id === item.id) ? "#303030" : '#ED274A', }}>
+                        <Title style={{ fontSize: 18, fontFamily: font.book, zIndex: 999, marginHorizontal: 10, textAlign: 'left' }}>{item?.name}</Title>
                       </TouchableOpacity>
                     )}
                   </Row>

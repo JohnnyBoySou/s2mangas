@@ -7,7 +7,7 @@ import { Skeleton } from 'moti/skeleton';
 import { Modalize } from 'react-native-modalize';
 import { requestCollectionsBackground } from '../../api/shop/collections';
 import { createCollection, listCollections, removeAllCollections } from './../../api/collections/index';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useIsFocused } from '@react-navigation/native';
 
 export default function CollectionsPage({ navigation }) {
     const [loading, setLoading] = useState();
@@ -16,6 +16,7 @@ export default function CollectionsPage({ navigation }) {
     const [backgrounds, setBackgrounds] = useState([]);
     const [error, setError] = useState('');
     const [collections, setCollections] = useState([]);
+    const focus = useIsFocused()
     if (loading) {
         return <SkeletonBody />
     }
@@ -24,7 +25,6 @@ export default function CollectionsPage({ navigation }) {
     useEffect(() => {
         const fetchBack = async () => {
             requestCollectionsBackground().then(res => {
-                console.log(res)
                 setBackgrounds(res);
             })
         }
@@ -65,9 +65,8 @@ export default function CollectionsPage({ navigation }) {
             })
             setLoading(false)
         }
-            
         fetchData();
-    }, [loadingCreate]);
+    }, [focus, loadingCreate]);
 
 
     return (

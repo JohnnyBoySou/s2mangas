@@ -1,62 +1,76 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Column, Main, Scroll, Row, Title, Label , } from '../../theme/global';
-import { FlatList, Pressable, Dimensions, Animated } from 'react-native';
-import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
+import { FlatList, Pressable, Dimensions, Animated, TextInput } from 'react-native';
+import { AntDesign, Feather, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Modalize } from 'react-native-modalize';
 import { ExpandingDot } from "react-native-animated-pagination-dots";
 import { AnimatePresence, MotiImage, MotiView, useAnimationState } from 'moti';
 import { Skeleton } from 'moti/skeleton';
 import { requestCollectionsBackground } from '../../api/shop/collections';
+import { editCollection, getCollection, removeCollection, removeMangaInCollection } from '../../api/collections';
+
+import SwipeableItem, { useSwipeableItemParams } from 'react-native-swipeable-item';
 
 const { width, height } = Dimensions.get('window');
 
 export default function CollectionsDetailsPage({ navigation , route}) {
-
-    const itma = {
-        name: 'Curtidos',
-        capa: 'https://i.pinimg.com/564x/35/d9/86/35d986ff686546bc4c505fc6e2c378ef.jpg',
-        date: '22 de Jun, 2024',
-        mangas: [{ "id": "radio-storm", "name": "Boruto: Naruto Next Generations", "capa": "https://i.pinimg.com/564x/f2/08/27/f208270bcd5f5dfeeba8f5872d314622.jpg", "rate": 4.5, "type": 'Mangá' }, { "rate": 4.5, "type": 'Mangá', "id": "black-clover", "name": "Black Clover", "capa": "https://img.lermanga.org/B/black-clover/capa.jpg" }, { "id": "worn-and-torn-newbie", "name": "Worn and Torn Newbie", "capa": "https://img.lermanga.org/W/worn-and-torn-newbie/capa.jpg" }, { "id": "niraikanai-harukanaru-ne-no-kuni", "name": "Niraikanai: Harukanaru Ne no Kuni", "capa": "https://img.lermanga.org/N/niraikanai-harukanaru-ne-no-kuni/capa.jpg" }, { "id": "dead-rock", "name": "Dead Rock", "capa": "https://img.lermanga.org/D/dead-rock/capa.jpg" }, { "id": "apotheosis", "name": "Apotheosis", "capa": "https://img.lermanga.org/A/apotheosis/capa.jpg" }, { "id": "even-the-captain-knight-miss-elf-wants-to-be-a-maiden-", "name": "Even the Captain Knight, Miss Elf, Wants to be a Maiden.", "capa": "https://img.lermanga.org/E/even-the-captain-knight-miss-elf-wants-to-be-a-maiden-/capa.jpg" }, { "id": "1-second", "name": "1 Second", "capa": "https://img.lermanga.org/0/1-second/capa.jpg" }, { "id": "jinzou-ningen-100", "name": "Jinzou Ningen 100", "capa": "https://img.lermanga.org/J/jinzou-ningen-100/capa.jpg" }, { "id": "tensei-shitara-dragon-no-tamago-datta-ibara-no-dragon-road", "name": "Tensei shitara Dragon no Tamago datta: Ibara no Dragon Road", "capa": "https://img.lermanga.org/T/tensei-shitara-dragon-no-tamago-datta-ibara-no-dragon-road/capa.jpg" }, { "id": "gantze", "name": "Gantz:E", "capa": "https://img.lermanga.org/G/gantze/capa.jpg" }]
-    }
-
     const itm = route.params.item;
     const [item, setItem] = useState(itm);
     const [loading, setLoading] = useState(true);
 
     const [gridSelect, setGridSelect] = useState('grid1');
-    const scrollX = React.useRef(new Animated.Value(0)).current;
+    const scrollX = useRef(new Animated.Value(0)).current;
 
     const modalSuggest = useRef(null);
     const openSuggest = () => {
         modalSuggest.current?.open();
     }
-
     const modalFilters = useRef(null);
     const openFilters = () => {
         modalFilters.current?.open();
     }
-
     const modalEdit = useRef(null);
     const openEdit = () => {
         modalEdit.current?.open();
     }
-
     const [capa, setCapa] = useState(item?.capa);
-    const [unsetCapa, setUnsetCapa] = useState();
+    const [name, setName] = useState(item?.name);
     const [filter, setFilter] = useState('Lasted');
     const [backgrounds, setBackgrounds] = useState();
 
+    const [confirm, setConfirm] = useState(false);
+    const excludeCollection = async () => {   removeCollection(item.id).then((res) => {  if(res){ navigation.goBack();  } } ) }
+    const updateCollection  = async () => { 
+         editCollection(item.id, { capa: capa, name: name, mangas: item.mangas, date: item.date }).then((res) => {  if(res){ navigation.goBack();  } } )
+     }
+
+
     useEffect(() => {
         const fetchData = async ( ) => {
-            setLoading(true);
             requestCollectionsBackground().then((res) => {
                 setBackgrounds(res);
-                setLoading(false);
             })
         }
         fetchData();
     }, []);
+
+    const refresh = () => { 
+        setLoading(!loading)
+    }
+     
+    useEffect(() => {
+       const fetchData = () => { 
+            setLoading(true);
+            getCollection(itm.id).then((res) => {
+                setItem(res);
+            })
+            setLoading(false);
+        }
+        fetchData();
+       
+     }, [ loading ])
+     
 
 
     if(loading){
@@ -66,21 +80,25 @@ export default function CollectionsDetailsPage({ navigation , route}) {
     return (
         <Main>
             <Scroll>
-                
+                <MotiView 
+                from={{ opacity: 0, translateY: -60, }}
+                animate={{ opacity: 1, translateY: 0, }}
+                transition={{ type: 'timing', duration: 300, delay: 500, }}
+                >
+                    <Row style={{ alignItems: 'center', marginTop: 50, }}>
+                        <Pressable style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }} onPress={() => navigation.goBack()} >
+                            <AntDesign name="arrowleft" size={24} color="#fff" />
+                        </Pressable>
+                        <Row>
 
-                <Row style={{ alignItems: 'center', marginTop: 50, }}>
-                    <Pressable style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }} onPress={() => navigation.goBack()} >
-                        <AntDesign name="arrowleft" size={24} color="#fff" />
-                    </Pressable>
-                    <Row>
-
-                        <MotiImage source={{ uri: item.capa }} resizeMode='cover' style={{ width: 68, marginRight: 14, height: 68, borderRadius: 10, objectFit: 'cover', }} />
-                        <Column style={{ justifyContent: 'center', }}>
-                            <Title style={{ fontSize: 24, }}>{item?.name}</Title>
-                            <Label style={{ fontSize: 18, }}>{item?.mangas.length} mangás • {item?.date}</Label>
-                        </Column>
+                            <MotiImage from={{opacity: 1,  scale: 0.3,  }}  animate={{ scale: 1,  }} transition={{ type: 'spring', duration: 500, delay: 700, }} source={{ uri: item.capa }} resizeMode='cover' style={{ width: 68, marginRight: 14, height: 68, borderRadius: 10, objectFit: 'cover', }} />
+                            <Column style={{ justifyContent: 'center', }}>
+                                <Title style={{ fontSize: 24, }}>{item?.name}</Title>
+                                <Label style={{ fontSize: 18, }}>{item?.mangas.length} mangás • {item?.date}</Label>
+                            </Column>
+                        </Row>
                     </Row>
-                </Row>
+                </MotiView>
 
                 <Row style={{ marginHorizontal: 20, marginVertical: 30, }}>
                     <Pressable style={{ paddingVertical: 10, paddingHorizontal: 20, backgroundColor: "#fff", borderRadius: 40, }}>
@@ -97,6 +115,7 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                 <FlatList
                     data={item?.mangas.slice(0, 4)}
                     keyExtractor={item => item.id}
+                    ListEmptyComponent={<SkeletonList2 />}
                     horizontal
                     style={{ paddingHorizontal: 20, }}
                     showsHorizontalScrollIndicator={false}
@@ -124,13 +143,15 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                         keyExtractor={item => item.id}
                         style={{ paddingHorizontal: 12, }}
                         showsHorizontalScrollIndicator={false}
-                        renderItem={({ item }) => <Grid1 item={item} />}
+                        ListEmptyComponent={<SkeletonList />}
+                        renderItem={({ item }) => <Grid1 item={item} collection={itm?.id} refresh={refresh}/>}
                     />}
                     {gridSelect === 'grid2' && <FlatList
                         data={item?.mangas}
                         keyExtractor={item => item.id}
                         numColumns={2}
                         style={{ paddingHorizontal: 12, }}
+                        ListEmptyComponent={<SkeletonList />}
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item }) => <Grid2 item={item} />}
                     />}
@@ -176,8 +197,6 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                     </Column>}
 
                 </Column>
-
-
             </Scroll>
 
             <Action openSuggest={openSuggest} openFilters={openFilters} openEdit={openEdit} />
@@ -230,7 +249,21 @@ export default function CollectionsDetailsPage({ navigation , route}) {
 
             <Modalize ref={modalEdit} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
                 <Column style={{ padding: 20, }}>
+                    <Pressable onPress={() => setConfirm(true)} style={{ paddingHorizontal: 16, paddingVertical: 10, backgroundColor: '#EB575730',  borderRadius: 100, alignSelf: 'flex-end', marginVertical: 12,}}>
+                        <Row style={{ justifyContent: 'center', alignItems: 'center',  }}>
+                            <Feather name="trash-2" size={24} color="#EB5757" />
+                            <Pressable onPress={excludeCollection}>
+                                {confirm && <Label style={{ color: "#EB5757", marginLeft: 10, }}>Tem certeza disso?</Label>}
+                            </Pressable>
+                        </Row>
+                    </Pressable>
+                    
                     <MotiImage source={{ uri: capa }} style={{ width: 200, height: 200, borderRadius: 8, margin: 6, alignSelf: 'center',}} />
+                    
+                    
+                    <Title style={{ fontSize: 28, marginTop: 10, }}>Nome</Title>
+                    <TextInput value={name} placeholderTextColor="#f7f7f770" placeholder='Ex.: Meu Top 10' onChangeText={setName} style={{ fontFamily: 'Font_Book', height: 52, backgroundColor: "#303030", marginTop: 10, paddingLeft: 20, borderRadius: 5, fontSize: 24, borderBottomColor: "#FFFFFF90", borderBottomWidth: 2, color: "#fff" }} />
+                  
                     <Title style={{ fontSize: 28, marginBottom: 10, marginTop: 10, }}>Fundos</Title>
 
                     <FlatList 
@@ -239,8 +272,8 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                         horizontal  
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item }) => 
-                        <Pressable onPress={() => {setUnsetCapa(item)}} >
-                            <MotiImage source={{ uri: item }} style={{ width: 100, height: 100, borderRadius: 8, margin: 6, borderWidth: 4, borderColor: item === unsetCapa ? "#fff" : 'transparent', }} />
+                        <Pressable onPress={() => {setCapa(item)}} >
+                            <MotiImage source={{ uri: item }} style={{ width: 100, height: 100, borderRadius: 8, margin: 6, borderWidth: 4, borderColor: item === capa ? "#fff" : 'transparent', }} />
                         </Pressable>}
                     />
                     
@@ -249,7 +282,7 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                             <Label style={{color: "#fff", textAlign: 'center', }}>Reverter e Fechar</Label>
                         </Pressable>
 
-                        <Pressable onPress={() => {setCapa(unsetCapa); modalEdit.current?.close()}}  style={{ paddingVertical: 10, paddingHorizontal: 20, backgroundColor: "#fff", borderRadius: 40, flexGrow: 3, marginLeft: 12,}}>
+                        <Pressable onPress={updateCollection}  style={{ paddingVertical: 10, paddingHorizontal: 20, backgroundColor: "#fff", borderRadius: 40, flexGrow: 3, marginLeft: 12,}}>
                             <Label style={{color: "#000", textAlign: 'center'}}>Pronto</Label>
                         </Pressable>
                     </Row>
@@ -272,7 +305,6 @@ const Cards = ({ item }) => {
     )
 }
 
-
 const Grid2 = ({ item }) => {
     const navigation = useNavigation();
     return (
@@ -284,11 +316,13 @@ const Grid2 = ({ item }) => {
     )
 }
 
-
-
-const Grid1 = ({ item }) => {
+const Grid1 = ({ item, collection, refresh }) => {
     const navigation = useNavigation();
     return (
+        <SwipeableItem
+        item={item}
+        renderUnderlayLeft={() => <UnderlayLeft collection={collection} manga={item.id} refresh={refresh} />}
+        snapPointsLeft={[150]}>
         <Pressable onPress={() => { navigation.navigate('MangaDetails', { id: item.id }); }} style={{ flexDirection: 'row', flexGrow: 1, padding: 12, borderBottomColor: '#303030', borderBottomWidth: 2, }}>
             <MotiImage source={{ uri: item.capa }} style={{ width: 56, height: 82, borderRadius: 6, alignSelf: 'center', marginBottom: 6, }} />
             <Column style={{ justifyContent: 'center', marginLeft: 20, }}>
@@ -296,9 +330,23 @@ const Grid1 = ({ item }) => {
                 <Label style={{ fontSize: 16, }}>{item?.rate} • {item?.type}</Label>
             </Column>
         </Pressable>
+        </SwipeableItem>
     )
 }
 
+const UnderlayLeft = ({manga, collection, refresh}) => {
+    const { close } = useSwipeableItemParams();
+    const removeManga = () => { 
+        removeMangaInCollection(collection, manga).then((res) => {  if(res){ close(); refresh()} } )
+     }
+    return (
+      <Row style={{ backgroundColor: "#505050", position: 'absolute', right: 20, justifyContent: 'flex-end', alignItems: 'center',  }}>
+        <Pressable onPress={removeManga}>
+          <Title>CLOSE</Title>
+        </Pressable>
+      </Row>
+    );
+  };
 
 const Grid3 = ({ item }) => {
     const navigation = useNavigation();
@@ -371,7 +419,6 @@ const Action = ({ openSuggest, openFilters, openEdit }) => {
         </Row>
     )
 }
-
 
 const SkeletonBody = () => {
   return(
@@ -453,6 +500,68 @@ const SkeletonBody = () => {
   )
 }
 
-
+const SkeletonList = () => { 
+    return(
+        <Column style={{ paddingHorizontal: 20, }}>
+        <Row style={{borderBottomColor: '#303030', borderBottomWidth: 2, paddingBottom: 20, marginTop: 12,}}>
+            <Skeleton width={64} height={84} radius={6} />
+            <Spacer width={16} height={10} />
+            <Column style={{justifyContent: 'center',  }}>
+                <Skeleton width={164} height={34} radius={4} />
+                <Spacer width={16} height={10} />
+                <Skeleton width={124} height={24} radius={4} />
+            </Column>
+        </Row>
+        <Row style={{borderBottomColor: '#303030', borderBottomWidth: 2, paddingBottom: 20, marginTop: 20,}}>
+            <Skeleton width={64} height={84} radius={6} />
+            <Spacer width={16} height={10} />
+            <Column style={{justifyContent: 'center',  }}>
+                <Skeleton width={164} height={34} radius={4} />
+                <Spacer width={16} height={10} />
+                <Skeleton width={124} height={24} radius={4} />
+            </Column>
+        </Row>
+        <Row style={{borderBottomColor: '#303030', borderBottomWidth: 2, paddingBottom: 20, marginTop: 20,}}>
+            <Skeleton width={64} height={84} radius={6} />
+            <Spacer width={16} height={10} />
+            <Column style={{justifyContent: 'center',  }}>
+                <Skeleton width={164} height={34} radius={4} />
+                <Spacer width={16} height={10} />
+                <Skeleton width={124} height={24} radius={4} />
+            </Column>
+        </Row>
+        <Row style={{borderBottomColor: '#303030', borderBottomWidth: 2, paddingBottom: 20, marginTop: 20,}}>
+            <Skeleton width={64} height={84} radius={6} />
+            <Spacer width={16} height={10} />
+            <Column style={{justifyContent: 'center',  }}>
+                <Skeleton width={164} height={34} radius={4} />
+                <Spacer width={16} height={10} />
+                <Skeleton width={124} height={24} radius={4} />
+            </Column>
+        </Row>
+        <Row style={{borderBottomColor: '#303030', borderBottomWidth: 2, paddingBottom: 20, marginTop: 20,}}>
+            <Skeleton width={64} height={84} radius={6} />
+            <Spacer width={16} height={10} />
+            <Column style={{justifyContent: 'center',  }}>
+                <Skeleton width={164} height={34} radius={4} />
+                <Spacer width={16} height={10} />
+                <Skeleton width={124} height={24} radius={4} />
+            </Column>
+        </Row>
+        </Column>
+    )
+ }
+ 
+ const SkeletonList2 = () => { 
+    return(
+         <Row>
+                <Skeleton width={164} height={184} radius={8} />
+                <Spacer width={16} height={10} />
+                <Skeleton width={164} height={184} radius={8} />
+                <Spacer width={16} height={10} />
+                <Skeleton width={164} height={184} radius={8} />
+            </Row>
+    )
+ }
 
 const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width }} />

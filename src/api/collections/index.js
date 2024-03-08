@@ -26,24 +26,23 @@ export const createCollection = async (collection) => {
   };
   
 
-  export const addMangasToCollection = async (collectionName, mangaIds) => {
+  export const addMangasToCollection = async (collectionID, mangaArray) => {
     try {
       // Buscar as coleções existentes
       const collectionsJSON = await AsyncStorage.getItem('@mangas_collections');
       const existingCollections = collectionsJSON ? JSON.parse(collectionsJSON) : [];
   
       // Encontrar a coleção alvo
-      const targetCollectionIndex = existingCollections.findIndex(collection => collection.name === collectionName);
+      const targetCollectionIndex = existingCollections.findIndex(collection => collection.id === collectionID);
       if (targetCollectionIndex === -1) {
         console.error('Coleção não encontrada.');
         return;
       }
   
       const targetCollection = existingCollections[targetCollectionIndex];
-    
       // Verificar se a mangaId já está na coleção
-      if (!targetCollection.mangas_ids.includes(mangaIds)) {
-        targetCollection.mangas_ids.push(mangaIds);
+      if (!targetCollection.mangas.some(manga => manga.id === mangaArray.id)) {
+        targetCollection.mangas.push(mangaArray);
         
         // Salvar a lista atualizada no AsyncStorage
         await AsyncStorage.setItem('@mangas_collections', JSON.stringify(existingCollections));
@@ -91,19 +90,18 @@ export const createCollection = async (collection) => {
   };
   
 
- export const getCollectionData = async (collectionName) => {
+ export const getCollection = async (collectionId) => {
     try {
       // Buscar as coleções existentes
       const collectionsJSON = await AsyncStorage.getItem('@mangas_collections');
       const existingCollections = collectionsJSON ? JSON.parse(collectionsJSON) : [];
   
       // Encontrar a coleção alvo
-      const targetCollection = existingCollections.find(collection => collection.name === collectionName);
+      const targetCollection = existingCollections.find(collection => collection.id === collectionId);
       if (!targetCollection) {
         console.error('Coleção não encontrada.');
         return null;
       }
-  
       return targetCollection;
     } catch (error) {
       console.error('Erro ao obter dados da coleção:', error);
@@ -112,55 +110,54 @@ export const createCollection = async (collection) => {
   };
   
 
-export const updateCollection = async (oldName, updatedFields) => {
-    try {
-      // Buscar as coleções existentes
-      const collectionsJSON = await AsyncStorage.getItem('@mangas_collections');
-      const existingCollections = collectionsJSON ? JSON.parse(collectionsJSON) : [];
-  
-      // Encontrar a coleção pelo nome antigo
-      const targetCollectionIndex = existingCollections.findIndex(collection => collection.name === oldName);
-      if (targetCollectionIndex === -1) {
-        console.error('Coleção não encontrada.');
-        return false;
-      }
-  
-      // Atualizar os campos da coleção
-      const targetCollection = existingCollections[targetCollectionIndex];
-      Object.assign(targetCollection, updatedFields);
-  
-      // Salvar a lista atualizada no AsyncStorage
-      await AsyncStorage.setItem('@mangas_collections', JSON.stringify(existingCollections));
-  
-      console.log('Coleção atualizada com sucesso.');
-      return true;
-    } catch (error) {
-      console.error('Erro ao atualizar coleção:', error);
-      return false;
+export const editCollection = async (collectionId, updatedFields) => {
+  try {
+    // Buscar as coleções existentes
+    const collectionsJSON = await AsyncStorage.getItem('@mangas_collections');
+    const existingCollections = collectionsJSON ? JSON.parse(collectionsJSON) : [];
+
+    // Encontrar a coleção pelo id
+    const targetCollectionIndex = existingCollections.findIndex(collection => collection.id === collectionId);
+    if (targetCollectionIndex === -1) {
+    console.error('Coleção não encontrada.');
+    return false;
     }
-  };
-  
+
+    // Atualizar os campos da coleção
+    const targetCollection = existingCollections[targetCollectionIndex];
+    Object.assign(targetCollection, updatedFields);
+
+    // Salvar a lista atualizada no AsyncStorage
+    await AsyncStorage.setItem('@mangas_collections', JSON.stringify(existingCollections));
+
+    console.log('Coleção atualizada com sucesso.');
+    return true;
+  } catch (error) {
+    console.error('Erro ao atualizar coleção:', error);
+    return false;
+  }
+};
 
 
-  export const removeCollection = async (collectionName) => {
+  export const removeCollection = async (collectionId) => {
     try {
       // Buscar as coleções existentes
       const collectionsJSON = await AsyncStorage.getItem('@mangas_collections');
       const existingCollections = collectionsJSON ? JSON.parse(collectionsJSON) : [];
-  
+
       // Encontrar a coleção alvo
-      const targetCollectionIndex = existingCollections.findIndex(collection => collection.name === collectionName);
+      const targetCollectionIndex = existingCollections.findIndex(collection => collection.id === collectionId);
       if (targetCollectionIndex === -1) {
         console.error('Coleção não encontrada.');
         return false;
       }
-  
+
       // Remover a coleção da lista
       existingCollections.splice(targetCollectionIndex, 1);
-  
+
       // Salvar a lista atualizada no AsyncStorage
       await AsyncStorage.setItem('@mangas_collections', JSON.stringify(existingCollections));
-      
+
       console.log('Coleção removida com sucesso.');
       return true;
     } catch (error) {
@@ -168,7 +165,6 @@ export const updateCollection = async (oldName, updatedFields) => {
       return false;
     }
   };
-
 
 
   export const isMangaInCollection = async (collectionName, mangaId) => {
@@ -194,27 +190,26 @@ export const updateCollection = async (oldName, updatedFields) => {
   };
   
 
-  export const removeMangaInCollection = async (collectionName, mangaId) => {
+  export const removeMangaInCollection = async (collectionId, mangaId) => {
     try {
-      console.log(mangaId)
       // Buscar as coleções existentes
       const collectionsJSON = await AsyncStorage.getItem('@mangas_collections');
       const existingCollections = collectionsJSON ? JSON.parse(collectionsJSON) : [];
   
       // Encontrar a coleção alvo
-      const targetCollectionIndex = existingCollections.findIndex(collection => collection.name === collectionName);
+      const targetCollectionIndex = existingCollections.findIndex(collection => collection.id === collectionId);
       if (targetCollectionIndex === -1) {
         console.error('Coleção não encontrada.');
         return false;
       }
   
       const targetCollection = existingCollections[targetCollectionIndex];
-  
-      // Verificar se a mangaId está na coleção
-      const mangaIndex = targetCollection.mangas_ids.indexOf(mangaId);
+      console.log(targetCollection.mangas)
+
+      const mangaIndex = targetCollection.mangas.findIndex(manga => manga.id === mangaId);
+
       if (mangaIndex !== -1) {
-        // Remover a mangaId da coleção
-        targetCollection.mangas_ids.splice(mangaIndex, 1);
+        targetCollection.mangas.splice(mangaIndex, 1);
   
         // Salvar a lista atualizada no AsyncStorage
         await AsyncStorage.setItem('@mangas_collections', JSON.stringify(existingCollections));
@@ -229,7 +224,6 @@ export const updateCollection = async (oldName, updatedFields) => {
       return false;
     }
   };
-  
 
   export const removeAllCollections = async () => {
     try {

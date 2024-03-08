@@ -23,7 +23,6 @@ export default function HomePage({ navigation }) {
     useEffect(() =>{
         const fechtData = async () => {
             getPreferences().then(user => {
-                    console.log(user)
                     if(user?.name){
                         setUser(user)
                     }else{
@@ -40,7 +39,7 @@ export default function HomePage({ navigation }) {
             <Scroll stickyHeaderIndices={[1]}>
                 {type === 'Mangas' && <Column style={{ width: 100, height: 50 }} />}
                 {type === 'Mangalist' && <Column style={{ width: 100, height: 50 }} />}
-                {type === 'Tudo' && <Column style={{ paddingHorizontal: 20, }}><NavBar/><Header/></Column>}
+                {type === 'Tudo' && <Column style={{ paddingHorizontal: 20, }}><Header/></Column>}
 
                 <Row style={{ marginBottom: 15, backgroundColor: color.background, padding: 12, paddingTop: 40, marginTop: -20, zIndex: 99, }}>
                     <Pressable onPress={() => { setType('Tudo') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Tudo' ? color.light : color.off, borderRadius: 100, zIndex: 99,}}>

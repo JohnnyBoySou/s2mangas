@@ -13,6 +13,7 @@ import { AnimatePresence, MotiView } from 'moti';
 import { addComplete, addFollow, addLike, removeComplete, removeFollow, removeLike, verifyComplete, verifyFollow, verifyLiked } from '../../api/user/preferences';
 import ModalAddCollection from '../../components/modal/collection';
 import { Modalize } from 'react-native-modalize';
+const { width, height } = Dimensions.get('window');
 
 export default function MangaDetailsPage({ route, navigation }) {
     const id = route.params.id;
@@ -21,7 +22,13 @@ export default function MangaDetailsPage({ route, navigation }) {
     const [similar, setSimilar] = useState();
     const [loading, setLoading] = useState(true);
     const [shortDesc, setShortDesc] = useState(false);
-
+    const itm = {
+        name: item?.name,
+        capa: item?.capa,
+        rate: item?.rate,
+        type: item?.type,
+        id: item?.id,
+    };
     useEffect(() => {
         const requestData = async () => {
             requestManga(id).then((response) => {
@@ -54,13 +61,6 @@ export default function MangaDetailsPage({ route, navigation }) {
                 res => setLiked(false)
             )
         } else {
-            const itm = {
-                name: item.name,
-                capa: item.capa,
-                rate: item.rate,
-                type: item.type,
-                id: item.id,
-            };
             addLike(itm).then(
                 res => setLiked(true)
             )
@@ -73,13 +73,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                 if (r) setCompleted(false);
             });
         } else {
-            const itm = {
-                name: item.name,
-                capa: item.capa,
-                rate: item.rate,
-                type: item.type,
-                id: item.id,
-            };
+            
             addComplete(itm).then((r) => {
                 if (r) setCompleted(true);
             });
@@ -92,13 +86,6 @@ export default function MangaDetailsPage({ route, navigation }) {
                 if (r) setFollow(false);
             });
         } else {
-            const itm = {
-                name: item.name,
-                capa: item.capa,
-                rate: item.rate,
-                type: item.type,
-                id: item.id,
-            };
             addFollow(itm).then((r) => {
                 if (r) setFollow(true);
             });
@@ -120,11 +107,12 @@ export default function MangaDetailsPage({ route, navigation }) {
     return (
         <Main>
             <Scroll >
-                <LinearGradient colors={[cl + 80, 'transparent']} style={{ width: '100%', height: 300, position: 'absolute', top: 0, left: 0, }} />
+                <Image blurRadius={40} source={{ uri: item?.capa }} style={{ width: width, height: height, opacity: 0.6, top: -46,  borderRadius: 32,  zIndex: -2, position: 'absolute', }} />
+             
                 <Row style={{ marginTop: 50, paddingHorizontal: 20, marginBottom: 20, }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Pressable onPress={() => navigation.goBack()}>
                         <AntDesign name="arrowleft" size={32} color="#fff" />
-                    </TouchableOpacity>
+                    </Pressable>
                 </Row>
 
                 <Column style={{ paddingHorizontal: 20, }}>
@@ -148,12 +136,12 @@ export default function MangaDetailsPage({ route, navigation }) {
                     </Row>
 
                     <Row style={{ alignItems: 'center', justifyContent: 'space-between', padding: 12, backgroundColor: reaction_color, marginTop: 20, borderRadius: 12, }}>
-                        <Column style={{ marginRight: 20, }}>
-                            <Image source={{ uri: reaction_image }} alt='reaction manga' width={54} height={54} />
+                        <Column style={{ marginRight: 14,  }}>
+                            <Image source={{ uri: reaction_image }} alt='reaction manga' width={44} height={44} />
                         </Column>
                         <Column style={{ flexGrow: 1, }}>
-                            <Title style={{ color: "#000", fontFamily: 'Font_Bold', }}>{reaction}</Title>
-                            <Label style={{ color: "#303030", width: 170, fontSize: 16, }}>{reaction_desc}</Label>
+                            <Title style={{ color: "#000", fontFamily: 'Font_Bold', letterSpacing: -1}}>{reaction}</Title>
+                            <Label style={{ color: "#303030", width: 170, fontSize: 14, }}>{reaction_desc}</Label>
                         </Column>
                         <Row style={{ backgroundColor: "#ffffff50", justifyContent: 'center', alignItems: 'center', borderRadius: 100, paddingHorizontal: 14, paddingVertical: 8, }}>
                             <AntDesign name="staro" size={16} color="#000" />
@@ -166,11 +154,11 @@ export default function MangaDetailsPage({ route, navigation }) {
                             <Pressable onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
                                 {liked ? <AnimatePresence>
                                     <MotiView from={{ scale: 0, opacity: 0, }} animate={{ scale: 1, opacity: 1, }} transition={{ type: 'spring', duration: 500, }}>
-                                        <AntDesign name='heart' size={32} color="#EB5757" />
+                                        <AntDesign name='heart' size={26} color="#EB5757" />
                                     </MotiView>
                                 </AnimatePresence> :
                                     <MotiView from={{ rotation: -45, opacity: 0, }} animate={{ rotation: 0, opacity: 1, }} transition={{ type: 'timing', duration: 500, }}>
-                                        <AntDesign name='hearto' size={32} color="#d4d4d4" />
+                                        <AntDesign name='hearto' size={26} color="#d4d4d4" />
                                     </MotiView>}
 
                             </Pressable>
@@ -180,11 +168,11 @@ export default function MangaDetailsPage({ route, navigation }) {
                                 {completed ?
                                 <AnimatePresence>
                                 <MotiView from={{ scale: 0, opacity: 0, }}  animate={{ scale: 1, opacity: 1, }} transition={{ type: 'spring', duration: 500,  }}>
-                                    <Ionicons name='checkmark-done-circle' size={32} color="#27AE60" />
+                                    <Ionicons name='checkmark-done-circle' size={28} color="#27AE60" />
                                 </MotiView> 
                                 </AnimatePresence> :
                                 <MotiView from={{ scale: 1.5, opacity: 0, }}  animate={{ scale: 1,  opacity: 1, }}  transition={{ type: 'timing', duration: 500,  }}>
-                                    <Ionicons name='checkmark-done-circle-outline' size={32} color="#d4d4d4" />
+                                    <Ionicons name='checkmark-done-circle-outline' size={28} color="#d4d4d4" />
                                 </MotiView>}
                             </Pressable>
                             <Pressable onPress={handleFollow} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
@@ -206,16 +194,23 @@ export default function MangaDetailsPage({ route, navigation }) {
 
                         </Row>
                         <Row style={{ justifyContent: 'center', alignItems: 'center', }}>
-                            <TouchableOpacity onPress={handlePlay} style={{ backgroundColor: "#ED274A", width: 52, marginLeft: 10, height: 52, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
-                                <FontAwesome5 name="play" size={18} color="#fff" />
-                            </TouchableOpacity>
+                            <Pressable onPress={handlePlay} style={{ backgroundColor: "#fff", width: 52, marginLeft: 10, height: 52, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
+                                <FontAwesome5 name="play" size={18} color="#ED274A" />
+                            </Pressable>
                         </Row>
                     </Row>
                 </Column>
 
-                <Column style={{ marginTop: 20, paddingHorizontal: 12, paddingVertical: 12, borderRadius: 8, marginHorizontal: 20, backgroundColor: "#262626", }}>
-                    <Title style={{ fontSize: 24, marginTop: 8, }}>Recentes</Title>
-                    <Label style={{}}>Confira os últimos capítulos</Label>
+                <Column style={{ marginTop: 30, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16, backgroundColor: "#262626", }}>
+                    <Row style={{ justifyContent: 'space-between', alignItems: 'center',  }}>
+                        <Column>
+                            <Title style={{ fontSize: 24, marginTop: 8, }}>Recentes</Title>
+                            <Label style={{}}>Confira os últimos capítulos</Label>
+                        </Column>
+                        <Pressable style={{ width: 42, height: 42, borderRadius: 100, backgroundColor: "#404040", justifyContent: 'center', alignItems: 'center', }}>
+                            <Feather name="search" size={18} color="#fff" />
+                        </Pressable>
+                    </Row>
                     <FlatList
                         style={{ marginTop: 20, }}
                         data={chapters?.slice(0, 5)}
@@ -223,7 +218,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                         renderItem={({ item }) => <Card item={item} id={id} />}
                     />
                 </Column>
-                <Column style={{ marginTop: 20, paddingHorizontal: 12, paddingVertical: 12, borderRadius: 8, marginHorizontal: 20, backgroundColor: "#262626", marginBottom: 20, }}>
+                <Column style={{ marginTop: 20, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16, backgroundColor: "#262626", marginBottom: 20, }}>
                     <Title style={{ fontSize: 24, marginTop: 8, }}>Todos ({item?.chapters})</Title>
                     <Label style={{}}>Confira todos capítulos</Label>
                     <ListChapters chapters={chapters} id={id} />
@@ -231,7 +226,7 @@ export default function MangaDetailsPage({ route, navigation }) {
             </Scroll>
             <Modalize ref={modalAdd} modalHeight={600} handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
                 <Column>
-                    <ModalAddCollection/>
+                    <ModalAddCollection item={itm}/>
                 </Column>
             </Modalize>
         </Main>
