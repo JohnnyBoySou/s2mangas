@@ -37,15 +37,15 @@ export default function MangaPages({ route, navigation }) {
 
     return (
         <Main>
-              {loading && <MotiView style={{ justifyContent: 'center', alignItems: 'center',  }}>
-                    <Image blurRadius={40} source={{ uri: "https://i.pinimg.com/564x/db/d5/8d/dbd58dd3bee3763a0c34e73f6ed64b62.jpg" }} style={{ width: width, height: 1.1 * height, opacity: 0.6, borderRadius: 32,  zIndex: -2, position: 'absolute', }} />
+              {loading && <MotiView style={{ justifyContent: 'center', alignItems: 'center',  paddingBottom: 200,}}>
+                    <Image blurRadius={40} source={{ uri: "https://i.pinimg.com/564x/db/d5/8d/dbd58dd3bee3763a0c34e73f6ed64b62.jpg" }} style={{ width: width, height: 1.1 * height, opacity: 0.6,   zIndex: -2, position: 'absolute', }} />
                     <Image src='https://i.pinimg.com/564x/ae/87/1a/ae871a9d054cd5f966b49a3c734ae8bc.jpg' style={{ width: 200, height: 300, margin: 10, marginTop: 200, objectFit: 'cover', borderRadius: 12, transform: [{rotateX: '12deg'}] }} />
                     <Title>Gerando páginas</Title>
                     <Label>Isso pode demorar um pouco...</Label>
                 </MotiView> }
-                {!loading && error && <MotiView style={{ justifyContent: 'center', alignItems: 'center',  }}>
-                    <Image blurRadius={40} source={{ uri: "https://i.pinimg.com/564x/db/d5/8d/dbd58dd3bee3763a0c34e73f6ed64b62.jpg" }} style={{ width: width, height: height, opacity: 0.6, top: -46,  borderRadius: 32,  zIndex: -2, position: 'absolute', }} />
-                    <Image src='https://i.pinimg.com/564x/8f/83/a1/8f83a1f9c13373e854f4385974b1c8bd.jpg' style={{ width: 200, height: 300, margin: 10, objectFit: 'cover', borderRadius: 12, transform: [{rotateX: '12deg'}] }} />
+                {!loading && error && <MotiView style={{ justifyContent: 'center', alignItems: 'center', paddingBottom: 200,}}>
+                    <Image blurRadius={40} source={{ uri: "https://i.pinimg.com/564x/db/d5/8d/dbd58dd3bee3763a0c34e73f6ed64b62.jpg" }} style={{ width: width, height: 1.2 * height, opacity: 0.6,   zIndex: -2, position: 'absolute', }} />
+                    <Image src='https://i.pinimg.com/564x/8f/83/a1/8f83a1f9c13373e854f4385974b1c8bd.jpg' style={{ width: 200, height: 300, margin: 10, marginTop: 200, objectFit: 'cover', borderRadius: 12, transform: [{rotateX: '12deg'}] }} />
                     <Title>Encontramos um problema</Title>
                     <Label>{error}</Label>
                 </MotiView>}
