@@ -3,6 +3,7 @@
     "name": "S2 Mangás",
     "slug": "s2mangas",
     "version": "1.2.0",
+    "scheme": "s2mangas",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -38,7 +39,17 @@
       }
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 31,
+            "targetSdkVersion": 31,
+            "buildToolsVersion": "31.0.0"
+          }
+        }
+      ]
     ]
   }
 }

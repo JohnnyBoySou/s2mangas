@@ -21,7 +21,7 @@ function Header() {
             height: 160,
         },
         open: {
-            height: 450,
+            height: 390,
         },
     });
     const toggleImage = useAnimationState({
@@ -94,25 +94,7 @@ function Header() {
                     <MotiImage state={toggleImage} source={{ uri: user?.avatar }} style={{ width: 170, height: 170, borderRadius: 100,}} resizeMode='cover' transition={{ type: 'timing', duration: 300,  }}/>
                 </Pressable>
                 <MotiText state={toggleTitle} transition={{ type: 'timing', duration: 300,  }} style={{ fontSize: 46, textAlign: toggleIsOpen ? 'center' : 'left', fontFamily: toggleIsOpen ? font.bold : font.book, color: "#fff", alignSelf: 'center',}}>{hello},{"\n"}{user?.name}</MotiText>
-
-                {toggleIsOpen && <MotiView from={{scale: 0.5, opacity: 0.4}} animate={{scale: 1, opacity: 1,}} transition={{type: 'timing', duration: 300,}} style={{padding: 12, zIndex: 99, marginTop: -150,}}>
-
-                    <Pressable style={{ width: 52, height: 52, borderRadius: 100, backgroundColor: '#ffa6a1', justifyContent: 'center', alignItems: 'center',  marginLeft: 0, marginTop: 20,}}>
-                        <MaterialCommunityIcons name="cards" size={24} color="#000" />
-                    </Pressable>
-                    <Pressable style={{ width: 52, height: 52, borderRadius: 100, backgroundColor: '#ffe3a1', justifyContent: 'center', alignItems: 'center', alignSelf: 'flex-end', marginRight: 10 }}>
-                        <Ionicons name="albums" size={24} color="#000" />
-                    </Pressable>
-                    <Pressable style={{ width: 52, height: 52, borderRadius: 100, backgroundColor: '#a1ffc0', justifyContent: 'center', alignItems: 'center', marginLeft: 20,}}>
-                        <FontAwesome5 name="history" size={24} color="#000" />
-                    </Pressable>
-                    <Pressable style={{ width: 52, height: 52, borderRadius: 100, backgroundColor: '#a1d7ff', justifyContent: 'center', marginTop: -30, alignItems: 'center',  alignSelf: 'flex-end', marginRight: 50 }}>
-                        <Fontisto name="player-settings" size={24} color="#000" />
-                    </Pressable>
-                
-                </MotiView>}
             </MotiView>
-
 
 
             <Pressable  onPress={toggleIsOpen ? handleCloseToggle : handleOpenToggle} style={{width: 42, height: 42, marginTop: -90,  zIndex: 99, backgroundColor: "#262626", borderRadius: 100, alignSelf: 'center', zIndex: 999, justifyContent: 'center', alignItems: 'center',  }}>

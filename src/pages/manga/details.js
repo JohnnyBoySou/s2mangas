@@ -112,7 +112,7 @@ export default function MangaDetailsPage({ route, navigation }) {
     return (
         <Main>
             <Scroll>
-                <Image blurRadius={40} source={{ uri: item?.capa }} style={{ width: width, height: 710, opacity: 0.6, top: -46,  borderRadius: 32,  zIndex: -2, position: 'absolute', }} />
+                <Image blurRadius={40} source={{ uri: item?.capa }} style={{ width: width, height: 660, opacity: 0.6, top: -46,  borderRadius: 32,  zIndex: -2, position: 'absolute', }} />
              
                 <Row style={{ marginTop: 50, paddingHorizontal: 20, marginBottom: 20, }}>
                     <Pressable onPress={() => navigation.goBack()}>
@@ -125,7 +125,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                     <Title style={{ fontSize: 32, marginBottom: 5, marginTop: 20, fontFamily: 'Font_Bold', letterSpacing: -1,}}>{item?.name}</Title>
 
                     <TouchableOpacity onPress={() => { setShortDesc(!shortDesc) }}>
-                        {shortDesc ? <Label style={{ fontSize: 18, lineHeight: 26, }}>{item?.description}</Label> : <Label style={{ fontSize: 18, lineHeight: 26, }}>{item?.description.slice(0, 150)}...</Label>}
+                        {shortDesc ? <Label style={{ fontSize: 18, lineHeight: 26, }}>{item?.description}</Label> : <Label style={{ fontSize: 18, lineHeight: 26, }}>{item?.description.slice(0, 138)}...</Label>}
                     </TouchableOpacity>
 
                     <Row style={{ alignItems: 'center', marginTop: 10, }}>
@@ -154,7 +154,6 @@ export default function MangaDetailsPage({ route, navigation }) {
                                     </MotiView>}
 
                             </Pressable>
-                           
 
                             <Pressable onPress={handleComplete} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
                                 {completed ?
@@ -181,9 +180,6 @@ export default function MangaDetailsPage({ route, navigation }) {
                             <Pressable onPress={() => {modalAdd.current?.open()}}  style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
                                 <Ionicons name="add-circle-outline" size={32} color="#d4d4d4" />
                             </Pressable>
-
-
-
                         </Row>
                         <Row style={{ justifyContent: 'center', alignItems: 'center', }}>
                             <Pressable onPress={handlePlay} style={{ backgroundColor: "#fff", width: 52, marginLeft: 10, height: 52, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
@@ -223,7 +219,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                 }
                 {type == 'Marcadores' && <>
                 <Column style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, paddingVertical: 30, }}>
-                    <Image source={{ uri: 'https://i.pinimg.com/564x/f6/1b/60/f61b607af7863f6590895bfc84293938.jpg'}} style={{ width: 100, height: 150, borderRadius: 12, transform: [{rotate: '12deg',}]  }} />
+                    <Image source={{ uri: 'https://i.pinimg.com/736x/4e/e7/c9/4ee7c956df651885166f2af1e53b0988.jpg'}} style={{ width: 100, height: 150, borderRadius: 12, transform: [{rotate: '12deg',}]  }} />
                     <Title style={{ fontSize: 24, marginTop: 8, }}>Sem marcadores</Title>
                     <Label style={{ textAlign: 'center', }}>Adicione marcadores para facilitar a organização</Label>
                     <Pressable style={{ backgroundColor: "#fff", borderRadius: 100, paddingVertical: 10, paddingHorizontal: 16, marginTop: 15,}}>
@@ -348,23 +344,38 @@ const SkeletonBody = () => {
                 <Spacer height={6} width={12} />
                 <Skeleton width={110} height={32} radius={100} />
             </Row>
-            <Row style={{ marginTop: 20, }}>
-                <Skeleton width={42} height={42} radius={100} />
-                <Spacer height={6} width={12} />
-                <Skeleton width={42} height={42} radius={100} />
-                <Spacer height={6} width={12} />
-                <Skeleton width={42} height={42} radius={100} />
+
+            <Row style={{ marginTop: 20, justifyContent: 'space-between', alignItems: 'center', }}>
+                <Row>
+                    <Skeleton width={42} height={42} radius={100} />
+                    <Spacer height={6} width={12} />
+                    <Skeleton width={42} height={42} radius={100} />
+                    <Spacer height={6} width={12} />
+                    <Skeleton width={42} height={42} radius={100} />
+                </Row>
+                <Column style={{width: 42, height: 42, backgroundColor: "#fff", borderRadius: 100,}}/>
             </Row>
+
+            <Row style={{ marginTop: 20, }}>
+                <Column style={{width: 100, height: 42, backgroundColor: "#fff", borderRadius: 100,}}/>
+                <Spacer height={6} width={12} />
+                <Skeleton width={110} height={42} radius={100} />
+                <Spacer height={6} width={12} />
+                <Skeleton width={110} height={42} radius={100} />
+            </Row>
+
             <Spacer height={26} />
             <Skeleton width={260} height={40} radius={4} />
 
             <Spacer height={18} width={12} />
-            <Skeleton width={300} height={70} radius={4} />
-            <Spacer height={6} width={12} />
-            <Skeleton width={300} height={70} radius={4} />
-            <Spacer height={6} width={12} />
-            <Skeleton width={300} height={70} radius={4} />
-            <Spacer height={6} width={12} />
+            <Skeleton width={'100%'} height={70} radius={4} />
+            <Spacer height={12} width={12} />
+            <Skeleton width={'100%'} height={70} radius={4} />
+            <Spacer height={12} width={12} />
+            <Skeleton width={'100%'} height={70} radius={4} />
+            <Spacer height={12} width={12} />
+            <Skeleton width={'100%'} height={70} radius={4} />
+            <Spacer height={12} width={12} />
         </Column>
     )
 }

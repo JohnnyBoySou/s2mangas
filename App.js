@@ -7,7 +7,7 @@ import Router from './src/routes/index';
 import dark from './src/theme/dark';
 import { StatusBar } from 'expo-status-bar';
 
-export default function App() {
+export default function Main() {
   return (
     <ThemeProvider theme={dark}>
       <StatusBar style="light" />

@@ -13,7 +13,7 @@ export default function ContinueReading({navigation}) {
       <Row>
       <Column style={{ backgroundColor: '#ffc2cd', padding: 12, borderRadius: 12, height: 200, width: '40%', overflow: 'hidden' }}>
         <Title style={{ fontSize: 24, marginBottom: 12, fontFamily: 'Font_Book', color: "#000",}}>Jujutsu Kaisen</Title>
-        <Image source={{ uri: 'https://i.pinimg.com/736x/20/39/a6/2039a646e7a023e78ac80ad6a894bed0.jpg' }} style={{ width: 90, height: 130, borderRadius: 4, alignSelf: 'center', position: 'absolute', zIndex: 2, bottom: -20, transform: [{ rotate: '-12deg' }] }} />
+        <Image source={{ uri: 'https://i.pinimg.com/564x/f5/14/36/f51436953be995afc6cb6f35fec266d7.jpg' }} style={{ width: 90, height: 130, borderRadius: 4, alignSelf: 'center', position: 'absolute', zIndex: 2, bottom: -20, transform: [{ rotate: '-12deg' }] }} />
       </Column>
       <Column style={{ width: 12 }} />
 
