@@ -3,8 +3,6 @@ import { Row, Scroll, Main, Column, Title, Label } from '../../theme/global';
 import { Pressable, FlatList, Dimensions, Image } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import requestPages from '../../api/manga/pages';
-import { Image as Webp } from 'expo-image';
-import { Skeleton } from 'moti/skeleton';
 import { MotiView } from 'moti';
 
 const { width, height } = Dimensions.get('window'); 

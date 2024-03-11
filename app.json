@@ -2,7 +2,7 @@
   "expo": {
     "name": "S2 Mangás",
     "slug": "s2mangas",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -18,9 +18,14 @@
       "supportsTablet": true
     },
     "android": {
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "INTERNET"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#171717"
       },
       "package": "com.s2mangas.app"
     },
@@ -31,6 +36,10 @@
       "eas": {
         "projectId": "a41ae741-b6cd-4ab4-a2d2-f4b1cc583238"
       }
-    }
+    },
+    "plugins": [
+      "expo-build-properties",
+      "expo-font"
+    ]
   }
 }
