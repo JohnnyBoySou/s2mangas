@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import 'react-native-reanimated';
-import "@expo/metro-runtime";
+//import "@expo/metro-runtime";
 import React from 'react';
 import { ThemeProvider } from 'styled-components/native';
 import Router from './src/routes/index';
