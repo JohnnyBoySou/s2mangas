@@ -3,7 +3,6 @@ import { Pressable, Dimensions} from 'react-native';
 import { Column, Label, Row, Main, Scroll, } from '../../theme/global';
 import { ThemeContext } from "styled-components/native";
 import { MangalistLastedComponent, MangalistRateComponent, MangalistWeekendComponent } from '../../components/lists/mangalist';
-import NavBar from '../../components/navbar';
 import NewsComponent from '../../components/lists/news';
 import LastedComponent from './../../components/lists/lasted';
 import RateComponent from '../../components/lists/rate';

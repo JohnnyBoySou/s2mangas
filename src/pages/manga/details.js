@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext, } from 'react';
 import { Column, Row, Title, Label, Scroll, Main } from '../../theme/global';
 import { Image, TouchableOpacity, Dimensions, FlatList, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,9 +14,11 @@ import { addComplete, addFollow, addLike, removeComplete, removeFollow, removeLi
 import ModalAddCollection from '../../components/modal/collection';
 import { Modalize } from 'react-native-modalize';
 const { width, height } = Dimensions.get('window');
+import { ThemeContext } from 'styled-components/native';
 
 export default function MangaDetailsPage({ route, navigation }) {
     const id = route.params.id;
+    const { color, font } = useContext(ThemeContext);
     const [item, setItem] = useState();
     const [chapters, setChapters] = useState([]);
     const [similar, setSimilar] = useState();
@@ -33,10 +35,10 @@ export default function MangaDetailsPage({ route, navigation }) {
         const requestData = async () => {
             requestManga(id).then((response) => {
                 setItem(response.manga)
-                setLoading(false);
             })
             requestChapters(id).then((response) => {
                 setChapters(response)
+                setLoading(false)
             })
             requestSimilar(id).then((response) => {
                 setSimilar(response.mangas)
@@ -54,6 +56,9 @@ export default function MangaDetailsPage({ route, navigation }) {
         requestData()
 
     }, [])
+
+
+
     const [liked, setLiked] = useState();
     const handleLike = async () => {
         if (liked) {
@@ -99,15 +104,15 @@ export default function MangaDetailsPage({ route, navigation }) {
     const reaction_image = reaction === 'Ótimo' ? 'https://em-content.zobj.net/source/samsung/380/smiling-face-with-heart-eyes_1f60d.png' : reaction === 'Bom' ? 'https://em-content.zobj.net/source/microsoft/379/smiling-face-with-smiling-eyes_1f60a.png' : reaction === 'Ruim' ? 'https://em-content.zobj.net/source/microsoft/379/skull_1f480.png' : 'https://em-content.zobj.net/source/microsoft/379/sparkles_2728.png';
     const reaction_desc = reaction === 'Ótimo' ? 'Um mangá fantástico, pode ler sem medo!' : reaction === 'Bom' ? 'A galera está gostando dsse mangá!' : reaction === 'Ruim' ? 'Não está agradando a maioria das pessoas' : 'Não podemos opinar no momento'
 
-
+    const [type, setType] = useState('Capitulos');
 
     const modalAdd = useRef();
 
     if (loading) return <Main><Scroll><LinearGradient colors={['#404040', 'transparent']} style={{ width: '100%', height: 300, position: 'absolute', top: 0, left: 0, }} /><SkeletonBody /></Scroll></Main>
     return (
         <Main>
-            <Scroll >
-                <Image blurRadius={40} source={{ uri: item?.capa }} style={{ width: width, height: height, opacity: 0.6, top: -46,  borderRadius: 32,  zIndex: -2, position: 'absolute', }} />
+            <Scroll>
+                <Image blurRadius={40} source={{ uri: item?.capa }} style={{ width: width, height: 710, opacity: 0.6, top: -46,  borderRadius: 32,  zIndex: -2, position: 'absolute', }} />
              
                 <Row style={{ marginTop: 50, paddingHorizontal: 20, marginBottom: 20, }}>
                     <Pressable onPress={() => navigation.goBack()}>
@@ -117,7 +122,7 @@ export default function MangaDetailsPage({ route, navigation }) {
 
                 <Column style={{ paddingHorizontal: 20, }}>
                     <Image source={{ uri: item?.capa }} style={{ width: 170, height: 240, alignSelf: 'center', borderRadius: 4, }} />
-                    <Title style={{ fontSize: 32, marginBottom: 5, marginTop: 20, fontFamily: 'Font_Bold', }}>{item?.name}</Title>
+                    <Title style={{ fontSize: 32, marginBottom: 5, marginTop: 20, fontFamily: 'Font_Bold', letterSpacing: -1,}}>{item?.name}</Title>
 
                     <TouchableOpacity onPress={() => { setShortDesc(!shortDesc) }}>
                         {shortDesc ? <Label style={{ fontSize: 18, lineHeight: 26, }}>{item?.description}</Label> : <Label style={{ fontSize: 18, lineHeight: 26, }}>{item?.description.slice(0, 150)}...</Label>}
@@ -135,20 +140,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                         </Row>
                     </Row>
 
-                    <Row style={{ alignItems: 'center', justifyContent: 'space-between', padding: 12, backgroundColor: reaction_color, marginTop: 20, borderRadius: 12, }}>
-                        <Column style={{ marginRight: 14,  }}>
-                            <Image source={{ uri: reaction_image }} alt='reaction manga' width={44} height={44} />
-                        </Column>
-                        <Column style={{ flexGrow: 1, }}>
-                            <Title style={{ color: "#000", fontFamily: 'Font_Bold', letterSpacing: -1}}>{reaction}</Title>
-                            <Label style={{ color: "#303030", width: 170, fontSize: 14, }}>{reaction_desc}</Label>
-                        </Column>
-                        <Row style={{ backgroundColor: "#ffffff50", justifyContent: 'center', alignItems: 'center', borderRadius: 100, paddingHorizontal: 14, paddingVertical: 8, }}>
-                            <AntDesign name="staro" size={16} color="#000" />
-                            <Label style={{ fontFamily: 'Font_Medium', fontSize: 24, color: "#000", marginLeft: 6, }}>{item?.rate === 'Rate this mangas' ? 'Sem nota' : item?.rate}</Label>
-                        </Row>
-                    </Row>
-
+                  
                     <Row style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 15, }}>
                         <Row style={{ justifyContent: 'center', alignItems: 'center', }}>
                             <Pressable onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
@@ -201,7 +193,47 @@ export default function MangaDetailsPage({ route, navigation }) {
                     </Row>
                 </Column>
 
-                <Column style={{ marginTop: 30, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16, backgroundColor: "#262626", }}>
+
+                <Row style={{ paddingHorizontal: 20, marginTop: 40,}}>
+                    <Pressable onPress={() => { setType('Capitulos') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Capitulos' ? color.light : color.off, borderRadius: 100, zIndex: 99,}}>
+                        <Label style={{fontSize: 18, color: type === 'Capitulos' ? color.off : color.title, fontFamily: type === 'Capitulos' ? font.bold : font.book, }}>Capítulos</Label>
+                    </Pressable>
+                    <Pressable onPress={() => { setType('Similares') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Similares' ? color.light : color.off, borderRadius: 100, zIndex: 99,}}>
+                        <Label style={{fontSize: 18, color: type === 'Similares' ? color.off : color.title, fontFamily: type === 'Similares' ? font.bold : font.book, }}>Similares</Label>
+                    </Pressable>
+                    <Pressable onPress={() => { setType('Marcadores') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Marcadores' ? color.light : color.off, borderRadius: 100, zIndex: 99,}}>
+                        <Label style={{fontSize: 18, color: type === 'Marcadores' ? color.off : color.title, fontFamily: type === 'Marcadores' ? font.bold : font.book, }}>Marcadores</Label>
+                    </Pressable>
+                </Row>
+
+                {type == 'Similares' && <>
+                <Column style={{ marginHorizontal: 20, marginTop: 10,}}>
+                    <Title  style={{ fontSize: 24, marginTop: 8, }}>Similares</Title>
+                    <Label>Mangás parecidos com esse</Label>
+                    <FlatList
+                        style={{ marginTop: 10, }}
+                        data={similar}
+                        numColumns={2}
+                        columnWrapperStyle={{ justifyContent: 'space-between', }}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => <CardManga item={item} id={id} />}
+                    />
+                </Column>
+                </>
+                }
+                {type == 'Marcadores' && <>
+                <Column style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, paddingVertical: 30, }}>
+                    <Image source={{ uri: 'https://i.pinimg.com/564x/f6/1b/60/f61b607af7863f6590895bfc84293938.jpg'}} style={{ width: 100, height: 150, borderRadius: 12, transform: [{rotate: '12deg',}]  }} />
+                    <Title style={{ fontSize: 24, marginTop: 8, }}>Sem marcadores</Title>
+                    <Label style={{ textAlign: 'center', }}>Adicione marcadores para facilitar a organização</Label>
+                    <Pressable style={{ backgroundColor: "#fff", borderRadius: 100, paddingVertical: 10, paddingHorizontal: 16, marginTop: 15,}}>
+                        <Label style={{ color: "#000" }}>Adicionar marcador</Label>
+                    </Pressable>
+                </Column>
+                  </>
+                  }
+                {type == 'Capitulos' && <>
+                <Column style={{ paddingHorizontal: 20, marginTop: 10,  borderRadius: 16, }}>
                     <Row style={{ justifyContent: 'space-between', alignItems: 'center',  }}>
                         <Column>
                             <Title style={{ fontSize: 24, marginTop: 8, }}>Recentes</Title>
@@ -218,13 +250,16 @@ export default function MangaDetailsPage({ route, navigation }) {
                         renderItem={({ item }) => <Card item={item} id={id} />}
                     />
                 </Column>
-                <Column style={{ marginTop: 20, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16, backgroundColor: "#262626", marginBottom: 20, }}>
+                <Column style={{ marginTop: 20, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16,  marginBottom: 20, }}>
                     <Title style={{ fontSize: 24, marginTop: 8, }}>Todos ({item?.chapters})</Title>
                     <Label style={{}}>Confira todos capítulos</Label>
                     <ListChapters chapters={chapters} id={id} />
                 </Column>
+                </>}
+
+
             </Scroll>
-            <Modalize ref={modalAdd} modalHeight={600} handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
+            <Modalize ref={modalAdd} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
                 <Column>
                     <ModalAddCollection item={itm}/>
                 </Column>
@@ -236,11 +271,11 @@ export default function MangaDetailsPage({ route, navigation }) {
 const Card = ({ item, id }) => {
     const navigation = useNavigation();
     return (
-        <Row style={{ backgroundColor: "#363636", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 6, }}>
+        <Row style={{ backgroundColor: "#202020", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 6, }}>
             <Title style={{ fontSize: 22, marginLeft: 20, }}>#{item?.number}</Title>
             <Label>{item?.date}</Label>
             <TouchableOpacity onPress={() => navigation.navigate('MangaPages', { chapter: item.number, id: id, })} style={{ backgroundColor: '#303030', padding: 12, borderRadius: 100, marginRight: 10, }} >
-                <Feather name="bookmark" size={24} color="#fff" />
+                <AntDesign name="arrowright" size={24} color="#fff" />
             </TouchableOpacity>
         </Row>
     )
@@ -335,3 +370,32 @@ const SkeletonBody = () => {
 }
 
 const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width }} />
+
+
+const Reaction = ({ reaction, }) => { return(
+    <Row style={{ alignItems: 'center', justifyContent: 'space-between', padding: 12, backgroundColor: reaction_color, marginTop: 20, borderRadius: 12, }}>
+    <Column style={{ marginRight: 14,  }}>
+        <Image source={{ uri: reaction_image }} alt='reaction manga' width={44} height={44} />
+    </Column>
+    <Column style={{ flexGrow: 1, }}>
+        <Title style={{ color: "#000", fontFamily: 'Font_Bold', letterSpacing: -1}}>{reaction}</Title>
+        <Label style={{ color: "#303030", width: 170, fontSize: 14, }}>{reaction_desc}</Label>
+    </Column>
+    <Row style={{ backgroundColor: "#ffffff50", justifyContent: 'center', alignItems: 'center', borderRadius: 100, paddingHorizontal: 14, paddingVertical: 8, }}>
+        <AntDesign name="staro" size={16} color="#000" />
+        <Label style={{ fontFamily: 'Font_Medium', fontSize: 24, color: "#000", marginLeft: 6, }}>{item?.rate === 'Rate this mangas' ? 'Sem nota' : item?.rate}</Label>
+    </Row>
+</Row>
+
+) }
+
+
+const CardManga = React.memo(({ item }) => {
+    const navigation = useNavigation();
+    return (
+        <Pressable onPress={() => { navigation.navigate('MangaDetails', {id: item.id });}} style={{ backgroundColor: "#303030", borderRadius: 6, width: 162, margin: 8, padding: 12, paddingBottom: 10, }}>
+            <Image source={{ uri: item.capa }} style={{ width: 102, height: 152, borderRadius: 6, alignSelf: 'center', marginBottom: 6, }} />
+            <Title style={{ fontSize: 18, textAlign: 'center', fontFamily: 'Font_Book',}}>{item?.name.slice(0,16)}</Title>
+        </Pressable>
+    )
+})
