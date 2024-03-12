@@ -1,6 +1,6 @@
 
 import axios from "axios";
-import cheerio from 'cheerio';
+import cheerio from 'react-native-cheerio';
 const headers = {'Accept': "application/json",} 
 const API_URL = "https://lermanga.org/"
 

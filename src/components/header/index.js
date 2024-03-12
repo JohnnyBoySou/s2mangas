@@ -3,7 +3,7 @@ import { Image, Pressable, Dimensions } from 'react-native';
 import { Column, Label, Row, Title } from '../../theme/global'
 import { LinearGradient } from 'expo-linear-gradient';
 import { AnimatePresence, MotiImage, MotiView, MotiText, useAnimationState } from 'moti';
-import { FontAwesome5, Fontisto, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Feather, FontAwesome5, Fontisto, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { getPreferences } from '../../api/user/preferences';
 const { height, width } = Dimensions.get('window');
 import { useNavigation } from '@react-navigation/native';
@@ -21,7 +21,7 @@ function Header() {
             height: 160,
         },
         open: {
-            height: 390,
+            height: 520,
         },
     });
     const toggleImage = useAnimationState({
@@ -32,8 +32,8 @@ function Header() {
             translateX: 0,
         },
         open: {
-            height: 170,
-            width: 170,
+            height: 160,
+            width: 160,
             translateY: 0,
             translateX: left,
         },
@@ -85,15 +85,58 @@ function Header() {
 
     return(
         <Column>
-            <Pressable onPress={() => navigation.navigate('Novidades')}  style={{width: 52, height: 52, top: 40, borderRadius: 100, backgroundColor: "#ffffff30", zIndex: 99, justifyContent: 'center', alignItems: 'center', alignSelf: 'flex-end', }}>
-                <MaterialCommunityIcons name="bell-badge-outline" size={24} color="#fff" />
-            </Pressable>
+            <Row style={{ alignSelf: 'flex-end' }}>
+                <Pressable onPress={() => navigation.navigate('Novidades')}  style={{width: 52, height: 52, top: 40, borderRadius: 100, backgroundColor: "#ffffff30", zIndex: 99, justifyContent: 'center', alignItems: 'center', alignSelf: 'flex-end', }}>
+                    <MaterialCommunityIcons name="bell-badge-outline" size={24} color="#fff" />
+                </Pressable>
+                <Pressable onPress={() => navigation.navigate('Search')}  style={{width: 52, marginLeft: 10, height: 52, top: 40, borderRadius: 100, backgroundColor: "#ffffff30", zIndex: 99, justifyContent: 'center', alignItems: 'center', alignSelf: 'flex-end', }}>
+                    <Feather name="search" size={24} color="#fff" />
+                </Pressable>
+            </Row>
             <MotiView state={toggleAnimation} transition={{type: 'timing', duration: 300,}}>
                 <MotiImage blurRadius={40} source={{ uri: user?.capa }} style={{ width: 0.99 * width, height: '100%', opacity: 0.6, top: -100, left: -15, borderRadius: 32, right: 10, zIndex: -2, position: 'absolute', }} />
                 <Pressable onPress={() => navigation.navigate('Account')} >
                     <MotiImage state={toggleImage} source={{ uri: user?.avatar }} style={{ width: 170, height: 170, borderRadius: 100,}} resizeMode='cover' transition={{ type: 'timing', duration: 300,  }}/>
                 </Pressable>
-                <MotiText state={toggleTitle} transition={{ type: 'timing', duration: 300,  }} style={{ fontSize: 46, textAlign: toggleIsOpen ? 'center' : 'left', fontFamily: toggleIsOpen ? font.bold : font.book, color: "#fff", alignSelf: 'center',}}>{hello},{"\n"}{user?.name}</MotiText>
+                <MotiText state={toggleTitle} transition={{ type: 'timing', duration: 300,  }} style={{ fontSize: 46, textAlign: toggleIsOpen ? 'center' : 'left', letterSpacing: -2, fontFamily: toggleIsOpen ? font.bold : font.book, color: "#fff", alignSelf: 'center',}}>{hello},{"\n"}{user?.name}</MotiText>
+            
+            {toggleIsOpen && 
+                <AnimatePresence>
+                    <MotiView>
+                        <Row style={{ justifyContent: 'space-between', alignItems: 'center',  marginTop: 30,}}>
+                            <Pressable style={{ flexDirection: 'row', width: '46%', alignItems: 'center', backgroundColor: "#202020", borderRadius: 6, }}>
+                                <Column style={{ width: 50, height: 50, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center',  borderRadius: 6, }}>
+                                    <MaterialCommunityIcons name="cog-outline" size={24} color="#fff" />
+                                </Column>
+                                <Label style={{ fontSize: 20, marginHorizontal: 10, letterSpacing: -1, }}>Shop</Label>
+                            </Pressable>
+                            <Pressable style={{ flexDirection: 'row', width: '46%', alignItems: 'center', backgroundColor: "#202020", borderRadius: 6, }}>
+                                <Column style={{ width: 50, height: 50, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center',  borderRadius: 6, }}>
+                                    <MaterialCommunityIcons name="cog-outline" size={24} color="#fff" />
+                                </Column>
+                                <Label style={{ fontSize: 20, marginHorizontal: 10, letterSpacing: -1, }}>Cards</Label>
+                            </Pressable>
+                        </Row>
+                        <Row style={{ justifyContent: 'space-between', alignItems: 'center',  marginTop: 10,}}>
+                            <Pressable style={{ flexDirection: 'row',  alignItems: 'center', backgroundColor: "#202020", borderRadius: 6,  width: '46%', }}>
+                                <Column style={{ width: 50, height: 50, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center',  borderRadius: 6, }}>
+                                    <MaterialCommunityIcons name="cog-outline" size={24} color="#fff" />
+                                </Column>
+                                <Label style={{ fontSize: 20, marginHorizontal: 10, letterSpacing: -1, }}>Progresso</Label>
+                            </Pressable>
+                            <Pressable style={{ flexDirection: 'row',  width: '46%',alignItems: 'center', backgroundColor: "#202020", borderRadius: 6, }}>
+                                <Column style={{ width: 50, height: 50, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center',  borderRadius: 6, }}>
+                                    <MaterialCommunityIcons name="cog-outline" size={24} color="#fff" />
+                                </Column>
+                                <Label style={{ fontSize: 20, marginHorizontal: 10, letterSpacing: -1, }}>Ajustes</Label>
+                            </Pressable>
+                        </Row>
+
+                    </MotiView>
+                </AnimatePresence>
+                }
+            
+            
             </MotiView>
 
 
