@@ -58,7 +58,7 @@ export default function SearchPage(){
             height: 180,
         },
         open: {
-            height: 260,
+            height: 280,
         },
     });
     return(

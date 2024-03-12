@@ -102,7 +102,7 @@ function Header() {
             
             {toggleIsOpen && 
                 <AnimatePresence>
-                    <MotiView>
+                    <MotiView from={{translateY: -20, opacity: 0,}} animate={{ translateY: 0, opacity:1,}} transition={{type: 'timing', duration: 300,}}>
                         <Row style={{ justifyContent: 'space-between', alignItems: 'center',  marginTop: 30,}}>
                             <Pressable style={{ flexDirection: 'row', width: '46%', alignItems: 'center', backgroundColor: "#202020", borderRadius: 6, }}>
                                 <Column style={{ width: 50, height: 50, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center',  borderRadius: 6, }}>

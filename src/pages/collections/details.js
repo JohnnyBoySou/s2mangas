@@ -85,7 +85,7 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                 animate={{ opacity: 1, translateY: 0, }}
                 transition={{ type: 'timing', duration: 300, delay: 500, }}
                 >
-                    <Row style={{ alignItems: 'center', marginTop: 50, }}>
+                    <Row style={{ alignItems: 'center', marginTop: 20, }}>
                         <Pressable style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }} onPress={() => navigation.goBack()} >
                             <AntDesign name="arrowleft" size={24} color="#fff" />
                         </Pressable>
