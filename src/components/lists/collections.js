@@ -27,7 +27,7 @@ export default function CollectionsComponent() {
                     </Row>
 
                 <Pressable onPress={() => navigation.navigate('Collections')} style={{ padding: 12, backgroundColor: "#fff", borderRadius: 100, paddingHorizontal: 20, alignSelf:'center',  }}>
-                    <Label style={{ color: "#000", }}>Criar coleção</Label>
+                    <Label style={{ color: "#000", fontFamily: 'Font_Medium' }}>Criar coleção</Label>
                 </Pressable>
                 </Column> : 
                 <Column>

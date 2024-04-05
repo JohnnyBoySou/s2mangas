@@ -72,7 +72,7 @@ export default function CollectionsPage({ navigation }) {
     return (
         <Main>
             <Scroll>
-                <Row style={{ marginTop: 50, justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 20, }}>
+                <Row style={{ marginTop: 20, justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 20, }}>
                     <Pressable style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }} onPress={() => navigation.goBack()} >
                         <AntDesign name="arrowleft" size={32} color="#fff" />
                     </Pressable>
@@ -170,7 +170,7 @@ export default function CollectionsPage({ navigation }) {
                     />
 
                     <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: 20, }}>
-                        <Pressable style={{ paddingVertical: 10, paddingHorizontal: 20, backgroundColor: "#303030", borderRadius: 40, flexGrow: 1, }}>
+                        <Pressable onPress={() => {modalCreate.current?.close()}} style={{ paddingVertical: 10, paddingHorizontal: 20, backgroundColor: "#303030", borderRadius: 40, flexGrow: 1, }}>
                             <Label style={{ color: "#fff", textAlign: 'center', }}>Fechar</Label>
                         </Pressable>
                         <Pressable onPress={create} style={{ paddingVertical: 10, paddingHorizontal: 20, backgroundColor: "#fff", borderRadius: 40, flexGrow: 3, marginLeft: 12, }}>

@@ -86,10 +86,10 @@ function Header() {
     return(
         <Column>
             <Row style={{ alignSelf: 'flex-end' }}>
-                <Pressable onPress={() => navigation.navigate('Novidades')}  style={{width: 52, height: 52, top: 40, borderRadius: 100, backgroundColor: "#ffffff30", zIndex: 99, justifyContent: 'center', alignItems: 'center', alignSelf: 'flex-end', }}>
+                <Pressable onPress={() => navigation.navigate('Novidades')}  style={{width: 52, height: 52, top: 40, borderRadius: 100,zIndex: 99, justifyContent: 'center', alignItems: 'center', alignSelf: 'flex-end', }}>
                     <MaterialCommunityIcons name="bell-badge-outline" size={24} color="#fff" />
                 </Pressable>
-                <Pressable onPress={() => navigation.navigate('Search')}  style={{width: 52, marginLeft: 10, height: 52, top: 40, borderRadius: 100, backgroundColor: "#ffffff30", zIndex: 99, justifyContent: 'center', alignItems: 'center', alignSelf: 'flex-end', }}>
+                <Pressable onPress={() => navigation.navigate('Search')}  style={{width: 52, marginLeft: 10, height: 52, top: 40, borderRadius: 100,  zIndex: 99, justifyContent: 'center', alignItems: 'center', alignSelf: 'flex-end', }}>
                     <Feather name="search" size={24} color="#fff" />
                 </Pressable>
             </Row>

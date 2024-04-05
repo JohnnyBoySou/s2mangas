@@ -57,8 +57,6 @@ export default function HomePage({ navigation }) {
 
                 
                 {type === 'Tudo' && <Column>
-                    <ContinueReading navigation={navigation} />
-                    <Spacer />
                     <NewsComponent />
                     <Spacer />
                     <CollectionsComponent />
