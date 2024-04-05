@@ -115,6 +115,10 @@ export default function MangaDetailsPage({ route, navigation }) {
 
     const modalAdd = useRef();
     const modalDesc = useRef();
+    const scrollMain = useRef();
+    const scrollTop = () => { 
+        scrollMain.current?.scrollTo({ x: 0, y: 0, animated: true });
+     }
 
     if (loading) return <Main><Scroll><LinearGradient colors={['#404040', 'transparent']} style={{ width: '100%', height: 300, position: 'absolute', top: 0, left: 0, }} /><SkeletonBody /></Scroll></Main>
     return (
@@ -127,7 +131,9 @@ export default function MangaDetailsPage({ route, navigation }) {
                     setHeaderShown(false);
                 }
                 }}
-        scrollEventThrottle={16}>
+            scrollEventThrottle={16}
+            ref={scrollMain}
+            >
 
                 <Row style={{ marginTop: 50, paddingHorizontal: 20, marginBottom: 20, }}>
                     <Pressable onPress={() => navigation.goBack()}>
@@ -137,7 +143,7 @@ export default function MangaDetailsPage({ route, navigation }) {
 
                 <Column style={{ paddingHorizontal: 20, marginBottom: -20, zIndex: 98,}}>
                     <Column>
-                        <ImageBackground blurRadius={40} source={{ uri: item?.capa }} style={{ height: 350,  flexGrow: 1,  justifyContent: 'center', alignItems: 'center',    }} imageStyle={{borderRadius: 24,}}>
+                        <ImageBackground blurRadius={40} source={{ uri: item?.capa }} style={{ height: 400,  flexGrow: 1,  justifyContent: 'center', alignItems: 'center',    }} imageStyle={{borderRadius: 24,}}>
                             <Image source={{ uri: item?.capa }} style={{ width: 170, height: 240, alignSelf: 'center', borderRadius: 4, }} />
                         </ImageBackground>
                     </Column>
@@ -201,7 +207,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                                 <Ionicons name="add-circle-outline" size={32} color="#d4d4d4" />
                             </Pressable>
 
-                            {headerShown && <AnimatePresence><MotiImage from={{opacity: 0, scale: 0,}} animate={{opacity: 1,  scale: 1,}} exit={{opacity: 0, scale: 0.6,}} exitTransition={{ type: 'timing',  duration: 2500, }} source={{ uri: item?.capa }} style={{ width:30, height: 42, borderRadius: 4, marginLeft: 80,borderWidth: 1, borderColor: color.title, }} /></AnimatePresence>  }
+                            {headerShown && <AnimatePresence><Pressable onPress={scrollTop} ><MotiImage from={{opacity: 0, scale: 0,}} animate={{opacity: 1,  scale: 1,}} exit={{opacity: 0, scale: 0.6,}} exitTransition={{ type: 'timing',  duration: 2500, }} source={{ uri: item?.capa }} style={{ width:30, height: 42, borderRadius: 4, marginLeft: 80,borderWidth: 1, borderColor: color.title, }} /></Pressable></AnimatePresence>  }
 
                         </Row>
                         <Pressable onPress={handlePlay} style={{ backgroundColor: "#fff", width: 46, marginLeft: 10, height: 46, borderRadius: 100, justifyContent: 'center', alignItems: 'center', position: 'absolute', right: 0, }}>
