@@ -14,7 +14,7 @@ export default function LastedComponent() {
         })
     }, [])
 
-    const snapOffsets = Array(data.length).map((x, i) => i * (500 - 40));
+   // const snapOffsets = Array(data.length).map((x, i) => i * (500 - 40));
         return (
             <Column style={{ marginHorizontal: 20, }}>
                 {data?.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
@@ -30,7 +30,7 @@ export default function LastedComponent() {
                     renderItem={({ item }) => <Card item={item} />}
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    snapToOffsets={snapOffsets}
+              //      snapToOffsets={snapOffsets}
                     snapToAlignment='start'
                     scrollEventThrottle={32}
                     decelerationRate='fast'

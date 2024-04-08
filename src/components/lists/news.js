@@ -12,7 +12,7 @@ export default function NewsComponent() {
             setData(res?.mangas);
         })
     }, [])
-    const snapOffsets = Array(data.length).map((x, i) => i * (300 - 40));
+   // const snapOffsets = Array(data?.length).map(( i) => i * (300 - 40));
 
     return (
             <Column style={{ marginHorizontal: 20, }}>
@@ -29,7 +29,7 @@ export default function NewsComponent() {
                     renderItem={({ item }) => <Card item={item} />}
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    snapToOffsets={snapOffsets}
+                   // snapToOffsets={snapOffsets}
                     snapToAlignment='center'
                     scrollEventThrottle={16}
                     decelerationRate='fast'
