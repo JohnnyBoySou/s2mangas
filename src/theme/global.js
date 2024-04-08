@@ -22,6 +22,8 @@ export const Column = styled.View`
   display: flex;
 `
 
+export const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width }} />
+
 
 export const Button = styled(TouchableRipple).attrs(() => ({
   borderless: true, 
@@ -66,8 +68,9 @@ export const Label = styled.Text`
 
 export const Title = styled.Text`
   color: ${props => props.theme.color.title};
+  letter-spacing: -.5px;
   font-size: 24px;
-  font-family: ${props => props.theme.font.medium};
+  font-family: ${props => props.theme.font.bold};
 `;
 
 export const AuthorLabel = styled.Text`

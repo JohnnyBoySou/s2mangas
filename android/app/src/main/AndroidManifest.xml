@@ -29,6 +29,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="s2mangas"/>
         <data android:scheme="com.s2mangas.app"/>
+        <data android:scheme="exp+s2mangas"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>

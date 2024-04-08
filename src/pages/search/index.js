@@ -10,6 +10,7 @@ import {tags} from '../../api/tags';
 import Avatar from '../../components/avatar';
 import { Skeleton } from 'moti/skeleton';
 import { Spacing } from '../preferences/styles';
+import { getPreferences } from '../../api/user/preferences';
 
 export default function SearchPage(){
     const { color , font } = useContext(ThemeContext)
@@ -18,6 +19,8 @@ export default function SearchPage(){
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [openSearch, setopenSearch] = useState(false);
+    const [user, setUser] = useState();
+
     const getData = async () => {
         if(name === '') { setData([]);  return;}
         if(!history.includes(name)){
@@ -39,6 +42,8 @@ export default function SearchPage(){
         const requestHistory = async () => {
             try {
                 const response = await listWords();
+                const prefer = await getPreferences()
+                setUser(prefer)
                 setHistory(response)
             } catch (error) {
                 console.log(error)
@@ -65,14 +70,13 @@ export default function SearchPage(){
     <Main>
         <Scroll ref={ScrollMain}>
             <Column style={{ paddingHorizontal: 20, }}>
-                <MotiView state={toggleAnimation} transition={{type: 'timing', duration: 300,}} style={{ backgroundColor: "#101010", marginHorizontal: -20, paddingHorizontal: 20,paddingBottom: 20, borderRadius: 16,}}>
-                    <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
-                        <Title style={{ fontSize: 52, marginVertical: 24, letterSpacing:-3,}}>Pesquisar</Title>
-                        <Avatar width={52} height={52} />
+                <MotiView state={toggleAnimation} transition={{type: 'timing', duration: 300,}} style={{ marginHorizontal: -20, paddingHorizontal: 20,paddingBottom: 20, borderRadius: 16,}}>
+                    <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: 16, }}>
+                        <Title style={{ fontSize: 52, marginVertical: 24, letterSpacing:-3,}}>Buscar</Title>
                     </Row>
 
-                    <Row style={{ alignSelf: 'center'}}>
-                        <TextInput onFocus={() => {setopenSearch(true); toggleAnimation.transitionTo('open')}} onBlur={() => {if(name?.length == 0 ) {setopenSearch(false); toggleAnimation.transitionTo('close')}}} value={name} placeholderTextColor={color.title + 70} placeholder='Ex.: One Piece' onChangeText={setname} style={{ fontFamily: font.book, paddingVertical: 12, width: 280, backgroundColor: openSearch ? "#f7f7f7" : '#303030',  paddingHorizontal: 20, borderRadius: 12, fontSize: 20, borderColor: name.length > 2 ? color.green : "transparent", borderWidth: 2, color: "#000", borderTopRightRadius: 0, borderBottomRightRadius: 0, }} />
+                    <Row style={{}}>
+                        <TextInput onFocus={() => {setopenSearch(true); toggleAnimation.transitionTo('open')}} onBlur={() => {if(name?.length == 0 ) {setopenSearch(false); toggleAnimation.transitionTo('close')}}} value={name} placeholderTextColor={color.title + 70} placeholder='Ex.: One Piece' onChangeText={setname} style={{ fontFamily: font.book, paddingVertical: 12, flexGrow: 1, backgroundColor: openSearch ? "#f7f7f7" : '#303030',  paddingHorizontal: 20, borderRadius: 12, fontSize: 20, borderColor: name.length > 2 ? color.green : "transparent", borderWidth: 2, color: "#000", borderTopRightRadius: 0, borderBottomRightRadius: 0, }} />
                         <Pressable disabled={loading} onPress={getData} style={{ backgroundColor: color.primary, borderTopRightRadius: 12, borderBottomRightRadius: 12, width: 58,  justifyContent: 'center', alignItems: 'center',  }}>
                             <Feather name="search" size={24} color="#fff" />
                         </Pressable>
@@ -81,12 +85,12 @@ export default function SearchPage(){
                         {history.length > 0 && <MotiView from={{translateX: -30, opacity: 0, }} animate={{ translateX: 0, opacity: 1, }} transition={{type: 'timing', duration: 300,}}>
                             <Row style={{ justifyContent: 'space-between', alignItems: 'center',  marginTop: 20, marginBottom: 6,}}>
                                 <Title style={{ fontSize: 24, }}>Buscas recentes</Title>
-                                <Pressable onPress={() => {excludeWords(); setLoading(!loading)}} >
+                                <Pressable onPress={() => {excludeWords(); setLoading(!loading); setHistory([]);}} >
                                     <Feather name="trash" size={16} color={color.red} />
                                 </Pressable>
                             </Row>
 
-                            <FlatList style={{ marginHorizontal: -20, paddingHorizontal: 16, }} horizontal showsHorizontalScrollIndicator={false} data={history} renderItem={({item}) => <Pressable onPress={() => setname(item)} onLongPress={() => {excludeWord(item); setLoading(!loading);} } style={{ paddingHorizontal: 22, paddingVertical: 12, borderRadius: 100, backgroundColor: '#303030', margin: 6, }}><Label style={{ fontSize: 18, }}>{item}</Label></Pressable>} keyExtractor={(item) => item}/>
+                            <FlatList style={{ marginHorizontal: -20, paddingHorizontal: 16, }} horizontal showsHorizontalScrollIndicator={false} data={history} renderItem={({item}) => <Pressable onPress={() => {setname(item); setLoading(!loading); console.log('pressiou')}} onLongPress={() => {excludeWord(item); setLoading(!loading);} } style={{ paddingHorizontal: 22, paddingVertical: 12, borderRadius: 100, backgroundColor: '#303030', margin: 6, }}><Label style={{ fontSize: 18, }}>{item}</Label></Pressable>} keyExtractor={(item) => item}/>
                         </MotiView>}
                         {history.length === 0 && <MotiView from={{translateX: -30, opacity: 0, }} animate={{ translateX: 0, opacity: 1, }} transition={{type: 'timing', duration: 300,}}>
                             <Row style={{ justifyContent: 'space-between', alignItems: 'center',  marginTop: 20, marginBottom: 6,}}>
@@ -102,6 +106,8 @@ export default function SearchPage(){
 
                 {data?.length === 0 && 
                 <Column>
+                    <Title style={{ fontSize: 24, marginBottom: 6, marginTop: 20,}}>Suas categorias favoritas</Title>
+                    <FlatList data={user?.items} numColumns={2} style={{ marginHorizontal: -8, }} renderItem={({item}) => <Category item={item}/>} keyExtractor={(item) => item.id}/>
                     <Title style={{ fontSize: 24, marginBottom: 6, marginTop: 20,}}>Navegue por categorias</Title>
                     <FlatList data={tags} numColumns={2} style={{ marginHorizontal: -8, }} renderItem={({item}) => <Category item={item}/>} keyExtractor={(item) => item.id}/>
                 </Column>}
@@ -119,16 +125,16 @@ export default function SearchPage(){
     </Main>
     )}
 
-
     const Category = ({item}) => { 
         return(
             <Pressable style={{ width: '46%', flexGrow: 1, }}>
                <Column  style={{cursor: 'pointer', margin: 8, borderRadius: 12,  backgroundColor: item?.color, overflow: 'hidden', padding: 6, height: 84,}}>
-                <Title style={{fontSize: 24, margin: 10, flexWrap:'wrap'}}>{item.name}</Title>
+                <Title style={{fontSize: 20, margin: 10, flexWrap:'wrap'}}>{item.name}</Title>
               </Column>
             </Pressable>
         )
      }
+     //<MotiImage source={{uri: item?.img}} style={{ width: 50, height: 80, position: 'absolute', right: -8, bottom: -10, transform: [{rotate: '24deg',}], borderRadius: 6, backgroundColor: '#303030', }} />
 
      const RelevantResult = ({item}) => {
         return(
@@ -153,10 +159,10 @@ export default function SearchPage(){
       
       const Result = ({item}) => {
         return(
-          <Column style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#262626', width: '46%', borderRadius: 6, margin: 8,  }}>
+          <Column style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#262626', width: '48%', borderRadius: 6, margin: 4,  }}>
                 <Image source={{uri: item?.capa}}  style={{objectFit: 'cover', marginTop: 24, borderRadius: 8, width: 120, height: 180, zIndex: 2,}} />
-                <Title style={{color: "#f6f6f6", fontSize: 22, marginTop: 8, }}>{item?.name.slice(0,15)}</Title>
-                <Label style={{fontSize: 16, marginTop: 4, marginBottom: 14,    }}>{item?.rate} • {item?.typename}</Label>
+                <Title style={{color: "#f6f6f6", fontSize: 18, marginTop: 8,marginHorizontal: 20, }}>{item?.name.slice(0,28)}</Title>
+                <Label style={{fontSize: 14, marginTop: 4, marginBottom: 14,    }}>{item?.rate} • {item?.typename}</Label>
           </Column>
       
         )

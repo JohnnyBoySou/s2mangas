@@ -12,8 +12,9 @@ export default function NewsComponent() {
             setData(res?.mangas);
         })
     }, [])
+    const snapOffsets = Array(data.length).map((x, i) => i * (300 - 40));
 
-        return (
+    return (
             <Column style={{ marginHorizontal: 20, }}>
                 {data?.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
                 <Title>Novos capítulos</Title>
@@ -28,6 +29,11 @@ export default function NewsComponent() {
                     renderItem={({ item }) => <Card item={item} />}
                     horizontal
                     showsHorizontalScrollIndicator={false}
+                    snapToOffsets={snapOffsets}
+                    snapToAlignment='center'
+                    scrollEventThrottle={16}
+                    decelerationRate='fast'
+
                 />
             </Column>
         );

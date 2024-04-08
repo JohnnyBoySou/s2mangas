@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useContext, } from 'react';
 import { Column, Row, Title, Label, Scroll, Main } from '../../theme/global';
-import { Image, TouchableOpacity, Dimensions, FlatList, Pressable, ImageBackground } from 'react-native';
+import { Image, TouchableOpacity, Dimensions, FlatList, Pressable, ImageBackground,  } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome5, Feather, Ionicons, Fontisto, FontAwesome } from '@expo/vector-icons';
 import requestManga from '../../api/manga/details';
@@ -15,6 +15,7 @@ import ModalAddCollection from '../../components/modal/collection';
 import { Modalize } from 'react-native-modalize';
 const { width, height } = Dimensions.get('window');
 import { ThemeContext } from 'styled-components/native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 export default function MangaDetailsPage({ route, navigation }) {
     const id = route.params.id;
@@ -24,7 +25,6 @@ export default function MangaDetailsPage({ route, navigation }) {
     const [chapters, setChapters] = useState([]);
     const [similar, setSimilar] = useState();
     const [loading, setLoading] = useState(true);
-    const [shortDesc, setShortDesc] = useState(false);
     const itm = {
         name: item?.name,
         capa: item?.capa,
@@ -112,19 +112,24 @@ export default function MangaDetailsPage({ route, navigation }) {
     const reaction_desc = reaction === 'Ótimo' ? 'Um mangá fantástico, pode ler sem medo!' : reaction === 'Bom' ? 'A galera está gostando dsse mangá!' : reaction === 'Ruim' ? 'Não está agradando a maioria das pessoas' : 'Não podemos opinar no momento'
 
     const [type, setType] = useState('Capitulos');
-
     const modalAdd = useRef();
     const modalDesc = useRef();
     const scrollMain = useRef();
-    const scrollTop = () => { 
-        scrollMain.current?.scrollTo({ x: 0, y: 0, animated: true });
-     }
+    const scrollTop = () => {scrollMain.current?.scrollTo({ x: 0, y: 0, animated: true });}
+    const scrollY = useSharedValue(0);
+    const imageStyle = useAnimatedStyle(() => {
+        const scale = scrollY.value > 142 ? 1.3 - (scrollY.value - 142) / 200 : 1.3;
+        return {
+          opacity: scale,
+          transform:[{ scale:scale }]
+        };});
 
     if (loading) return <Main><Scroll><LinearGradient colors={['#404040', 'transparent']} style={{ width: '100%', height: 300, position: 'absolute', top: 0, left: 0, }} /><SkeletonBody /></Scroll></Main>
     return (
         <Main>
-            <Scroll stickyHeaderIndices={[2]} onScroll={(event) => {
+            <Scroll stickyHeaderIndices={[1]} onScroll={(event) => {
                 const scrolling = event.nativeEvent.contentOffset.y;
+                scrollY.value = scrolling;
                 if (scrolling > 630) {
                     setHeaderShown(true);
                 } else {
@@ -135,26 +140,21 @@ export default function MangaDetailsPage({ route, navigation }) {
             ref={scrollMain}
             >
 
-                <Row style={{ marginTop: 50, paddingHorizontal: 20, marginBottom: 20, }}>
-                    <Pressable onPress={() => navigation.goBack()}>
-                        <AntDesign name="arrowleft" size={32} color="#fff" />
-                    </Pressable>
-                </Row>
 
-                <Column style={{ paddingHorizontal: 20, marginBottom: -20, zIndex: 98,}}>
-                    <Column>
-                        <ImageBackground blurRadius={40} source={{ uri: item?.capa }} style={{ height: 400,  flexGrow: 1,  justifyContent: 'center', alignItems: 'center',    }} imageStyle={{borderRadius: 24,}}>
-                            <Image source={{ uri: item?.capa }} style={{ width: 170, height: 240, alignSelf: 'center', borderRadius: 4, }} />
-                        </ImageBackground>
-                    </Column>
-                    
-                    <Title style={{ fontSize: 32, marginBottom: 5, marginTop: 10, fontFamily: 'Font_Bold', letterSpacing: -1,}}>{item?.name}</Title>
+                <Column style={{  marginBottom: -20, zIndex: 98,}}>
+                    <Pressable onPress={() => {navigation.goBack()}}  style={{ width: 90, height: 10, backgroundColor: '#30303090', borderRadius: 100, alignSelf: 'center', marginBottom: -20, zIndex: 99, marginTop: 10, }}/>
+                    <ImageBackground blurRadius={40} source={{ uri: item?.capa }} style={{ height: 400,  flexGrow: 1,  justifyContent: 'center', alignItems: 'center',  }} >
+                        <Animated.Image source={{ uri: item?.capa }} style={[{ width: 170, height: 240, alignSelf: 'center', borderRadius: 4, zIndex: 99, }, imageStyle]} />
+                    </ImageBackground>
 
+                    <LinearGradient colors={['transparent', '#171717']} style={{ width: '100%', height: 200,  marginTop: -198,}} />
+
+                    <Title style={{ fontSize: 32, marginBottom: 5, marginTop: 10, fontFamily: 'Font_Bold', letterSpacing: -1, marginHorizontal: 20,}}>{item?.name}</Title>
                     <TouchableOpacity onPress={() => { modalDesc.current?.open() }}>
-                        <Label style={{ fontSize: 18, lineHeight: 26, }}>{item?.description.slice(0, 138)}...</Label>
+                        <Label style={{ fontSize: 18, lineHeight: 26, marginHorizontal: 20,}}>{item?.description.slice(0, 138)}...</Label>
                     </TouchableOpacity>
 
-                    <Row style={{ alignItems: 'center', marginTop: 10, }}>
+                    <Row style={{ alignItems: 'center', marginTop: 10, marginHorizontal: 20,}}>
                         <Label style={{ backgroundColor: cl, color: "#000", fontSize: 16, borderRadius: 100, paddingVertical: 10, paddingHorizontal: 10, }}>✶ {item?.type} ✦</Label>
                         <Row style={{ backgroundColor: "#303030", borderRadius: 100, justifyContent: 'center', marginHorizontal: 10, alignItems: 'center', }}>
                             <AntDesign name="calendar" size={16} color="#fff" style={{ backgroundColor: "#505050", padding: 8, borderRadius: 100, margin: 6, }} />
@@ -207,7 +207,6 @@ export default function MangaDetailsPage({ route, navigation }) {
                                 <Ionicons name="add-circle-outline" size={32} color="#d4d4d4" />
                             </Pressable>
 
-                            {headerShown && <AnimatePresence><Pressable onPress={scrollTop} ><MotiImage from={{opacity: 0, scale: 0,}} animate={{opacity: 1,  scale: 1,}} exit={{opacity: 0, scale: 0.6,}} exitTransition={{ type: 'timing',  duration: 2500, }} source={{ uri: item?.capa }} style={{ width:30, height: 42, borderRadius: 4, marginLeft: 80,borderWidth: 1, borderColor: color.title, }} /></Pressable></AnimatePresence>  }
 
                         </Row>
                         <Pressable onPress={handlePlay} style={{ backgroundColor: "#fff", width: 46, marginLeft: 10, height: 46, borderRadius: 100, justifyContent: 'center', alignItems: 'center', position: 'absolute', right: 0, }}>
@@ -279,7 +278,12 @@ export default function MangaDetailsPage({ route, navigation }) {
                 </>}
 
             </Scroll>
-
+            <AnimatePresence> {headerShown &&  <Pressable onPress={scrollTop} style={{  position: 'absolute', right: 30, bottom: 30, }}>
+                <MotiImage 
+                from={{opacity: 0, transform: [{scale: 0}, {rotate: '0deg'}], }} 
+                animate={{opacity: 1, transform: [{scale: 1}, {rotate: '16deg'}],}} 
+                exit={{opacity: 0, transform: [{scale: 0}, {rotate: '0deg'}],}} 
+                exitTransition={{ type: 'spring',  duration: 300, }} source={{ uri: item?.capa }} style={{ width:50, height: 70, borderRadius: 4, marginLeft: 80,borderWidth: 1, borderColor: color.title,}} /></Pressable>}</AnimatePresence>
 
 
             <Modalize ref={modalAdd} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
@@ -293,7 +297,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                 <Title>Descrição</Title>
                 <Label style={{  fontSize: 18, lineHeight: 26, }}>{item?.description}</Label>
 
-                <Pressable onPress={() => { modalDesc.current?.close() }} style={{ paddingVertical: 12, paddingHorizontal: 24, backgroundColor: color.light , borderRadius: 100, alignSelf: 'center', }}>
+                <Pressable onPress={() => { modalDesc.current?.close() }} style={{ paddingVertical: 12, paddingHorizontal: 24, backgroundColor: color.light , borderRadius: 100, alignSelf: 'center', marginVertical: 20, }}>
                         <Label style={{fontSize: 18, color: color.off, fontFamily: font.medium, }}>Fechar</Label>
                     </Pressable>
                </Column>
@@ -363,7 +367,6 @@ const ListChapters = ({ chapters, id }) => {
 const SkeletonBody = () => {
     return (
         <Column style={{ marginTop: 30, marginHorizontal: 20, }}>
-            <Skeleton width={52} height={52} radius={100} />
             <Column style={{ justifyContent: 'center', alignItems: 'center', marginTop: 40, marginBottom: 20, }}>
                 <Skeleton width={190} height={260} radius={8} />
             </Column>
@@ -444,7 +447,7 @@ const CardManga = React.memo(({ item }) => {
     return (
         <Pressable onPress={() => { navigation.navigate('MangaDetails', {id: item.id });}} style={{ backgroundColor: "#303030", borderRadius: 6, width: 162, margin: 8, padding: 12, paddingBottom: 10, }}>
             <Image source={{ uri: item.capa }} style={{ width: 102, height: 152, borderRadius: 6, alignSelf: 'center', marginBottom: 6, }} />
-            <Title style={{ fontSize: 18, textAlign: 'center', fontFamily: 'Font_Book',}}>{item?.name.slice(0,16)}</Title>
+            <Title style={{ fontSize: 16, textAlign: 'center', fontFamily: 'Font_Book', lineHeight: 18,}}>{item?.name.slice(0,50)}</Title>
         </Pressable>
     )
 })

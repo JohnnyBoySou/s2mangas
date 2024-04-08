@@ -42,7 +42,7 @@ export function MangalistWeekendComponent() {
 
 
 
-export  function MangalistLastedComponent() {
+export function MangalistLastedComponent() {
     const [data, setData] = useState([]);
     useEffect(() => {
         axios.get('https://www.s2mangas.com/api/mangalist?page=1')

@@ -112,11 +112,12 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                     </Pressable>
                 </Row>
 
+                {loading && <SkeletonList2 />}
                 <FlatList
                     data={item?.mangas.slice(0, 4)}
                     keyExtractor={item => item.id}
-                    ListEmptyComponent={<SkeletonList2 />}
                     horizontal
+                    ListEmptyComponent={<EmptyList2 />}
                     style={{ paddingHorizontal: 20, }}
                     showsHorizontalScrollIndicator={false}
                     renderItem={({ item }) => <Cards item={item} />}
@@ -126,13 +127,13 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                     <Title style={{ fontSize: 24, }}>Todos</Title>
                     <Row style={{ justifyContent: 'center', alignItems: 'center', }}>
                         <Pressable onPress={() => { setGridSelect('grid1') }} style={{ width: 32, height: 32, justifyContent: 'center', alignItems: 'center', borderRadius: 6, backgroundColor: gridSelect === 'grid1' ? '#404040' : 'transparent', }}>
-                            <Ionicons name="grid-outline" size={24} color="#f7f7f7" />
+                            <Ionicons name="grid-outline" size={18} color="#f7f7f7" />
                         </Pressable>
                         <Pressable onPress={() => { setGridSelect('grid2') }} style={{ width: 32, height: 32, justifyContent: 'center', alignItems: 'center', borderRadius: 6, backgroundColor: gridSelect === 'grid2' ? '#404040' : 'transparent', }}>
-                            <AntDesign name="bars" size={24} color="#f7f7f7" />
+                            <AntDesign name="bars" size={18} color="#f7f7f7" />
                         </Pressable>
                         <Pressable onPress={() => { setGridSelect('grid3') }} style={{ width: 32, borderRadius: 6, backgroundColor: gridSelect === 'grid3' ? '#404040' : 'transparent', height: 32, justifyContent: 'center', alignItems: 'center', }}>
-                            <SimpleLineIcons name="magic-wand" size={20} color="#fff" />
+                            <SimpleLineIcons name="magic-wand" size={16} color="#fff" />
                         </Pressable>
                     </Row>
                 </Row>
@@ -142,8 +143,9 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                         data={item?.mangas}
                         keyExtractor={item => item.id}
                         style={{ paddingHorizontal: 12, }}
+
                         showsHorizontalScrollIndicator={false}
-                        ListEmptyComponent={<SkeletonList />}
+                        ListEmptyComponent={<EmptyList1 />}
                         renderItem={({ item }) => <Grid1 item={item} collection={itm?.id} refresh={refresh}/>}
                     />}
                     {gridSelect === 'grid2' && <FlatList
@@ -151,7 +153,7 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                         keyExtractor={item => item.id}
                         numColumns={2}
                         style={{ paddingHorizontal: 12, }}
-                        ListEmptyComponent={<SkeletonList />}
+                        ListEmptyComponent={<EmptyList1 />}
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item }) => <Grid2 item={item} />}
                     />}
@@ -171,6 +173,7 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                             )}
                             showsHorizontalScrollIndicator={false}
                             pagingEnabled
+                            
                             renderItem={({ item }) => <Grid3 item={item} />}
                         />
                         <ExpandingDot
@@ -562,6 +565,31 @@ const SkeletonList = () => {
                 <Skeleton width={164} height={184} radius={8} />
             </Row>
     )
+ }
+
+ const EmptyList2 = () => { 
+    return(
+        <Row style={{ justifyContent: 'center', alignItems: 'center', backgroundColor:'#303030', flexGrow: 1, padding: 12, borderRadius: 12, }}>
+            <Ionicons name="add-circle-outline" size={32} color="#d4d4d4" />
+            <Column style={{ marginLeft: 12, }}>
+                <Title style={{ fontSize: 18, }}>Nenhum mangá adicionado ainda</Title>
+                <Label style={{ fontSize: 16, }}>Escolha o mangá e clique no ícone de + e  {'\n'}salve aqui.</Label>
+            </Column>
+        </Row>
+        )
+ }
+
+ 
+ const EmptyList1 = () => { 
+    return(
+        <Column style={{ justifyContent: 'center', alignItems: 'center', backgroundColor:'#303030', flexGrow: 1, marginHorizontal: 10,  paddingVertical: 50, paddingHorizontal: 20, borderRadius: 12, }}>
+            <Ionicons name="add-circle-outline" size={102} color="#d4d4d4" />
+            <Column style={{ marginLeft: 12, }}>
+                <Title style={{ fontSize: 22, textAlign: 'center',  marginTop: 12,}}>Nenhum mangá adicionado ainda</Title>
+                <Label style={{ fontSize: 18, textAlign: 'center', marginTop: 6, }}>Escolha o mangá e clique no ícone de + e salve aqui.</Label>
+            </Column>
+        </Column>
+        )
  }
 
 const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width }} />

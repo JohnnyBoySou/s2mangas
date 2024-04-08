@@ -14,6 +14,7 @@ export default function LastedComponent() {
         })
     }, [])
 
+    const snapOffsets = Array(data.length).map((x, i) => i * (500 - 40));
         return (
             <Column style={{ marginHorizontal: 20, }}>
                 {data?.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
@@ -21,7 +22,7 @@ export default function LastedComponent() {
                 <Label>Acabaram de entrar no catálogo</Label>
                 </Column>}
                 <FlatList
-                    style={{ marginVertical: 16, marginHorizontal: -20, }}
+                    style={{ marginVertical: 16, marginHorizontal: -20, paddingLeft: 26,}}
                     data={data}
                     ListHeaderComponent={<Column style={{ width: 20, }} />}
                     ListEmptyComponent={<Loading/>}
@@ -29,6 +30,10 @@ export default function LastedComponent() {
                     renderItem={({ item }) => <Card item={item} />}
                     horizontal
                     showsHorizontalScrollIndicator={false}
+                    snapToOffsets={snapOffsets}
+                    snapToAlignment='start'
+                    scrollEventThrottle={32}
+                    decelerationRate='fast'
                 />
             </Column>
         );

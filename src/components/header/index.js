@@ -1,7 +1,6 @@
 import React, { useEffect, useState, memo, useContext } from 'react';
-import { Image, Pressable, Dimensions } from 'react-native';
-import { Column, Label, Row, Title } from '../../theme/global'
-import { LinearGradient } from 'expo-linear-gradient';
+import {  Pressable, Dimensions } from 'react-native';
+import { Column, Label, Row, Title, Spacer } from '../../theme/global'
 import { AnimatePresence, MotiImage, MotiView, MotiText, useAnimationState } from 'moti';
 import { Feather, FontAwesome5, Fontisto, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { getPreferences } from '../../api/user/preferences';
@@ -18,7 +17,7 @@ function Header() {
     const left = width / 2 - 100;
     const toggleAnimation = useAnimationState({
         close: {
-            height: 160,
+            height: 170,
         },
         open: {
             height: 520,
@@ -28,7 +27,7 @@ function Header() {
         close: {
             height: 64,
             width: 64,
-            translateY: -20,
+            translateY: -10,
             translateX: 0,
         },
         open: {
@@ -50,8 +49,8 @@ function Header() {
     const toggleTitle = useAnimationState({
         close: {
             fontSize: 28,
-            translateX: -46,
-            translateY: -80,
+            translateX: -34,
+            translateY: -70,
         },
         open: {
             fontSize: 46,
@@ -76,32 +75,34 @@ function Header() {
     }
     useEffect(() => {
         getPreferences().then(res => setUser(res))
-        toggleAnimation.transitionTo('open')
-        toggleImage.transitionTo('open')
-        toggleText.transitionTo('open')
-        toggleTitle.transitionTo('open')
-        setToggleIsOpen(true)
+        toggleAnimation.transitionTo('close')
+        toggleImage.transitionTo('close')
+        toggleText.transitionTo('close')
+        toggleTitle.transitionTo('close')
+        setToggleIsOpen(false)
     }, [])  
 
     return(
         <Column>
-            <Row style={{ alignSelf: 'flex-end' }}>
-                <Pressable onPress={() => navigation.navigate('Novidades')}  style={{width: 46, height: 46, top: 40, borderRadius: 100,zIndex: 99, justifyContent: 'center', alignItems: 'center', alignSelf: 'flex-end', }}>
-                    <MaterialCommunityIcons name="bell-badge-outline" size={24} color="#fff" />
+            <Row style={{ alignSelf: 'flex-end', top: 46,}}>
+                <Pressable onPress={() => navigation.navigate('Novidades')}  style={{width: 46, height: 46,  borderRadius: 100,zIndex: 99, justifyContent: 'center', alignItems: 'center',   }}>
+                    <Feather name="bell" size={24} color="#fff" />
                 </Pressable>
-                <Pressable onPress={() => navigation.navigate('Search')}  style={{width: 46,  height: 46, top: 40, borderRadius: 100,  zIndex: 99, justifyContent: 'center', alignItems: 'center', alignSelf: 'flex-end', }}>
+                <Pressable onPress={() => navigation.navigate('Search')}  style={{width: 46,  height: 46, borderRadius: 100,  zIndex: 99, justifyContent: 'center', alignItems: 'center',   }}>
                     <Feather name="search" size={24} color="#fff" />
                 </Pressable>
             </Row>
-            <MotiView state={toggleAnimation} transition={{type: 'timing', duration: 300,}}>
-                <MotiImage blurRadius={40} source={{ uri: user?.capa }} style={{ width: 0.99 * width, height: '100%', opacity: 0.6, top: -100, left: -15, borderRadius: 32, right: 10, zIndex: -2, position: 'absolute', }} />
+
+            
+            <MotiView state={toggleAnimation} transition={{type: 'timing', duration: 300,}} style={{ marginBottom: -80, }}>
+                <MotiImage blurRadius={40} source={{ uri: user?.capa }} style={{ width: width, height: '100%', opacity: 0.6, top: -100, left: -20, borderRadius: 32, right: 10, zIndex: -2, position: 'absolute', }} />
                 <Pressable onPress={() => navigation.navigate('Account')} >
-                    <MotiImage state={toggleImage} source={{ uri: user?.avatar }} style={{ width: 170, height: 170, borderRadius: 100,}} resizeMode='cover' transition={{ type: 'timing', duration: 300,  }}/>
+                    <MotiImage state={toggleImage} source={{ uri: user?.avatar }} style={{ width: 170, height: 170, borderRadius: 24,}} resizeMode='cover' transition={{ type: 'timing', duration: 300,  }}/>
                 </Pressable>
                 <MotiText state={toggleTitle} transition={{ type: 'timing', duration: 300,  }} style={{ fontSize: 46, textAlign: toggleIsOpen ? 'center' : 'left', letterSpacing: -2, fontFamily: toggleIsOpen ? font.bold : font.book, color: "#fff", alignSelf: 'center',}}>{hello},{"\n"}{user?.name}</MotiText>
             
+            <AnimatePresence>
             {toggleIsOpen && 
-                <AnimatePresence>
                     <MotiView from={{translateY: -20, opacity: 0,}} animate={{ translateY: 0, opacity:1,}} transition={{type: 'timing', duration: 300,}}>
                         <Row style={{ justifyContent: 'space-between', alignItems: 'center',  marginTop: 30,}}>
                             <Pressable style={{ flexDirection: 'row', width: '46%', alignItems: 'center', backgroundColor: "#202020", borderRadius: 6, }}>
@@ -133,24 +134,49 @@ function Header() {
                         </Row>
 
                     </MotiView>
-                </AnimatePresence>
                 }
+                </AnimatePresence>
             
             
             </MotiView>
 
 
-            <Pressable  onPress={toggleIsOpen ? handleCloseToggle : handleOpenToggle} style={{width: 42, height: 42, marginTop: -90,  zIndex: 99, backgroundColor: "#262626", borderRadius: 100, alignSelf: 'center', zIndex: 999, justifyContent: 'center', alignItems: 'center',  }}>
-                <MaterialCommunityIcons name={toggleIsOpen ? "chevron-up" : "chevron-down"} size={36} color="#fff"/>
-            </Pressable>
+            <Column style={{marginBottom: 0, zIndex: 99, }}>
+                <Row style={{justifyContent: 'space-between', alignItems: 'center', flexGrow: 1,}}>
+                    <Pressable onPress={() => {navigation.navigate('Account',{type: 'Like'})}} style={{ backgroundColor: "#262626", borderRadius: 8,  width: '49%', flexDirection: 'row',  alignItems: 'center', }}>
+                        <MotiImage source={require('../../assets/imgs/heart.png')} style={{ width:64, height: 64, borderTopLeftRadius: 8, borderBottomLeftRadius: 8, backgroundColor: "#404040" }}/>
+                        <Title style={{ fontFamily: 'Font_Medium', fontSize: 16, marginLeft: 8, }}>Mangás {'\n'}Curtidos</Title>
+                    </Pressable>
+                    <Spacer width={8} />
+                    <Pressable onPress={() => {navigation.navigate('Collections')}}  style={{ backgroundColor: "#262626", borderRadius: 8, width: '49%', flexDirection: 'row',  alignItems: 'center', }}>
+                        <MotiImage source={require('../../assets/imgs/collection.png')} style={{ width:64, height: 64, borderTopLeftRadius: 8, borderBottomLeftRadius: 8, backgroundColor: "#404040" }}/>
+                        <Title style={{ fontFamily: 'Font_Medium', fontSize: 16, marginLeft: 8, }}>Suas {'\n'}Coleções</Title>
+                    </Pressable>
+                </Row>
+                
+            </Column>
+
         </Column>
     )
 }
 
 export default memo(Header);
 
-/**
+/**<Row style={{justifyContent: 'space-between', alignItems: 'center', flexGrow: 1, marginTop: 8,}}>
+                    <Pressable style={{ backgroundColor: "#262626", borderRadius: 8,  width: '49%', flexDirection: 'row',  alignItems: 'center', }}>
+                        <MotiImage style={{ width:64, height: 64, borderTopLeftRadius: 8, borderBottomLeftRadius: 8, backgroundColor: "#404040" }}/>
+                        <Title style={{ fontFamily: 'Font_Medium', fontSize: 16, marginLeft: 8, }}>Mangás Curtidos</Title>
+                    </Pressable>
+                    <Spacer width={8} />
+                    <Pressable style={{ backgroundColor: "#262626", borderRadius: 8,  width: '49%', flexDirection: 'row',  alignItems: 'center', }}>
+                        <MotiImage style={{ width:64, height: 64, borderTopLeftRadius: 8, borderBottomLeftRadius: 8, backgroundColor: "#404040" }}/>
+                        <Title style={{ fontFamily: 'Font_Medium', fontSize: 16, marginLeft: 8, }}>Mangás Curtidos</Title>
+                    </Pressable>
+                </Row>
  * 
+ *   <Pressable  onPress={toggleIsOpen ? handleCloseToggle : handleOpenToggle} style={{width: 42, height: 42, marginTop: -90,  zIndex: 99, backgroundColor: "#262626", borderRadius: 100, alignSelf: 'center', zIndex: 999, justifyContent: 'center', alignItems: 'center',  }}>
+                <MaterialCommunityIcons name={toggleIsOpen ? "chevron-up" : "chevron-down"} size={36} color="#fff"/>
+            </Pressable>
                         <LinearGradient colors={['#ED274A', '#FF620A', '#E0CA3C']} style={{ width: 200, height: 200, position: 'absolute',  alignSelf: 'center', borderRadius: 100, }} />
             
             <AnimatePresence>

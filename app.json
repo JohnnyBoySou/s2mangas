@@ -39,17 +39,10 @@
       }
     },
     "plugins": [
-      "expo-font",
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "compileSdkVersion": 31,
-            "targetSdkVersion": 31,
-            "buildToolsVersion": "31.0.0"
-          }
-        }
-      ]
+      [ "expo-font" ],
+      [ "expo-av", { "microphonePermission": "Permita o Até que ele venha a acessar o microfone."  } ],
+      [ "expo-build-properties" ],
+      [ "expo-dev-launcher", { "launchModeExperimental": "most-recent"  } ],
     ]
   }
 }
