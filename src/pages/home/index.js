@@ -128,16 +128,16 @@ const ForYou = () => {
             }} style={{ backgroundColor: "#303030", borderRadius: 10, flexGrow: 1, marginTop: 12, flexDirection: 'row' }}>
                 <MotiImage source={{ uri: item?.capa }} style={{ width: 152, height: 152, borderRadius: 10,  }} />
                 <Column style={{ marginLeft: 24, flexGrow: 1, justifyContent: 'center',  }}>
-                    <Label style={{ fontSize: 16,color: "#ED274A", fontFamily: 'Font_Medium', }}>Mangalist</Label>
-                    <Title style={{ fontSize: 24, marginTop: 5, lineHeight: 26, width: '60%',}}>{item?.name}</Title>
-                    <Label style={{ fontSize: 16, width: '40%', }}>{item?.desc.slice(0, 72)}</Label>
+                    <Label style={{ fontSize: 16,color: "#ED274A", fontFamily: 'Font_Medium', width: 100, }}>Mangalist</Label>
+                    <Title style={{ fontSize: 20, marginTop: 5, lineHeight: 26, width:150,}}>{item?.name}</Title>
+                    <Label style={{ fontSize: 14, width: 160, }}>{item?.desc.slice(0, 62)}...</Label>
                 </Column>
             </Pressable>
         )
     })
 
     return(
-            <Column style={{  marginHorizontal: 20, }}> 
+            <Column style={{  marginHorizontal: 20, marginTop: 10, }}> 
                 <Title>Escolhido para você</Title>
                <Card item={data[3]} />
             </Column>

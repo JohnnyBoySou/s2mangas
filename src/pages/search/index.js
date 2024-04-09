@@ -10,9 +10,10 @@ import {tags} from '../../api/tags';
 import Avatar from '../../components/avatar';
 import { Skeleton } from 'moti/skeleton';
 import { Spacing } from '../preferences/styles';
-import { getPreferences } from '../../api/user/preferences';
+import { getPreferences } from '../../api/user/preferences'; 
+import { useNavigation } from '@react-navigation/native';
 
-export default function SearchPage(){
+export default function SearchPage({navigation}){
     const { color , font } = useContext(ThemeContext)
     const [name, setname] = useState('');
     const [history, setHistory] = useState([]);
@@ -126,8 +127,9 @@ export default function SearchPage(){
     )}
 
     const Category = ({item}) => { 
+        const navigation = useNavigation()
         return(
-            <Pressable style={{ width: '46%', flexGrow: 1, }}>
+            <Pressable style={{ width: '46%', flexGrow: 1, }} onPress={() => {navigation.navigate('Category', { 'category' : item })}} >
                <Column  style={{cursor: 'pointer', margin: 8, borderRadius: 12,  backgroundColor: item?.color, overflow: 'hidden', padding: 6, height: 84,}}>
                 <Title style={{fontSize: 20, margin: 10, flexWrap:'wrap'}}>{item.name}</Title>
               </Column>

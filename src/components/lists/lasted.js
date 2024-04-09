@@ -22,7 +22,7 @@ export default function LastedComponent() {
                 <Label>Acabaram de entrar no catálogo</Label>
                 </Column>}
                 <FlatList
-                    style={{ marginVertical: 16, marginHorizontal: -20, paddingLeft: 26,}}
+                    style={{ marginVertical: 16, marginHorizontal: -20, }}
                     data={data}
                     ListHeaderComponent={<Column style={{ width: 20, }} />}
                     ListEmptyComponent={<Loading/>}
@@ -31,9 +31,9 @@ export default function LastedComponent() {
                     horizontal
                     showsHorizontalScrollIndicator={false}
               //      snapToOffsets={snapOffsets}
-                    snapToAlignment='start'
-                    scrollEventThrottle={32}
-                    decelerationRate='fast'
+                   // snapToAlignment='start'
+                   // scrollEventThrottle={32}
+                   // decelerationRate='fast'
                 />
             </Column>
         );

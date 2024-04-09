@@ -16,6 +16,7 @@ import CollectionsPage from './../pages/collections/index';
 import CollectionDetailsPage from './../pages/collections/details';
 import AccountPage from '../pages/account';
 import SearchPage from '../pages/search';
+import CategoryPage from '../pages/search/category';
 
 const Stack = createStackNavigator();
 
@@ -41,6 +42,7 @@ export default function Router() {
             <Stack.Screen name="CollectionDetails" component={CollectionDetailsPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Account" component={AccountPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Search" component={SearchPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
+            <Stack.Screen name="Category" component={CategoryPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
         </Stack.Navigator>
     </NavigationContainer>
    );

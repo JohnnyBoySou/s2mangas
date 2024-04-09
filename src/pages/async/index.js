@@ -50,7 +50,7 @@ const AsyncStatic = ({navigation}) => {
           withTiming(-360, { duration: 1200 })
       )
   }
-    const randomNumber = Math.floor(Math.random() * 3) + 1;
+    const randomNumber = Math.floor(Math.random() * 5) + 1;
     const imgs = [require('../../assets/imgs/stk1.png'), require('../../assets/imgs/stk2.png'), require('../../assets/imgs/stk3.png'), require('../../assets/imgs/stk4.png'), require('../../assets/imgs/stk5.png')] 
     useEffect(() => {
         logoAnimation();

@@ -23,6 +23,7 @@ export default function AccountPage({ navigation, route}) {
     const [like, setLike] = useState([]);
     const [follow, setFollow] = useState([]);
     const [marks, setMarks] = useState([]);
+    const [mangalists, setmangalists] = useState([]);
     const [user, setuser] = useState([]);
     const profileRef = useRef()
 
@@ -36,6 +37,7 @@ export default function AccountPage({ navigation, route}) {
                 setLike(res.likes)
                 setFollow(res.follow)
                 setMarks(res.marks)
+                setmangalists(res?.mangalists)
                 if(typeRoute){
                     setType(typeRoute)
                 }
