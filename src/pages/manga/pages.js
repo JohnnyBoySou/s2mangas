@@ -13,7 +13,6 @@ export default function MangaPages({ route, navigation }) {
     const [item, setItem] = useState();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState();
-
     useEffect(() => {
         const requestData = async () => {
             setLoading(true)

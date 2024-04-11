@@ -1,87 +1,88 @@
 
-import axios from "axios";
+  import axios from "axios";
 
-export default async function requestPages(chapter, id) {
+  export default async function requestPages(chapter, id) {
+      //possiveis formatos de link;
+      // 1 = https://img.lermanga.org/S/saotome-shimai-wa-manga-no-tame-nara/capitulo-27/02.jpg
+      // 2 =  https://img.lermanga.org/S/saotome-shimai-wa-manga-no-tame-nara/capitulo-27/2.png
+      // 3 =  https://img.lermanga.org/S/saotome-shimai-wa-manga-no-tame-nara/capitulo-01/2.png
+      // 4 =  https://img.lermanga.org/S/saotome-shimai-wa-manga-no-tame-nara/capitulo-01/02.png
+      // 5 =  https://img.lermanga.org/S/saotome-shimai-wa-manga-no-tame-nara/capitulo-1/02.png
+      // 6 =  https://img.lermanga.org/S/saotome-shimai-wa-manga-no-tame-nara/capitulo-1/2.png
 
-    const return_data = {
-      "link": 1,
-      "chapter_number": chapter,
-      "manga": id,
-      "images": [],
-      "format": 0,
-      "pages": 0,
-      "next_chapter": { "number": parseInt(chapter, 10) + 1 },
-      "previus_chapter": { "number": parseInt(chapter, 10) >= 2 ? parseInt(chapter, 10) - 1 : 1 }
-    };
+      const baseURL = `https://img.lermanga.org/${id.charAt(0).toUpperCase()}/${id}/capitulo-${chapter}/`;
+      const formats = ['jpg', 'jpeg', 'png', 'webp'];
   
-    const startPageIndex = 1;
-    const tag = id.slice(0, 1).toUpperCase();
-    const formats = ['png', 'jpg', 'jpeg', 'webp'];
-  
-    try {
-      let foundPage = false;
-      let selectedFormat = null;
-  
-      for (const format of formats) {
-        let pageIndex = startPageIndex;
-  
-        if (format === 'webp') {
-          pageIndex = 1;
-        }
-  
-        while (pageIndex <= 2) {
-          const link = `https://img.lermanga.org/${tag}/${id}/capitulo-${chapter}/${pageIndex.toString()}.${format}`;
-          try {
-            await axios.get(link);
-            foundPage = true;
-            selectedFormat = format;
-            pageIndex++;
-          } catch (error) {
-            if (pageIndex === 1) {
-              pageIndex = 2;
-            } else {
-              break;
-            }
+      // Adicionando todas as extensões possíveis
+      const possibleExtensions = ['jpg', 'jpeg', 'png'];
+      const possibleFormats = [];
+      for (const ext1 of possibleExtensions) {
+          for (const ext2 of possibleExtensions) {
+              possibleFormats.push(`${ext1}.${ext2}`);
           }
-        }
-  
-        if (foundPage) {
-          break; // Se encontrou uma página, não precisa continuar procurando em outros formatos
-        }
       }
+      formats.push(...possibleFormats);
   
-      if (foundPage && selectedFormat) {
-        const urls = [];
-      
-        // Agora que conhecemos o formato válido, buscamos todas as páginas disponíveis
-        let pageIndex = startPageIndex;
-      
-        while (true) {
-          const link = `https://img.lermanga.org/${tag}/${id}/capitulo-${chapter}/${pageIndex.toString()}.${selectedFormat}`;
-      
-          try {
-            // Verifica a existência da página novamente
-            await axios.get(link);
-      
-            // Adiciona o link ao array de urls
-            urls.push(link);
-            pageIndex++;
-          } catch (error) {
-            // Se a página não for encontrada, encerra o loop
-            break;
+      const returnData = {
+          link: '',
+          chapterNumber: chapter,
+          manga: id,
+          images: [],
+          format: '',
+          pages: 0,
+          nextChapter: { number: parseInt(chapter, 10) + 1 },
+          previousChapter: { number: parseInt(chapter, 10) >= 2 ? parseInt(chapter, 10) - 1 : 1 }
+      };
+  
+      try {
+          let foundPage = false;
+          let selectedFormat = '';
+  
+          for (const format of formats) {
+              for (let pageIndex = 1; pageIndex <= 2; pageIndex++) {
+                  const link = `${baseURL}${pageIndex}.${format}`;
+  
+                  try {
+                      await axios.get(link);
+                      foundPage = true;
+                      selectedFormat = format;
+                      break;
+                  } catch (error) {
+                      if (pageIndex === 2) {
+                          console.error('Nenhuma página encontrada.');
+                          return returnData;
+                      }
+                  }
+              }
+              if (foundPage) break;
           }
-        }
-      
-        return_data.format = selectedFormat;
-        return_data.pages = urls.length;
-        return_data.images = urls;
-      } else {
-        console.error('Nenhuma página encontrada.');
+  
+          if (foundPage && selectedFormat) {
+              const urls = [];
+              let pageIndex = 1;
+  
+              while (true) {
+                  const link = `${baseURL}${pageIndex}.${selectedFormat}`;
+  
+                  try {
+                      await axios.get(link);
+                      urls.push(link);
+                      pageIndex++;
+                  } catch (error) {
+                      break;
+                  }
+              }
+  
+              returnData.format = selectedFormat;
+              returnData.pages = urls.length;
+              returnData.images = urls;
+              returnData.link = `${baseURL}${pageIndex}.${selectedFormat}`;
+          }
+  
+          console.error('Nenhuma página encontrada.');
+          return returnData;
+      } catch (error) {
+          console.error(error.message);
+          return error.message;
       }
-      
-      return return_data
-    } catch (error) {
-      console.error(error.message);
-      return error.message;
-    }
   }

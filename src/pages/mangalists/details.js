@@ -5,6 +5,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome5, Entypo, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { Video } from 'expo-av';
 
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+
 const { width, height } = Dimensions.get('window');	
 
 export default function MangalistDetailsPage({ route, navigation }) {
@@ -22,20 +24,33 @@ export default function MangalistDetailsPage({ route, navigation }) {
 
     }
     const [story, setStory] = useState(false);
+    const scrollY = useSharedValue(0);
+    const imageStyle = useAnimatedStyle(() => {
+        const scale = scrollY.value > 142 ? 1.3 - (scrollY.value - 142) / 200 : 1.3;
+        return {
+          opacity: scale,
+          transform:[{ scale:scale }]
+        };});
 
+        
+    const scrollMain = useRef();
     return (
         <Main>
            {story && <Story setStory={setStory} item={item} handlePlay={handlePlay} handleLike={handleLike} handleRandom={handleRandom} handleRemix={handleRemix} /> }
-            <Scroll >
+            <Scroll onScroll={(event) => { scrollY.value = event.nativeEvent.contentOffset.y;}} >
                 <LinearGradient colors={[item?.color, 'transparent']} style={{ width: '100%', height: 300, position: 'absolute', top: 0, left: 0, }} />
-                <Row style={{ marginTop: 50, paddingHorizontal: 20, }}>
+                <Row style={{ marginTop: 50, paddingHorizontal: 20,  justifyContent: 'space-between', alignItems: 'center', marginBottom: 12,}}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <AntDesign name="arrowleft" size={32} color="#fff" />
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <AntDesign name="search1" size={32} color="#fff" />
+                    </TouchableOpacity>
                 </Row>
                 <Column style={{ paddingHorizontal: 20, }}>
-                    <Image source={{ uri: item?.capa }} style={{ width: 200, height: 200, alignSelf: 'center', borderRadius: 4, }} />
-                    <Title style={{ fontSize: 24, marginBottom: 5, marginTop: 20, }}>{item?.name}</Title>
+                    <Animated.Image source={{ uri: item?.capa }} style={[{ width: 170, height: 170, marginTop: 24,  alignSelf: 'center', borderRadius: 4, zIndex: 99, }, imageStyle]} />
+                
+                    <Title style={{ fontSize: 24, marginBottom: 5, marginTop: 50, }}>{item?.name}</Title>
                     <Label style={{ fontSize: 18, lineHeight: 22 }}>{item.desc}</Label>
                     <Label style={{ marginTop: 10, }}>{item.mangas_ids.length} mangás • Verificado</Label>
                     <Row style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 15,}}>
@@ -45,9 +60,6 @@ export default function MangalistDetailsPage({ route, navigation }) {
                             </TouchableOpacity>
                             <TouchableOpacity onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
                                 <AntDesign name="hearto" size={24} color="#d4d4d4" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={handleRemix} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
-                                <Ionicons name="add-circle-outline" size={24} color="#d4d4d4" />
                             </TouchableOpacity>
                         </Row>
 

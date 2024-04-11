@@ -1,6 +1,6 @@
 
 import axios from "axios";
-import cheerio from 'cheerio';
+import cheerio from 'react-native-cheerio';
 export default async function requestGenre(genre, page = 1) {
   try {
     const response = await axios.get(`https://lermanga.org/mangas/genero/${genre}/page/${page}`,  { headers: {'Accept': "text/html", 'Access-Control-Allow-Origin': '*'} });

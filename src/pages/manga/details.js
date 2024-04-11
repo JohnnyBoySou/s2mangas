@@ -143,8 +143,8 @@ export default function MangaDetailsPage({ route, navigation }) {
 
                 <Column style={{  marginBottom: -20, zIndex: 98,}}>
                     <Pressable onPress={() => {navigation.goBack()}}  style={{ width: 90, height: 10, backgroundColor: '#30303090', borderRadius: 100, alignSelf: 'center', marginBottom: -20, zIndex: 99, marginTop: 10, }}/>
-                    <ImageBackground blurRadius={40} source={{ uri: item?.capa }} style={{ height: 400,  flexGrow: 1,  justifyContent: 'center', alignItems: 'center',  }} >
-                        <Animated.Image source={{ uri: item?.capa }} style={[{ width: 170, height: 240, alignSelf: 'center', borderRadius: 4, zIndex: 99, }, imageStyle]} />
+                    <ImageBackground blurRadius={40} source={{ uri: item?.capa }} style={{ height: 410,  flexGrow: 1,  justifyContent: 'center',   }} >
+                        <Animated.Image source={{ uri: item?.capa }} style={[{ width: 170, height: 240, marginTop: 24,  alignSelf: 'center', borderRadius: 4, zIndex: 99, }, imageStyle]} />
                     </ImageBackground>
 
                     <LinearGradient colors={['transparent', '#171717']} style={{ width: '100%', height: 200,  marginTop: -198,}} />
