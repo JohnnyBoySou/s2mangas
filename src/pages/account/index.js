@@ -31,6 +31,7 @@ export default function AccountPage({ navigation, route}) {
         const fetchData = () => {
             setLoading(true)
             getPreferences().then(res => {
+                console.log(res)
                 setuser(res)
                 setComplete(res.complete)
                 setProgress(res.progress)

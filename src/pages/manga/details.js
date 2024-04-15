@@ -16,6 +16,7 @@ import { Modalize } from 'react-native-modalize';
 const { width, height } = Dimensions.get('window');
 import { ThemeContext } from 'styled-components/native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { listChaptersToManga } from '../../api/user/progress';
 
 export default function MangaDetailsPage({ route, navigation }) {
     const id = route.params.id;
@@ -23,14 +24,18 @@ export default function MangaDetailsPage({ route, navigation }) {
     const { color, font } = useContext(ThemeContext);
     const [item, setItem] = useState();
     const [chapters, setChapters] = useState([]);
+    const [chaptersRead, setChaptersRead] = useState([]);
     const [similar, setSimilar] = useState();
+    const [, set] = useState();
     const [loading, setLoading] = useState(true);
+
     const itm = {
         name: item?.name,
         capa: item?.capa,
         rate: item?.rate,
         type: item?.type,
         id: item?.id,
+        chapter: item?.chapters,
     };
     useEffect(() => {
         const fetchData = async () => {
@@ -52,6 +57,9 @@ export default function MangaDetailsPage({ route, navigation }) {
       
               const followResponse = await verifyFollow(id);
               setFollow(followResponse);
+
+              const listChapters = await listChaptersToManga(id);
+              setChaptersRead(listChapters)
       
               setLoading(false);
             } catch (error) {
@@ -267,13 +275,13 @@ export default function MangaDetailsPage({ route, navigation }) {
                         style={{ marginTop: 20, }}
                         data={chapters?.slice(0, 5)}
                         keyExtractor={(item) => item.number}
-                        renderItem={({ item }) => <Card item={item} id={id} />}
+                        renderItem={({ item }) => <Card item={item} id={id} itm={itm} />}
                     />
                 </Column>
                 <Column style={{ marginTop: 20, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16,  marginBottom: 20, }}>
                     <Title style={{ fontSize: 24, marginTop: 8, }}>Todos ({item?.chapters})</Title>
                     <Label style={{}}>Confira todos capítulos</Label>
-                    <ListChapters chapters={chapters} id={id} />
+                    <ListChapters chapters={chapters} id={id} itm={itm} />
                 </Column>
                 </>}
 
@@ -306,20 +314,20 @@ export default function MangaDetailsPage({ route, navigation }) {
     )
 }
 
-const Card = ({ item, id }) => {
+const Card = ({ item, id, itm }) => {
     const navigation = useNavigation();
     return (
         <Row style={{ backgroundColor: "#202020", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 6, }}>
             <Title style={{ fontSize: 22, marginLeft: 20, }}>#{item?.number}</Title>
             <Label>{item?.date}</Label>
-            <TouchableOpacity onPress={() => navigation.navigate('MangaPages', { chapter: item.number, id: id, })} style={{ backgroundColor: '#303030', padding: 12, borderRadius: 100, marginRight: 10, }} >
+            <TouchableOpacity onPress={() => navigation.navigate('MangaPages', { chapter: item.number, id: id, itm: itm, })} style={{ backgroundColor: '#303030', padding: 12, borderRadius: 100, marginRight: 10, }} >
                 <AntDesign name="arrowright" size={24} color="#fff" />
             </TouchableOpacity>
         </Row>
     )
 }
 
-const ListChapters = ({ chapters, id }) => {
+const ListChapters = ({ chapters, id, itm }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -350,7 +358,7 @@ const ListChapters = ({ chapters, id }) => {
                 style={{ marginTop: 20, }}
                 data={currentItems}
                 keyExtractor={(item) => item.number}
-                renderItem={({ item }) => <Card item={item} id={id} />}
+                renderItem={({ item }) => <Card item={item} id={id} itm={itm}/>}
             />
             <Pagination
                 itemsPerPage={itemsPerPage}

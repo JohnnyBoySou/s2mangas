@@ -139,20 +139,14 @@ export default function SearchPage({navigation}){
      //<MotiImage source={{uri: item?.img}} style={{ width: 50, height: 80, position: 'absolute', right: -8, bottom: -10, transform: [{rotate: '24deg',}], borderRadius: 6, backgroundColor: '#303030', }} />
 
      const RelevantResult = ({item}) => {
+        
+        const navigation = useNavigation()
         return(
-          <Pressable onPress={() => navigation.navigate('MangaDetails', { id: item.id })} style={{ justifyContent: 'center', alignItems: 'center',  }}>
+          <Pressable onPress={() => navigation.navigate('MangaDetails', { id: item.id })} style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row'  }}>
               <Image source={{uri: item?.capa}}  style={{objectFit: 'cover', borderRadius: 8, width: 120, height: 180, zIndex: 2,}} />
               <Column style={{ backgroundColor: "#303030", paddingHorizontal: 20, paddingLeft: 30, paddingVertical: 12, borderRadius: 12, marginVertical: 10, marginLeft: -10,}}>
                 <Title style={{color: "#f6f6f6", fontSize: 24, width: 150, marginTop: 8,}}>{item?.name.slice(0,32)}</Title>
                 <Label style={{fontSize: 18, marginTop: 4, marginBottom: 10,    }}>{item?.rate} • {item?.typename}</Label>
-                <Row style={{ justifyContent: 'space-between', alignItems: 'center',  }}>
-                    <Pressable>
-                        <AntDesign name="pluscircleo" size={24} color="#d7d7d7" />
-                    </Pressable>
-                    <Pressable>
-                        <AntDesign name="playcircleo" size={24} color="#d7d7d7" />
-                    </Pressable>
-                </Row>
               </Column>
           </Pressable>
       
@@ -160,10 +154,12 @@ export default function SearchPage({navigation}){
       }
       
       const Result = ({item}) => {
+        
+        const navigation = useNavigation()
         return(
-          <Pressable onPress={() => navigation.navigate('MangaDetails', { id: item.id })} style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#262626', width: '48%', borderRadius: 6, margin: 4,  }}>
+          <Pressable onPress={() => navigation.navigate('MangaDetails', { id: item.id })} style={{  justifyContent: 'center', alignItems: 'center', backgroundColor: '#262626', width: '48%', borderRadius: 6, margin: 4,  }}>
                 <Image source={{uri: item?.capa}}  style={{objectFit: 'cover', marginTop: 24, borderRadius: 8, width: 120, height: 180, zIndex: 2,}} />
-                <Title style={{color: "#f6f6f6", fontSize: 18, marginTop: 8,marginHorizontal: 20, }}>{item?.name.slice(0,28)}</Title>
+                <Title style={{color: "#f6f6f6", fontSize: 18, marginTop: 8,marginHorizontal: 20, }}>{item?.name.slice(0,32)}</Title>
                 <Label style={{fontSize: 14, marginTop: 4, marginBottom: 14,    }}>{item?.rate} • {item?.typename}</Label>
           </Pressable>
       

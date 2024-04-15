@@ -4,18 +4,20 @@ import { Pressable, FlatList, Dimensions, Image } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import requestPages from '../../api/manga/pages';
 import { MotiView } from 'moti';
+import { addChaptersToManga } from '../../api/user/progress';
 
 const { width, height } = Dimensions.get('window'); 
 
 
 export default function MangaPages({ route, navigation }) {
-    const {id, chapter} = route.params;
+    const {id, chapter, itm } = route.params;
     const [item, setItem] = useState();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState();
     useEffect(() => {
         const requestData = async () => {
             setLoading(true)
+            addChaptersToManga(itm, chapter) // Adiciona o capítulo ao progresso do usuário
             requestPages(chapter, id).then((response) => {
                 setItem(response)
                 setLoading(false);

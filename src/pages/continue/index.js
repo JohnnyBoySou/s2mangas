@@ -7,27 +7,34 @@ import requestSimilar from '../../api/manga/similar';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Modalize } from 'react-native-modalize';
-import { addComplete, addLike, removeComplete, removeLike, verifyLiked } from '../../api/user/preferences';
+import { addComplete, addLike, getPreferences, removeComplete, removeLike, verifyLiked } from '../../api/user/preferences';
 import Toast from '../../components/toast';
+import { listLastManga } from '../../api/user/progress';
 
 const { width, height } = Dimensions.get('window');
 
 export default function ContinuePage({ navigation }) {
-
   
   const [step, setStep] = useState(1);
-  const [data, setData] = useState([]);
+  const [item, setItem] = useState([]);
   const [similar, setSimilar] = useState([]);
-
   const [liked, setLiked] = useState(false);
   const [completed, setCompleted] = useState(false);
 
   const modalRead = useRef(null);
-  const openRead = () => {
-    modalRead?.current?.open();
-  }
+ 
+  useEffect(() => {
+    const getManga = async () => {
+      listLastManga().then((manga) => {
+        setItem(manga)
+      })
+    }
+    getManga()
+  },[])
 
-  const item = {
+
+
+  const itema = {
     id: 'jujutsu-kaisen',
     name: 'Jujutsu Kaisen',
     capa: 'https://i.pinimg.com/564x/34/8b/14/348b14140d2a4d35d8c687d811c23a43.jpg',
@@ -38,7 +45,7 @@ export default function ContinuePage({ navigation }) {
     },
   }
 
-  const progress = ((item?.chapters?.read.length / item?.chapters?.total) * 100).toFixed(0)
+  const progress = ((item?.chapters?.length / item?.chapter) * 100).toFixed(0)
   useEffect(() => {
     const fetchData = async () => {
       const res = await requestSimilar(item?.id)
@@ -59,7 +66,6 @@ export default function ContinuePage({ navigation }) {
       if(r) setLiked(true)
     }
   }
-
 
   const handleRemix = (params) => {
   }
@@ -158,7 +164,7 @@ export default function ContinuePage({ navigation }) {
             <Pressable onPress={handleLike} style={{ width: 32, height: 32, marginRight: 20, justifyContent: 'center', alignItems: 'center', }}>
               <AntDesign name="sharealt" size={24} color="#d4d4d4" />
             </Pressable>
-            <Pressable onPress={openRead} style={{ width: 32, height: 32, justifyContent: 'center', alignItems: 'center', }}>
+            <Pressable onPress={() => modalRead.current?.open()} style={{ width: 32, height: 32, justifyContent: 'center', alignItems: 'center', }}>
               <Ionicons name="albums-outline" size={24} color="#d4d4d4" />
             </Pressable>
           </Row>

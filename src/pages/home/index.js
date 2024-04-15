@@ -11,9 +11,11 @@ import Header from '../../components/header';
 import { getPreferences } from '../../api/user/preferences';
 import CollectionsComponent from '../../components/lists/collections';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { MotiImage } from 'moti';
+import { AnimatePresence, MotiImage, MotiView } from 'moti';
 import axios from 'axios'
 import { Space } from 'lucide-react-native';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { listLastManga } from '../../api/user/progress';
 const { width, height } = Dimensions.get('window');
 
 
@@ -36,16 +38,22 @@ export default function HomePage({ navigation }) {
     }, [])
 
 
- 
+    const [headerShown, setHeaderShown] = useState(false);
 
     return (
         <Main>
-            <Scroll stickyHeaderIndices={[1]}>
+            <Scroll stickyHeaderIndices={[1]} onScroll={(event) => {
+                const scrolling = event.nativeEvent.contentOffset.y;
+                if (scrolling > 330) {
+                    setHeaderShown(true);
+                } else {
+                    setHeaderShown(false);
+                }
+                }}>
                 {type === 'Mangas' && <Column style={{ width: 100, height: 50 }} />}
                 {type === 'Mangalist' && <Column style={{ width: 100, height: 50 }} />}
                 {type === 'Tudo' && <Column style={{ paddingHorizontal: 20, }}><Header/></Column>}
 
- 
 
                 <Row style={{ marginBottom: 0, backgroundColor: color.background, padding: 12, paddingTop: 40, marginTop: -20, zIndex: 99, }}>
                     <Pressable onPress={() => { setType('Tudo') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Tudo' ? color.light : color.off, borderRadius: 100, zIndex: 99,}}>
@@ -98,7 +106,12 @@ export default function HomePage({ navigation }) {
                     <MangalistRateComponent />
                     <Spacer />
                 </Column>}
+
+               
+
             </Scroll>
+            <AnimatePresence> 
+                {headerShown && <ContinueBar navigation={navigation}/>}</AnimatePresence>
         </Main>
     )
 }
@@ -143,3 +156,52 @@ const ForYou = () => {
             </Column>
     )
  }
+
+
+ const ContinueBar = ({ navigation }) => {
+    const [item, setitem] = useState();
+    useEffect(() => {
+        const listChapter = () => {
+            listLastManga().then(data => {
+                setitem(data)
+            })
+        }
+        listChapter()
+    }, [])
+
+    const { color, font } = useContext(ThemeContext);
+    return(
+    <Pressable style={{ position: 'absolute',  bottom: 10, width: '100%',}} onPress={() => {navigation.navigate('Continue')}} >
+        <MotiView  
+            from={{opacity: 0, transform: [ {translateY:50,}], }} 
+            animate={{opacity: 1, transform: [ {translateY: 0,}],}} 
+            exit={{opacity: 0, transform: [ {translateY: 50,}],}}  
+            exitTransition={{ type: 'timing',  duration: 300, }} 
+            style={{ height: 60, borderRadius: 6, marginHorizontal: 20,  backgroundColor: "#FFF",  }} >
+                <Row style={{ marginHorizontal: 8,  alignItems: 'center', marginTop: 8, justifyContent: 'space-between',  }}>
+                    <Row>
+                        <MotiImage source={{uri: item?.capa}} style={{ width: 40, height: 40, borderRadius: 5,  }} />
+                        <Column style={{ marginLeft: 16, justifyContent: 'center', }}>
+                        <Title style={{fontSize: 16, color: "#171717"}}>{item?.name.slice(0,12)}</Title>
+                        <Label style={{ fontFamily: font.book, color: "#505050", fontSize: 14, marginTop: -2, }}>{item?.chapter - item?.chapters.length} capítulos restantes</Label>
+                        </Column>
+                    </Row>
+
+                    <Row>
+                   
+                    <Pressable style={{ marginRight: 10, }}>
+                        <Ionicons name="play-outline" size={28} color="#000" />
+                    </Pressable>
+                    </Row>                    
+                </Row>
+
+            </MotiView>
+    </Pressable>
+)}
+
+
+/**
+ *  <Pressable style={{ marginRight: 12, }}>
+                        <Ionicons name='checkmark-done-circle-outline' size={28} color="#000" />
+                    </Pressable>
+ */
