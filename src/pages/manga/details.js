@@ -26,7 +26,6 @@ export default function MangaDetailsPage({ route, navigation }) {
     const [chapters, setChapters] = useState([]);
     const [chaptersRead, setChaptersRead] = useState([]);
     const [similar, setSimilar] = useState();
-    const [, set] = useState();
     const [loading, setLoading] = useState(true);
 
     const itm = {
@@ -60,6 +59,7 @@ export default function MangaDetailsPage({ route, navigation }) {
 
               const listChapters = await listChaptersToManga(id);
               setChaptersRead(listChapters)
+              console.log(listChapters)
       
               setLoading(false);
             } catch (error) {
@@ -115,9 +115,6 @@ export default function MangaDetailsPage({ route, navigation }) {
 
     const cl = item?.type === 'MANGA' ? "#FFA8B7" : item?.type === 'MANHWA' ? "#BBD2FF" : item?.type === 'MANHUA' ? "#BFFFC6" : '#FFF';
     const reaction = item?.rate >= 4 ? 'Ótimo' : item?.rate >= 3 ? 'Bom' : item?.rate <= 2 ? 'Ruim' : 'Regular';
-    const reaction_color = reaction === 'Ótimo' ? '#FFC4A3' : reaction === 'Bom' ? '#B5FFBC' : reaction === 'Ruim' ? '#1D1A39' : '#FFFFCA';
-    const reaction_image = reaction === 'Ótimo' ? 'https://em-content.zobj.net/source/samsung/380/smiling-face-with-heart-eyes_1f60d.png' : reaction === 'Bom' ? 'https://em-content.zobj.net/source/microsoft/379/smiling-face-with-smiling-eyes_1f60a.png' : reaction === 'Ruim' ? 'https://em-content.zobj.net/source/microsoft/379/skull_1f480.png' : 'https://em-content.zobj.net/source/microsoft/379/sparkles_2728.png';
-    const reaction_desc = reaction === 'Ótimo' ? 'Um mangá fantástico, pode ler sem medo!' : reaction === 'Bom' ? 'A galera está gostando dsse mangá!' : reaction === 'Ruim' ? 'Não está agradando a maioria das pessoas' : 'Não podemos opinar no momento'
 
     const [type, setType] = useState('Capitulos');
     const modalAdd = useRef();
@@ -145,9 +142,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                 }
                 }}
             scrollEventThrottle={16}
-            ref={scrollMain}
-            >
-
+            ref={scrollMain}>
 
                 <Column style={{  marginBottom: -20, zIndex: 98,}}>
                     <Pressable onPress={() => {navigation.goBack()}}  style={{ width: 90, height: 10, backgroundColor: '#30303090', borderRadius: 100, alignSelf: 'center', marginBottom: -20, zIndex: 99, marginTop: 10, }}/>
@@ -176,7 +171,7 @@ export default function MangaDetailsPage({ route, navigation }) {
 
                 </Column>
 
-                <Row style={{  justifyContent: 'space-between', flexGrow: 1,  backgroundColor: color.background, paddingTop: 30, paddingBottom: 10, marginBottom: -30,  paddingHorizontal: 24, zIndex: 98,}}>
+                <Row style={{  justifyContent: 'space-between', flexGrow: 1,  backgroundColor: color.background, paddingTop: 16, marginTop: 20, paddingBottom: 10, marginBottom: -20,  paddingHorizontal: 24, zIndex: 98,}}>
                         <Row style={{  alignItems: 'center', }}>
                             <Pressable onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
                                 {liked ? <AnimatePresence>
@@ -222,7 +217,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                         </Pressable>
                 </Row>
 
-                <Row style={{ paddingHorizontal: 20, marginTop: 40,}}>
+                <Row style={{ paddingHorizontal: 10, marginTop: 40,}}>
                     <Pressable onPress={() => { setType('Capitulos') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Capitulos' ? color.light : color.off, borderRadius: 100,  }}>
                         <Label style={{fontSize: 18, color: type === 'Capitulos' ? color.off : color.title, fontFamily: type === 'Capitulos' ? font.bold : font.book, }}>Capítulos</Label>
                     </Pressable>
@@ -281,7 +276,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                 <Column style={{ marginTop: 20, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16,  marginBottom: 20, }}>
                     <Title style={{ fontSize: 24, marginTop: 8, }}>Todos ({item?.chapters})</Title>
                     <Label style={{}}>Confira todos capítulos</Label>
-                    <ListChapters chapters={chapters} id={id} itm={itm} />
+                    <ListChapters chapters={chapters} id={id} itm={itm} chaptersRead={chaptersRead}/>
                 </Column>
                 </>}
 
@@ -314,10 +309,15 @@ export default function MangaDetailsPage({ route, navigation }) {
     )
 }
 
-const Card = ({ item, id, itm }) => {
+const Card = ({ item, id, itm, chaptersRead }) => {
     const navigation = useNavigation();
+    console.log(chaptersRead)
+    const read = chaptersRead?.includes(item.number);
+    if(read){
+        return <></>
+    }
     return (
-        <Row style={{ backgroundColor: "#202020", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 6, }}>
+        <Row style={{ backgroundColor: "#202020", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 6, opacity: read ? 0.6 : 1, }}>
             <Title style={{ fontSize: 22, marginLeft: 20, }}>#{item?.number}</Title>
             <Label>{item?.date}</Label>
             <TouchableOpacity onPress={() => navigation.navigate('MangaPages', { chapter: item.number, id: id, itm: itm, })} style={{ backgroundColor: '#303030', padding: 12, borderRadius: 100, marginRight: 10, }} >
@@ -327,7 +327,7 @@ const Card = ({ item, id, itm }) => {
     )
 }
 
-const ListChapters = ({ chapters, id, itm }) => {
+const ListChapters = ({ chapters, id, itm, chaptersRead, }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -358,7 +358,7 @@ const ListChapters = ({ chapters, id, itm }) => {
                 style={{ marginTop: 20, }}
                 data={currentItems}
                 keyExtractor={(item) => item.number}
-                renderItem={({ item }) => <Card item={item} id={id} itm={itm}/>}
+                renderItem={({ item }) => <Card item={item} id={id} itm={itm} chaptersRead={chaptersRead}/>}
             />
             <Pagination
                 itemsPerPage={itemsPerPage}

@@ -32,20 +32,11 @@ export default function ContinuePage({ navigation }) {
     getManga()
   },[])
 
-
-
-  const itema = {
-    id: 'jujutsu-kaisen',
-    name: 'Jujutsu Kaisen',
-    capa: 'https://i.pinimg.com/564x/34/8b/14/348b14140d2a4d35d8c687d811c23a43.jpg',
-    chapters: {
-      total: 12,
-      read: [1, 2, 3, 4, 8, 6, 8, 9, 10],
-      markers: [3, 2, 1, 4]
-    },
-  }
-
-  const progress = ((item?.chapters?.length / item?.chapter) * 100).toFixed(0)
+  const chaptertTotal = item.chapter
+  const chaptersRead = item.chapters?.length
+  const progresse = parseInt((chaptersRead / chaptertTotal) * 100)
+  const progress = progresse
+  console.log(progresse)
   useEffect(() => {
     const fetchData = async () => {
       const res = await requestSimilar(item?.id)
@@ -55,7 +46,6 @@ export default function ContinuePage({ navigation }) {
     }
     fetchData()
   }, [])
-
 
   const handleLike = () => {
     if(liked){
@@ -113,10 +103,13 @@ export default function ContinuePage({ navigation }) {
             />
           </Column>
           <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}></Row>
-        <Row style={{ backgroundColor: "#ffffff30", borderRadius: 100, marginTop: 20, marginBottom: 10, justifyContent: 'space-between', alignItems: 'center', }}>
-          <MotiView style={{ height: 50, backgroundColor: "#fff", borderRadius: 100, width: '5%', }}   from={{ width: '5%', }}  animate={{ width: progress+"%", }}  transition={{ type: 'timing', duration: 1500, delay: 1000, }}/>
-          <Title style={{marginRight: 10, }}>{progress}%</Title>
-        </Row>
+      
+        {progress >= 0 &&
+          <Row style={{ backgroundColor: "#ffffff30", borderRadius: 100, marginTop: 20, marginBottom: 10, justifyContent: 'space-between', alignItems: 'center', }}>
+            <MotiView style={{ height: 50, backgroundColor: "#fff", borderRadius: 100, width: '5%', }}   from={{ width: '5%', }}  animate={{ width: `${progress}%`, }}  transition={{ type: 'timing', duration: 1500, delay: 1000, }}/>
+            <Title style={{marginRight: 10, }}>{progress}%</Title>
+          </Row>
+        }
 
 
         <Row style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 15, }}>
@@ -205,7 +198,6 @@ export default function ContinuePage({ navigation }) {
         <ListReads current={item}/>
       </Modalize>
                 
-     <TostLike/>
   </>
   )
 }

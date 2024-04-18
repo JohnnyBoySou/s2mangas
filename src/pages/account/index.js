@@ -31,7 +31,7 @@ export default function AccountPage({ navigation, route}) {
         const fetchData = () => {
             setLoading(true)
             getPreferences().then(res => {
-                console.log(res)
+                console.log(res.complete[0])
                 setuser(res)
                 setComplete(res.complete)
                 setProgress(res.progress)
@@ -135,7 +135,7 @@ export default function AccountPage({ navigation, route}) {
                         ListEmptyComponent={<CollectionEmpty />}
                         style={{alignSelf: 'center'}}
                         showsVerticalScrollIndicator={false}
-                        renderItem={({ item }) => <CollectionItem item={item} />}    
+                        renderItem={({ item }) => <CollectionItem item={item} type="complete" />}    
                         />
                     }
                      {type === 'Follow' && 
@@ -186,14 +186,32 @@ export default function AccountPage({ navigation, route}) {
 
 const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width }} />
 
-const CollectionItem = ({item}) => {
+const CollectionItem = ({item, type}) => {
     const navigation = useNavigation();
+    const chaptertTotal = item.chapter
+    const chaptersRead = item.chapters?.length
+    const progress = parseInt((chaptersRead / chaptertTotal) * 100)
+    const progressColor = progress < 30 ? '#d7d7d7' : progress < 60 ? '#ff9900' : progress < 80 ? 'green' : 'blue';
+
   return(
     <Pressable onPress={() => {navigation.navigate('MangaDetails', { id: item?.id, })}}  style={{ margin: 10, borderRadius: 8,}}>
         <Image source={{ uri: item.capa }} style={{ width: 150, height: 190, borderTopLeftRadius: 8, borderTopRightRadius: 8, }} />
         <Column style={{ paddingVertical: 6, backgroundColor: '#262626',  borderBottomLeftRadius: 6, borderBottomRightRadius: 6,  paddingHorizontal: 6,}}>
             <Title style={{fontSize: 18,}}>{item?.name?.slice(0, 16)}</Title>
             <Label style={{fontSize: 12, marginTop:2, }}>{item?.rate} • {item?.type}</Label>
+            {type === 'complete' ? <Label style={{fontSize: 12, paddingVertical: 6, paddingHorizontal: 10, backgroundColor: 'green', color: "#fff", borderRadius: 4, flexGrow: 1,marginTop: 6, marginBottom: -6, }}>Completo</Label> :
+            <>
+            {progress > 0 ? <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: 8, }}>
+                <Column style={{ width: 100, height: 10, backgroundColor: '#303030', borderRadius: 100, }}>
+                    <Column style={{ width: `${progress}%`, height: 10, backgroundColor: progressColor, borderRadius: 100, }} />
+                </Column>
+                <Label style={{fontSize: 12, color: '#f7f7f7', }}>{progress}%</Label>
+            </Row> : 
+                <Label style={{fontSize: 14, marginTop: 6, color: '#d7d7d7', }}>Não iniciado</Label>
+            }
+            </>
+            }
+
             <Spacer height={4} />
         </Column>
     </Pressable>
