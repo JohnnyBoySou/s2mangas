@@ -59,6 +59,7 @@ async function addLike(array) {
 async function verifyLiked(id) {
   try {
     const preferences = await getPreferences();
+    console.log(preferences.likes && preferences.likes.some((manga) => manga.id === id))
     return preferences.likes && preferences.likes.some((manga) => manga.id === id);
   } catch (error) {
     console.error("Error verifying liked manga:", error);

@@ -10,6 +10,7 @@ import { Modalize } from 'react-native-modalize';
 import { addComplete, addLike, getPreferences, removeComplete, removeLike, verifyLiked } from '../../api/user/preferences';
 import Toast from '../../components/toast';
 import { listLastManga } from '../../api/user/progress';
+import ModalAddCollection from '../../components/modal/collection';
 
 const { width, height } = Dimensions.get('window');
 
@@ -19,15 +20,27 @@ export default function ContinuePage({ navigation }) {
   const [item, setItem] = useState([]);
   const [similar, setSimilar] = useState([]);
   const [liked, setLiked] = useState(false);
+  const [marks, setMarks] = useState([]);
   const [completed, setCompleted] = useState(false);
 
   const modalRead = useRef(null);
+  const modalAdd = useRef(null);
  
   useEffect(() => {
     const getManga = async () => {
-      listLastManga().then((manga) => {
+      await listLastManga().then((manga) => {
         setItem(manga)
       })
+
+      const res = await requestSimilar(item?.id)
+      setSimilar(res?.mangas)
+      
+      const likedResponse = await verifyLiked(item?.id);
+      setLiked(likedResponse);
+      
+      //const mark = await getPreferences()
+      // const marks = mark?.find((m) => m.id === item?.id)
+      //   setMarks(marks)
     }
     getManga()
   },[])
@@ -36,26 +49,18 @@ export default function ContinuePage({ navigation }) {
   const chaptersRead = item.chapters?.length
   const progresse = parseInt((chaptersRead / chaptertTotal) * 100)
   const progress = progresse
-  console.log(progresse)
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await requestSimilar(item?.id)
-      setSimilar(res?.mangas)
-      const liked = await verifyLiked(item?.id)
-      setLiked(liked)
-    }
-    fetchData()
-  }, [])
 
-  const handleLike = () => {
-    if(liked){
-      let r = removeLike(item?.id)
-      if(r) setLiked(false)
-    }else{
-      let r = addLike(item)
-      if(r) setLiked(true)
+  const handleLike = async () => {
+    if (liked) {
+        removeLike(item.id).then(
+            res => setLiked(false)
+        )
+    } else {
+        addLike(item).then(
+            res => setLiked(true)
+        )
     }
-  }
+}
 
   const handleRemix = (params) => {
   }
@@ -73,16 +78,19 @@ export default function ContinuePage({ navigation }) {
   const TostLike = () => { return  liked ? <Toast name="Adicionado aos favoritos" color="#ED274A" /> : <Toast name="Removido dos favoritos" color="#000000" /> }
   const TostComplete = () => { return completed ? <Toast name="Marcado como completo" color="#27AE60" /> : <Toast name="Removida a marcação de completo" color="#000000" /> }
 
+
+  const a = false
+
   return (
     <>
     <Main>
       <MotiImage blurRadius={100} source={{ uri: item.capa }} style={{ width: width, height: 1.1 *  height, opacity: 0.6, position: 'absolute', top: 0, left: 0, }} />
-      <Scroll style={{ paddingHorizontal: 20, paddingVertical: 44, }}>
+      <Scroll style={{ paddingHorizontal: 20, paddingVertical: 22, }}>
         <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
             <Pressable onPress={() => { navigation.goBack() }}>
             <Ionicons name="chevron-down" size={32} color="#fff" />
             </Pressable>
-            <Title style={{ fontSize: 28 }}>Continue</Title>
+            <Title style={{ fontSize: 28 }}>Em progresso</Title>
             <Pressable>
             <MaterialCommunityIcons name="dots-vertical" size={32} color="#fff" />
             </Pressable>
@@ -102,18 +110,34 @@ export default function ContinuePage({ navigation }) {
             transition={{ type: 'timing', duration: 300, delay: 200 }}
             />
           </Column>
-          <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}></Row>
+
+          
+        <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
+          <Column>
+            <Title style={{ fontSize: 24, }}>{item?.name}</Title>
+            <Label style={{ color: "#d4d4d4",  }}>{item?.chapter} capítulos</Label>
+          </Column>
+          <Pressable onPress={() => {modalAdd.current?.open()}}  style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+              <Ionicons name="add-circle-outline" size={32} color="#d4d4d4" />
+          </Pressable>
+        </Row>
       
         {progress >= 0 &&
-          <Row style={{ backgroundColor: "#ffffff30", borderRadius: 100, marginTop: 20, marginBottom: 10, justifyContent: 'space-between', alignItems: 'center', }}>
-            <MotiView style={{ height: 50, backgroundColor: "#fff", borderRadius: 100, width: '5%', }}   from={{ width: '5%', }}  animate={{ width: `${progress}%`, }}  transition={{ type: 'timing', duration: 1500, delay: 1000, }}/>
-            <Title style={{marginRight: 10, }}>{progress}%</Title>
+          <Row style={{ backgroundColor: "#ffffff30", borderRadius: 100, marginTop: 20,  justifyContent: 'space-between', alignItems: 'center', }}>
+            <MotiView style={{ height: 40, backgroundColor: "#fff", borderRadius: 100, width: '5%', }}   from={{ width: '5%', }}  animate={{ width: `${progress}%`, }}  transition={{ type: 'timing', duration: 1500, delay: 1000, }}/>
+            <Title style={{marginRight: 12, }}>{progress}%</Title>
           </Row>
         }
 
+      
 
-        <Row style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 15, }}>
-          <Pressable onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+
+        <Row style={{ alignItems: 'center', justifyContent: 'center', marginTop: -10, }}>
+          <Pressable onPress={handleLike} style={{ width: 42, height: 32, marginRight: 20, justifyContent: 'center', alignItems: 'center', }}>
+              <AntDesign name="sharealt" size={32} color="#d4d4d4" />
+            </Pressable>
+
+          <Pressable onPress={handleLike} style={{ width: 52, height: 142, justifyContent: 'center', alignItems: 'center', }}>
            {liked ? <AnimatePresence>
               <MotiView from={{ scale: 0, opacity: 0, }}  animate={{ scale: 1, opacity: 1, }} transition={{ type: 'spring', duration: 500,  }}>
                 <AntDesign name='heart' size={32} color="#EB5757"/>
@@ -124,17 +148,12 @@ export default function ContinuePage({ navigation }) {
             </MotiView> }
 
           </Pressable>
-          <Pressable onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
-            <AntDesign name="arrowleft" size={32} color="#d4d4d4" />
-          </Pressable>
-          <Pressable onPress={handlePlay} style={{ backgroundColor: "#ED274A", width: 72, marginLeft: 10, height: 72, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
+        
+          <Pressable onPress={handlePlay} style={{ backgroundColor: "#ED274A", width: 72, marginHorizontal: 30, height: 72, borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
             <FontAwesome5 name="play" size={32} color="#fff" />
           </Pressable>
-          <Pressable onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
-            <AntDesign name="arrowright" size={32} color="#d4d4d4" />
-          </Pressable>
-          <Pressable onPress={handleComplete} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
-            
+          
+          <Pressable onPress={handleComplete} style={{ width: 52, height: 142, justifyContent: 'center', alignItems: 'center', }}>
               {completed ?
               <AnimatePresence>
                 <MotiView from={{ scale: 0, opacity: 0, }}  animate={{ scale: 1, opacity: 1, }} transition={{ type: 'spring', duration: 500,  }}>
@@ -144,15 +163,21 @@ export default function ContinuePage({ navigation }) {
                 <MotiView from={{ scale: 1.5, opacity: 0, }}  animate={{ scale: 1,  opacity: 1, }}  transition={{ type: 'timing', duration: 500,  }}>
                   <Ionicons name='checkmark-done-circle-outline' size={32} color="#d4d4d4" />
                 </MotiView>}
-
           </Pressable>
+
+          <Pressable onPress={() => modalRead.current?.open()} style={{ width: 42, height: 32, marginLeft: 20,  justifyContent: 'center', alignItems: 'center', }}>
+              <Ionicons name="albums-outline" size={32} color="#d4d4d4" />
+            </Pressable>
+
         </Row>
 
-        <Row style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 15, }}>
-          <Row style={{justifyContent: 'center', alignItems: 'center', }}>
+        {a &&  <Row style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 15, }}>
+         
+         <Row style={{justifyContent: 'center', alignItems: 'center', }}>
             <SimpleLineIcons name="screen-smartphone" size={24} color="#ED274A" />
             <Label style={{ color: "#ED274A", marginLeft: 5, }}>Este telefone</Label>
           </Row>
+
           <Row>
             <Pressable onPress={handleLike} style={{ width: 32, height: 32, marginRight: 20, justifyContent: 'center', alignItems: 'center', }}>
               <AntDesign name="sharealt" size={24} color="#d4d4d4" />
@@ -161,11 +186,11 @@ export default function ContinuePage({ navigation }) {
               <Ionicons name="albums-outline" size={24} color="#d4d4d4" />
             </Pressable>
           </Row>
-        </Row>
+        </Row> }
 
-        <MotiView from={{ translateY: 60, opacity: 0,  }}  animate={{ opacity: 1, translateY: 0, }} transition={{ type: 'timing', duration: 300, delay: 1000, }} >
+        {similar.length > 0 && <MotiView from={{ translateY: 60, opacity: 0,  }}  animate={{ opacity: 1, translateY: 0, }} transition={{ type: 'timing', duration: 300, delay: 1000, }} >
           <Column style={{ paddingHorizontal: 16, paddingVertical: 24, borderRadius: 16, marginVertical: 20, backgroundColor: "#171717", }}>
-            <Title>Similares</Title>
+            <Title style={{ fontSize: 18,  }}>Similares</Title>
             <FlatList
               style={{ marginVertical: 16, marginHorizontal: -20, }}
               data={similar}
@@ -176,9 +201,9 @@ export default function ContinuePage({ navigation }) {
               showsHorizontalScrollIndicator={false}
             />
           </Column>
-        </MotiView>
+        </MotiView>}
 
-        <Column style={{ paddingHorizontal: 16, paddingVertical: 24,  backgroundColor: "#252525", borderRadius: 16, }}>
+      {marks.length > 0 &&  <Column style={{ paddingHorizontal: 16, paddingVertical: 24,  backgroundColor: "#252525", borderRadius: 16, }}>
           <Row style={{justifyContent: 'space-between', alignItems: 'center', marginBottom: 10,}}>
             <Title>Marcadores</Title>
             <Row style={{paddingVertical: 8, paddingHorizontal: 12, backgroundColor: "#303030", borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
@@ -187,7 +212,7 @@ export default function ContinuePage({ navigation }) {
             </Row>
           </Row>
           <ListMarkers markers={item?.chapters?.markers} />
-        </Column>
+        </Column>}
 
         <Column style={{height: 60,}}/>
       </Scroll>
@@ -196,6 +221,11 @@ export default function ContinuePage({ navigation }) {
 
       <Modalize ref={modalRead} adjustToContentHeight={true} modalStyle={{backgroundColor: "#171717", }} handlePosition='inside' handleStyle={{backgroundColor: "#505050"}}>
         <ListReads current={item}/>
+      </Modalize>
+
+
+      <Modalize ref={modalAdd} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
+        <ModalAddCollection item={item}/>
       </Modalize>
                 
   </>
