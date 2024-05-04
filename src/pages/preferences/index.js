@@ -1,6 +1,6 @@
 
 import React, { useState, useContext, useEffect } from 'react'
-import { Dimensions, Image, TouchableOpacity, TextInput, FlatList, ScrollView } from 'react-native'
+import { Dimensions, Image, TouchableOpacity, TextInput, FlatList, ScrollView, Pressable } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import {
   Wrapper, Title,
@@ -15,6 +15,8 @@ import { Column, Row } from '../../theme/global'
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import axios from 'axios';
 import { createPreferences } from '../../api/user/preferences';
+import { MotiImage, MotiView } from 'moti';
+import { Feather, Play } from 'lucide-react-native';
 
 export default function PreferencesPage({ navigation, route, }) {
   const [geral, setGeral] = useState();
@@ -31,10 +33,10 @@ export default function PreferencesPage({ navigation, route, }) {
 
 
   const { color, font } = useContext(ThemeContext)
-  const [name, setName] = useState('');
+  const [name, setName] = useState('JohnnyBoy');
   const [avatar, setAvatar] = useState();
-  const [capa, setCapa] = useState();
-  const [bio, setBio] = useState('');
+  const [capa, setCapa] = useState('https://i.pinimg.com/736x/de/03/23/de0323fd22083daa9a347e092d14407e.jpg');
+  const [bio, setBio] = useState('sou lindo demais');
 
   const [step, setStep] = useState(1);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -97,14 +99,40 @@ export default function PreferencesPage({ navigation, route, }) {
     else if (step == 4) { setStep(3) }
   }
 
+  const [animate, setanimate] = useState(true);
+
+  /**
+   *   <Pressable onPress={() => setanimate(!animate)} style={{ position: 'absolute', bottom: 20, zIndex: 99, left: 150, alignSelf: 'center', }}>
+            <Play   size={24} color="#FFF" />
+        </Pressable>  
+   */
   return (
     <Main>
+      
       <Wrapper >
+        
         <Column style={{ paddingHorizontal: 20, flex: 1, paddingTop: 50, }}>
+        
+        {animate &&  <MotiView from={{translateY: -300,}} animate={{ translateY: -100,}} style={{ width: 300, height: 300, marginBottom: -70,  borderRadius: 16, alignSelf: 'center'}}>
+            <MotiImage blurRadius={200}  transition={{ type: 'timing', duration: 1000 }} source={{ uri: capa }} style={{ width: 300, height: 300, position: 'absolute', borderRadius: 12, }}  />
+            <Row  style={{ position: 'absolute', bottom: 20, left: 20, justifyContent: 'space-between', alignItems: 'center', right: 20, }}>
+              <Column>
+                <Title style={{  marginBottom: -6, textAlign: 'left'}}>{name}</Title>
+                <Label style={{ color: "#f7f7f7", textAlign: 'left' }}>{bio}</Label>
+              </Column>
+           {avatar && <MotiImage from={{scale: 0.7,}} animate={{scale: 1 }}   source={{ uri: avatar }} style={{ width: 74, height: 74,  borderRadius: 100, zIndex: 99, borderWidth: 3, borderColor: "#171717"}}  />}
+            </Row>
+            <Column style={{ width: 12, height: 300, position: 'absolute', right: 40, backgroundColor: "#171717" }}/>
+            <Column style={{ width: 12, height: 300, position: 'absolute', right: 60, backgroundColor: "#171717" }}/>
+
+          </MotiView>
+          }
+
+
 
           {step == 1 &&
             <Animated.View entering={FadeInUp}>
-              <Column style={{ justifyContent: 'center', marginTop: 50, }}>
+              <Column style={{ justifyContent: 'center',  }}>
                 <Title style={{ textAlign: 'left' }}>Qual seu nome?</Title>
                 <Label style={{ textAlign: 'left' }}>Pode ser apelido também</Label>
                 <TextInput value={name} placeholderTextColor={color.title + 70} placeholder='Ex.: Johnny' onChangeText={setName} style={{ fontFamily: font.medium, height: 63, backgroundColor: color.off, marginTop: 10, paddingLeft: 20, borderRadius: 5, fontSize: 28, borderBottomColor: color.primary, borderBottomWidth: 2, color: color.title }} />

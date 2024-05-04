@@ -7,7 +7,7 @@ import requestManga from '../../api/manga/details';
 import requestChapters from '../../api/manga/chapters';
 import requestSimilar from '../../api/manga/similar';
 
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Skeleton } from 'moti/skeleton';
 import { AnimatePresence, MotiImage, MotiView } from 'moti';
 import { addComplete, addFollow, addLike, removeComplete, removeFollow, removeLike, verifyComplete, verifyFollow, verifyLiked } from '../../api/user/preferences';
@@ -57,9 +57,7 @@ export default function MangaDetailsPage({ route, navigation }) {
               const followResponse = await verifyFollow(id);
               setFollow(followResponse);
 
-              const listChapters = await listChaptersToManga(id);
-              setChaptersRead(listChapters)
-              console.log(listChapters)
+            
       
               setLoading(false);
             } catch (error) {
@@ -72,6 +70,14 @@ export default function MangaDetailsPage({ route, navigation }) {
 
     }, [])
 
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        const fetchData = async () => {
+            const listChapters = await listChaptersToManga(id);
+            setChaptersRead(listChapters)
+        }
+        fetchData();
+    }, [isFocused])
 
 
     const [liked, setLiked] = useState();
@@ -311,21 +317,20 @@ export default function MangaDetailsPage({ route, navigation }) {
 
 const Card = ({ item, id, itm, chaptersRead }) => {
     const navigation = useNavigation();
-    console.log(chaptersRead)
     const read = chaptersRead?.includes(item.number);
-    if(read){
-        return <></>
-    }
+    console.log(read)
+    console.log(chaptersRead)
+    console.log(item.number)
+   
     return (
-        <Row style={{ backgroundColor: "#202020", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 6, opacity: read ? 0.6 : 1, }}>
+        <Row style={{ backgroundColor: "#202020", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 6, opacity: read ? 0.4 : 1, }}>
             <Title style={{ fontSize: 22, marginLeft: 20, }}>#{item?.number}</Title>
             <Label>{item?.date}</Label>
             <TouchableOpacity onPress={() => navigation.navigate('MangaPages', { chapter: item.number, id: id, itm: itm, })} style={{ backgroundColor: '#303030', padding: 12, borderRadius: 100, marginRight: 10, }} >
                 <AntDesign name="arrowright" size={24} color="#fff" />
             </TouchableOpacity>
         </Row>
-    )
-}
+    )}
 
 const ListChapters = ({ chapters, id, itm, chaptersRead, }) => {
     const [currentPage, setCurrentPage] = useState(1);

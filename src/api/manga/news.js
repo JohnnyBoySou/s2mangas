@@ -6,10 +6,11 @@ const API_URL = "https://lermanga.org/"
 export default async function requestNews() {
   try {
     const response = await axios.get(API_URL,  { headers: {'Accept': "text/html", 'Access-Control-Allow-Origin': '*'} });
-    const mangaData = clearNews(response.data);
+    const mangaData = clearNews(response?.data);
     return { mangas: mangaData}
   } catch (error) {
-    return error.message;
+    console.log(error)
+    return { mangas: []}
   }
 }
 

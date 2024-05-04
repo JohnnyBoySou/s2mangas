@@ -95,7 +95,7 @@ export default function ContinuePage({ navigation }) {
             <MaterialCommunityIcons name="dots-vertical" size={32} color="#fff" />
             </Pressable>
           </Row>
-          <Column style={{ marginTop: 50, marginBottom: 30 }}>
+          <Pressable  style={{ marginTop: 50, marginBottom: 30 }} onPress={() => { navigation.navigate('MangaDetails', {id: item.id });}}>
             <MotiImage
             source={{ uri: item.capa }}
             style={{
@@ -109,7 +109,7 @@ export default function ContinuePage({ navigation }) {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'timing', duration: 300, delay: 200 }}
             />
-          </Column>
+          </Pressable>
 
           
         <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
@@ -132,7 +132,7 @@ export default function ContinuePage({ navigation }) {
       
 
 
-        <Row style={{ alignItems: 'center', justifyContent: 'center', marginTop: -10, }}>
+   {a && <Row style={{ alignItems: 'center', justifyContent: 'center', marginTop: -10, }}>
           <Pressable onPress={handleLike} style={{ width: 42, height: 32, marginRight: 20, justifyContent: 'center', alignItems: 'center', }}>
               <AntDesign name="sharealt" size={32} color="#d4d4d4" />
             </Pressable>
@@ -170,6 +170,7 @@ export default function ContinuePage({ navigation }) {
             </Pressable>
 
         </Row>
+        }
 
         {a &&  <Row style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 15, }}>
          
@@ -189,7 +190,7 @@ export default function ContinuePage({ navigation }) {
         </Row> }
 
         {similar.length > 0 && <MotiView from={{ translateY: 60, opacity: 0,  }}  animate={{ opacity: 1, translateY: 0, }} transition={{ type: 'timing', duration: 300, delay: 1000, }} >
-          <Column style={{ paddingHorizontal: 16, paddingVertical: 24, borderRadius: 16, marginVertical: 20, backgroundColor: "#171717", }}>
+          <Column style={{ paddingHorizontal: 16, paddingVertical: 24, borderRadius: 16, marginVertical: 20, backgroundColor: "#17171760", }}>
             <Title style={{ fontSize: 18,  }}>Similares</Title>
             <FlatList
               style={{ marginVertical: 16, marginHorizontal: -20, }}
@@ -236,13 +237,13 @@ export default function ContinuePage({ navigation }) {
 const Card = memo(({ item }) => {
   const navigation = useNavigation();
   return (
-      <Pressable  onPress={() => { navigation.navigate('MangaDetails', {id: item.id });}} style={{ backgroundColor: "#303030", borderRadius: 6, width: 144, margin: 8,  }}>
+      <Pressable  onPress={() => { navigation.navigate('MangaDetails', {id: item.id });}} style={{  borderRadius: 6, width: 144, margin: 8,  }}>
         <Image source={{ uri: item.capa }} style={{ width: 144, height: 182, borderRadius: 6, alignSelf: 'center', marginBottom: 6, }} />
-        <Title style={{ fontSize: 16, marginTop: -30, zIndex: 99, marginLeft: 4,}}>{item?.name.slice(0,16)}</Title>
-        <LinearGradient colors={["transparent", '#000']} style={{ width: '100%', height: 90, position: 'absolute', bottom: -8, left: 0, borderBottomRightRadius: 6, borderBottomLeftRadius: 6,}} />
+        <Title style={{ fontSize: 16, marginTop: 0, zIndex: 99, marginLeft: 2,}}>{item?.name.slice(0,16)}</Title>
       </Pressable>
   )
 })
+//<LinearGradient colors={["transparent", '#000']} style={{ width: '100%', height: 90, position: 'absolute', bottom: -8, left: 0, borderBottomRightRadius: 6, borderBottomLeftRadius: 6,}} />
 
 const ListReads = ({ current }) => {
   const nexts = [

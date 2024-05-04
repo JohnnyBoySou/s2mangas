@@ -170,6 +170,7 @@ const ForYou = () => {
     }, [])
 
     const { color, font } = useContext(ThemeContext);
+    if(!item) return null;
     return(
     <Pressable style={{ position: 'absolute',  bottom: 10, width: '100%',}} onPress={() => {navigation.navigate('Continue')}} >
         <MotiView  
