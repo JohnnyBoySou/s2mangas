@@ -42,7 +42,7 @@
       [ "expo-font" ],
       [ "expo-av", { "microphonePermission": "Permita o Até que ele venha a acessar o microfone."  } ],
       [ "expo-build-properties" ],
-      [ "expo-dev-launcher", { "launchModeExperimental": "most-recent"  } ],
+      [ "expo-dev-launcher", { "launchModeExperimental": "most-recent"  }]
     ]
   }
 }
