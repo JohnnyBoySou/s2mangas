@@ -4,25 +4,45 @@ import { Pressable, FlatList, Dimensions, Image, View, ActivityIndicator, Status
 import { addChaptersToManga } from '../../api/user/progress';
 import { MotiView,  } from 'moti';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
-import { Album } from 'lucide-react-native';
+import { Album, ArrowLeft, ArrowRight } from 'lucide-react-native';
 import { getPages } from '../../api_v2/getPages';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function MangaPages({ route, navigation }) {
-    //const {id, chapter, itm } = route.params;
-    const a = false;
+    const {id, chapter, itm } = route.params;
+
+    const [uid, setuid] = useState(id);
+    const [currentChapter, setcurrentChapter] = useState(chapter);
+   
+    const [nextChap, setnextChap] = useState();
+    const [prevChap, setprevChap] = useState();
     const [pages, setpages] = useState();
 
     useEffect(() => {
         const requestData = async () => {
-            //addChaptersToManga(itm, chapter)  
-            getPages().then((response) => {
-                setpages(response)
+            addChaptersToManga(itm, currentChapter)  
+            getPages(uid, itm?.id).then((response) => {
+                setpages(response.pages)
+                setprevChap(response.prev)
+                setnextChap(response.next)
             })
         };
         requestData()
-    }, [])
+    }, [uid])
 
+
+    const handleNextChapter = () => {
+        if (nextChap) {
+            setuid(nextChap.id)
+            setcurrentChapter(nextChap.chapter)
+        }
+    }
+    const handlePrevChapter = () => {
+        if (prevChap) {
+            setuid(prevChap.id)
+            setcurrentChapter(prevChap.chapter)
+        }
+    }
     const flatListRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(0);
 
@@ -47,12 +67,16 @@ export default function MangaPages({ route, navigation }) {
     return (
         <Main style={{ justifyContent: 'center', alignItems: 'center', }}>
             <StatusBar hidden />
+            <Row style={{ position: 'absolute', top: 20, zIndex: 9999, left: 20, }}>
+                <Pressable onPress={() => navigation.goBack()} style={{  }}>
+                    <ArrowLeft size={30} stroke='#fff' />
+                </Pressable>
+            </Row>
             <Row style={{ position: 'absolute', zIndex: 99, top: 0, }}>
-                <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT,  }} onPress={handlePrevious} />
-                <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT, }} onPress={handleNext} />
+                <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT,  }} onPress={handlePrevious} onLongPress={handlePrevChapter}/>
+                <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT, }} onPress={handleNext} onLongPress={handleNextChapter}/>
             </Row>
 
-            <Pagination currentIndex={currentPage} pages={pages} handleSelectPage={handleSelectPage} />
 
             <FlatList
                 style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT, backgroundColor: '#202020', flex: 1, }}
@@ -75,6 +99,7 @@ export default function MangaPages({ route, navigation }) {
         </Main>
     )
 }
+//<Pagination currentIndex={currentPage} pages={pages} handleSelectPage={handleSelectPage} />
 
 const Pagination = ({ currentIndex, pages, handleSelectPage }) => {
     return (
@@ -132,16 +157,15 @@ const Images = ({ url }) => {
         <Image
             source={{ uri: url }}
             resizeMode='cover'
-            style={{ width: imageSize.width, height: imageSize.height }}
+            style={{ width: imageSize.width, height: imageSize.height, backgroundColor: '#fff', }}
         />
     );
 };
 
 const Load = () => {
     return (
-        <MotiView style={{ justifyContent: 'center', alignItems: 'center', paddingBottom: 200, }}>
-            <Image blurRadius={40} source={{ uri: "https://i.pinimg.com/564x/db/d5/8d/dbd58dd3bee3763a0c34e73f6ed64b62.jpg" }} style={{ width: SCREEN_WIDTH, height: 1.1 * SCREEN_HEIGHT, opacity: 0.6, zIndex: -2, position: 'absolute', }} />
-            <Image src='https://i.pinimg.com/564x/ae/87/1a/ae871a9d054cd5f966b49a3c734ae8bc.jpg' style={{ width: 200, height: 300, margin: 10, marginTop: 200, objectFit: 'cover', borderRadius: 12, transform: [{ rotateX: '12deg' }] }} />
+        <MotiView style={{ justifyContent: 'center', alignItems: 'center', width: SCREEN_WIDTH,  }}>
+            <Image src='https://i.pinimg.com/564x/ae/87/1a/ae871a9d054cd5f966b49a3c734ae8bc.jpg' style={{ width: 200, height: 300, margin: 10,  objectFit: 'cover', borderRadius: 12, transform: [{ rotateX: '12deg' }] }} />
             <Title>Gerando páginas</Title>
             <Label>Isso pode demorar um pouco...</Label>
         </MotiView>

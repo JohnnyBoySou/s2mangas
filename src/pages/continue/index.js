@@ -130,8 +130,8 @@ export default function ContinuePage({ navigation }) {
     <>
     <Main>
         {!item.video && <MotiImage blurRadius={100} source={{ uri: item.capa }} style={{ width: width, height: 1.1 *  height, opacity: 0.6, position: 'absolute', top: 0, left: 0, }} />}
-        <Scroll style={{ paddingTop: 0,  }} onScroll={(event) => { const scrolling = event.nativeEvent.contentOffset.y; if (scrolling > 100) {openIn.transitionTo('open'); setshowvideo(false);} else if (scrolling < 100){openIn.transitionTo('close');setshowvideo(true); }}}>
-        {item?.video &&  <Video source={{ uri: item.video }} ref={wall}  rate={1.0}  volume={0.0} isMuted={true}  resizeMode="cover" shouldPlay isLooping style={{ width: width, height: 1.03 *  height, position: 'absolute', top: 0, left: 0, }}/>}
+        <Scroll style={{ marginTop: -30,  }} onScroll={(event) => { const scrolling = event.nativeEvent.contentOffset.y; if (scrolling > 100) {openIn.transitionTo('open'); setshowvideo(false);} else if (scrolling < 100){openIn.transitionTo('close');setshowvideo(true); }}}>
+        {item?.video &&  <Video source={{ uri: item.video }} ref={wall}  rate={1.0}  volume={0.0} isMuted={true}  resizeMode="cover" shouldPlay isLooping style={{ width: width, height: 910, borderRadius: 24, position: 'absolute', top: 0, left: 0, }}/>}
 
         <Column style={{  paddingVertical: 22, zIndex: 999,  }}>
           <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 20, paddingTop: 20,  }}>
@@ -251,20 +251,7 @@ export default function ContinuePage({ navigation }) {
           <Column style={{  height: 200, zIndex: 999, backgroundColor: '#303030', marginHorizontal: 20, marginTop: 50, borderRadius: 16,  }}>
           </Column>
 
-         <Row style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 15, }}>
-         <Row style={{justifyContent: 'center', alignItems: 'center', }}>
-            <SimpleLineIcons name="screen-smartphone" size={24} color="#ED274A" />
-            <Label style={{ color: "#ED274A", marginLeft: 5, }}>Este telefone</Label>
-          </Row>
-          <Row>
-            <Pressable onPress={handleLike} style={{ width: 32, height: 32, marginRight: 20, justifyContent: 'center', alignItems: 'center', }}>
-              <AntDesign name="sharealt" size={24} color="#d4d4d4" />
-            </Pressable>
-            <Pressable onPress={() => modalRead.current?.open()} style={{ width: 32, height: 32, justifyContent: 'center', alignItems: 'center', }}>
-              <Ionicons name="albums-outline" size={24} color="#d4d4d4" />
-            </Pressable>
-          </Row>
-        </Row> 
+        
 
         {similar.length > 0 && <MotiView from={{ translateY: 60, opacity: 0,  }}  animate={{ opacity: 1, translateY: 0, }} transition={{ type: 'timing', duration: 300, delay: 1000, }} >
           <Column style={{ paddingHorizontal: 16, paddingVertical: 24, borderRadius: 16, marginVertical: 20, backgroundColor: "#17171760", }}>
@@ -410,3 +397,21 @@ const ListMarkers = ({ markers }) => {
     </Column>
   )
 }
+
+
+/**
+ *  <Row style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 15, }}>
+         <Row style={{justifyContent: 'center', alignItems: 'center', }}>
+            <SimpleLineIcons name="screen-smartphone" size={24} color="#ED274A" />
+            <Label style={{ color: "#ED274A", marginLeft: 5, }}>Este telefone</Label>
+          </Row>
+          <Row>
+            <Pressable onPress={handleLike} style={{ width: 32, height: 32, marginRight: 20, justifyContent: 'center', alignItems: 'center', }}>
+              <AntDesign name="sharealt" size={24} color="#d4d4d4" />
+            </Pressable>
+            <Pressable onPress={() => modalRead.current?.open()} style={{ width: 32, height: 32, justifyContent: 'center', alignItems: 'center', }}>
+              <Ionicons name="albums-outline" size={24} color="#d4d4d4" />
+            </Pressable>
+          </Row>
+        </Row> 
+ */

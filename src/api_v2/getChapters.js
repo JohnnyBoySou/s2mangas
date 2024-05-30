@@ -2,13 +2,18 @@ import axios from 'axios';
 
 const baseUrl = 'https://api.mangadex.org';
 
-export async function getChapters(mangaID = '8f3e1818-a015-491d-bd81-3addc4d7d56a') {
+export async function getChapters(mangaID) {
     try {
         const resp = await axios({
             method: 'GET',
             url: `${baseUrl}/manga/${mangaID}/feed`,
+            params: {
+                translatedLanguage: ['pt-br', ],
+                order: {
+                    chapter: 'desc',
+                },
+            }
         });
-
         const data = transformChapterData(resp?.data?.data);
         return data;
     } catch (error) {
@@ -18,6 +23,7 @@ export async function getChapters(mangaID = '8f3e1818-a015-491d-bd81-3addc4d7d56
         console.log('Finalizou');
     }
 }
+
 const transformChapterData = (chapters) => {
     // Verifica se chapters é um array e se não está vazio
     if (!Array.isArray(chapters) || chapters.length === 0) {

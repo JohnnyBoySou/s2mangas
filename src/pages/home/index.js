@@ -74,8 +74,6 @@ export default function HomePage({ navigation }) {
                 {type === 'Tudo' && <Column>
                     <ForYou />
                     <Spacer height={30} />
-                    <NewsComponent />
-                    <Spacer />
                     <CollectionsComponent />
                     <Spacer />
                     <LastedComponent />
@@ -159,7 +157,7 @@ const ForYou = () => {
 
 
  const ContinueBar = ({ navigation }) => {
-   // const [item, setitem] = useState();
+    const [item, setitem] = useState();
     useEffect(() => {
         const listChapter = () => {
             listLastManga().then(data => {
@@ -168,15 +166,10 @@ const ForYou = () => {
         }
         listChapter()
     }, [])
-    const item = {
-        capa: 'https://www.s2mangas.com/storage/mangas/5f7c4e2b4d4e7.jpg',
-        name: 'One Piece',
-        chapter: 50,
-        chapters: [1,2,3,4,5,6,7,8,9,10]
-    }
+   
 
     const { color, font } = useContext(ThemeContext);
-  //  if(!item) return null;
+     if(!item) return null;
     return(
     <Pressable style={{ position: 'absolute',  bottom: 10, width: '100%',}} onPress={() => {navigation.navigate('Continue')}} >
         <MotiView  

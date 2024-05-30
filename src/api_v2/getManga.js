@@ -16,7 +16,6 @@ export async function getManga(mangaID = '8f3e1818-a015-491d-bd81-3addc4d7d56a')
             url: `${baseUrl}/statistics/manga/${mangaID}`,
         });
 
-
         const data = transformData(resp?.data?.data, stat);
         return data;
     } catch (error) {
@@ -87,17 +86,15 @@ const transformData = (data, stats) => {
         capa = `https://uploads.mangadex.org/covers/${id}/${coverFilename}`;
     }
 
-
-    
-    const cleanDescription = removeLinksFromText(description.en || '');
-
+    const cleanDescription = removeLinksFromText(description["pt-br"] || description[0]);
+    const types = type === 'manga' ? 'Mangá' : type === 'manhwa' ? 'Manhwa' : 'Manhua';
     // Transforma os dados para o formato desejado
     const manga = {
         id,
         name: title.en || '',
         capa,
-        type,
-        score: rating.average.toFixed(1),
+        type: types,
+        rate: rating.average.toFixed(1),
         followers: follows,
         description: cleanDescription,
         status: statusMapping[status] || status,

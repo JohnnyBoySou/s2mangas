@@ -1,22 +1,21 @@
 import React, { useEffect, useRef, useState, useContext, } from 'react';
-import { Column, Row, Title, Label, Scroll, Main } from '../../theme/global';
-import { Image, TouchableOpacity, Dimensions, FlatList, Pressable, ImageBackground,  } from 'react-native';
+import { Column, Row, Title, Label, Scroll, Main } from '@theme/global';
+import { Image, TouchableOpacity, Dimensions, FlatList, Pressable, ImageBackground, } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome5, Feather, Ionicons, Fontisto, FontAwesome } from '@expo/vector-icons';
-import requestManga from '../../api/manga/details';
-import requestChapters from '../../api/manga/chapters';
-import requestSimilar from '../../api/manga/similar';
-
+import { ThemeContext } from 'styled-components/native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
+
 import { Skeleton } from 'moti/skeleton';
 import { AnimatePresence, MotiImage, MotiView } from 'moti';
-import { addComplete, addFollow, addLike, removeComplete, removeFollow, removeLike, verifyComplete, verifyFollow, verifyLiked } from '../../api/user/preferences';
-import ModalAddCollection from '../../components/modal/collection';
+import { addComplete, addFollow, addLike, removeComplete, removeFollow, removeLike, verifyComplete, verifyFollow, verifyLiked } from '@api/user/preferences';
+import ModalAddCollection from '@components/modal/collection';
 import { Modalize } from 'react-native-modalize';
-const { width, height } = Dimensions.get('window');
-import { ThemeContext } from 'styled-components/native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { listChaptersToManga } from '../../api/user/progress';
+import { listChaptersToManga } from '@api/user/progress';
+import { getManga } from '@apiv2/getManga';
+import { getChapters } from '@apiv2/getChapters';
+import Check from '@components/check';
 
 export default function MangaDetailsPage({ route, navigation }) {
     const id = route.params.id;
@@ -27,6 +26,8 @@ export default function MangaDetailsPage({ route, navigation }) {
     const [chaptersRead, setChaptersRead] = useState([]);
     const [similar, setSimilar] = useState();
     const [loading, setLoading] = useState(true);
+    const [lidos, setlidos] = useState(false);
+    const a = false;
 
     const itm = {
         name: item?.name,
@@ -39,14 +40,15 @@ export default function MangaDetailsPage({ route, navigation }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-              const mangaResponse = await requestManga(id);
-              setItem(mangaResponse.manga);
+                
+              const mangaResponse = await getManga(id);
+              setItem(mangaResponse);
       
-              const chaptersResponse = await requestChapters(id);
+              const chaptersResponse = await getChapters(id);
               setChapters(chaptersResponse);
       
-              const similarResponse = await requestSimilar(id);
-              setSimilar(similarResponse.mangas);
+            //  const similarResponse = await requestSimilar(id);
+              //setSimilar(similarResponse.mangas);
       
               const likedResponse = await verifyLiked(id);
               setLiked(likedResponse);
@@ -56,8 +58,6 @@ export default function MangaDetailsPage({ route, navigation }) {
       
               const followResponse = await verifyFollow(id);
               setFollow(followResponse);
-
-            
       
               setLoading(false);
             } catch (error) {
@@ -164,10 +164,10 @@ export default function MangaDetailsPage({ route, navigation }) {
                     </TouchableOpacity>
 
                     <Row style={{ alignItems: 'center', marginTop: 10, marginHorizontal: 20,}}>
-                        <Label style={{ backgroundColor: cl, color: "#000", fontSize: 16, borderRadius: 100, paddingVertical: 10, paddingHorizontal: 10, }}>✶ {item?.type} ✦</Label>
+                        <Label style={{ backgroundColor: cl, color: "#000", fontSize: 16, lineHeight: 20, borderRadius: 100, paddingVertical: 10, paddingHorizontal: 10, }}>✶ {item?.type} ✦</Label>
                         <Row style={{ backgroundColor: "#303030", borderRadius: 100, justifyContent: 'center', marginHorizontal: 10, alignItems: 'center', }}>
                             <AntDesign name="calendar" size={16} color="#fff" style={{ backgroundColor: "#505050", padding: 8, borderRadius: 100, margin: 6, }} />
-                            <Label style={{ marginLeft: 2, fontFamily: 'Font_Medium', fontSize: 18, marginRight: 14, }}>{item?.date}</Label>
+                            <Label style={{ marginLeft: 2, fontFamily: 'Font_Medium', fontSize: 18, marginRight: 14, }}>{item?.year}</Label>
                         </Row>
                         <Row style={{ backgroundColor: "#303030", borderRadius: 100, justifyContent: 'center', alignItems: 'center', }}>
                             <AntDesign name="star" size={16} color="#fff" style={{ backgroundColor: "#505050", padding: 8, borderRadius: 100, margin: 6, }} />
@@ -227,9 +227,9 @@ export default function MangaDetailsPage({ route, navigation }) {
                     <Pressable onPress={() => { setType('Capitulos') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Capitulos' ? color.light : color.off, borderRadius: 100,  }}>
                         <Label style={{fontSize: 18, color: type === 'Capitulos' ? color.off : color.title, fontFamily: type === 'Capitulos' ? font.bold : font.book, }}>Capítulos</Label>
                     </Pressable>
-                    <Pressable onPress={() => { setType('Similares') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Similares' ? color.light : color.off, borderRadius: 100, }}>
+                  {a && <Pressable onPress={() => { setType('Similares') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Similares' ? color.light : color.off, borderRadius: 100, }}>
                         <Label style={{fontSize: 18, color: type === 'Similares' ? color.off : color.title, fontFamily: type === 'Similares' ? font.bold : font.book, }}>Similares</Label>
-                    </Pressable>
+                    </Pressable>}
                     <Pressable onPress={() => { setType('Marcadores') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Marcadores' ? color.light : color.off, borderRadius: 100,  }}>
                         <Label style={{fontSize: 18, color: type === 'Marcadores' ? color.off : color.title, fontFamily: type === 'Marcadores' ? font.bold : font.book, }}>Marcadores</Label>
                     </Pressable>
@@ -280,9 +280,19 @@ export default function MangaDetailsPage({ route, navigation }) {
                     />
                 </Column>
                 <Column style={{ marginTop: 20, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16,  marginBottom: 20, }}>
-                    <Title style={{ fontSize: 24, marginTop: 8, }}>Todos ({item?.chapters})</Title>
+                    <Row style={{ justifyContent: 'space-between', alignItems: 'center',  }}>
+
+                    <Column>
+                    <Title style={{ fontSize: 24, marginTop: 8, }}>Todos ({chapters?.length})</Title>
                     <Label style={{}}>Confira todos capítulos</Label>
-                    <ListChapters chapters={chapters} id={id} itm={itm} chaptersRead={chaptersRead}/>
+                    </Column>
+                    <Column style={{ justifyContent: 'center', alignItems: 'center',  }}>
+                        <Pressable onPress={() => {setlidos(!lidos)}} >
+                            <Check status={lidos}/>
+                        </Pressable>
+                    </Column>
+                    </Row>
+                    <ListChapters chapters={chapters} id={id} itm={itm} chaptersRead={chaptersRead} lidos={lidos}/>
                 </Column>
                 </>}
 
@@ -293,7 +303,6 @@ export default function MangaDetailsPage({ route, navigation }) {
                 animate={{opacity: 1, transform: [{scale: 1}, {rotate: '16deg'}],}} 
                 exit={{opacity: 0, transform: [{scale: 0}, {rotate: '0deg'}],}} 
                 exitTransition={{ type: 'spring',  duration: 300, }} source={{ uri: item?.capa }} style={{ width:50, height: 70, borderRadius: 4, marginLeft: 80,borderWidth: 1, borderColor: color.title,}} /></Pressable>}</AnimatePresence>
-
 
             <Modalize ref={modalAdd} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
                 <Column>
@@ -315,24 +324,17 @@ export default function MangaDetailsPage({ route, navigation }) {
     )
 }
 
-const Card = ({ item, id, itm, chaptersRead }) => {
-    const navigation = useNavigation();
-    const read = chaptersRead?.includes(item.number);
-    console.log(read)
-    console.log(chaptersRead)
-    console.log(item.number)
-   
-    return (
-        <Row style={{ backgroundColor: "#202020", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 6, opacity: read ? 0.4 : 1, }}>
-            <Title style={{ fontSize: 22, marginLeft: 20, }}>#{item?.number}</Title>
-            <Label>{item?.date}</Label>
-            <TouchableOpacity onPress={() => navigation.navigate('MangaPages', { chapter: item.number, id: id, itm: itm, })} style={{ backgroundColor: '#303030', padding: 12, borderRadius: 100, marginRight: 10, }} >
-                <AntDesign name="arrowright" size={24} color="#fff" />
-            </TouchableOpacity>
-        </Row>
-    )}
 
-const ListChapters = ({ chapters, id, itm, chaptersRead, }) => {
+const ListChapters = ({ chapters, id, itm, chaptersRead, lidos }) => {
+
+    /*
+     "pages": 35, 
+     "volume": 8}, 
+     */
+
+     
+    
+
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -363,7 +365,7 @@ const ListChapters = ({ chapters, id, itm, chaptersRead, }) => {
                 style={{ marginTop: 20, }}
                 data={currentItems}
                 keyExtractor={(item) => item.number}
-                renderItem={({ item }) => <Card item={item} id={id} itm={itm} chaptersRead={chaptersRead}/>}
+                renderItem={({ item }) => <Card item={item} id={id} itm={itm} chaptersRead={chaptersRead} lidos={lidos} total={chapters}/>}
             />
             <Pagination
                 itemsPerPage={itemsPerPage}
@@ -376,6 +378,27 @@ const ListChapters = ({ chapters, id, itm, chaptersRead, }) => {
     );
 };
 
+const Card = ({ item, id, itm, chaptersRead, lidos, total}) => {
+    const { color, font } = useContext(ThemeContext);
+    const read = chaptersRead?.includes(item.chapter);
+    const navigation = useNavigation();
+    if(lidos && read) return null;
+    return (
+        <Row style={{ backgroundColor: "#202020", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 6, opacity: read ? 0.4 : 1, }}>
+            {read && <Title style={{ fontSize: 12, backgroundColor: color.green, paddingVertical: 4, paddingHorizontal: 8, borderBottomRightRadius: 6, borderTopLeftRadius: 6, position: 'absolute', top: 0, left: 0,  }}>Lido</Title>}
+            <Row style={{ justifyContent: 'center', alignItems: 'center',  }}>
+            <Title style={{ fontSize: 22, marginLeft: 20, }}>#{item?.chapter}</Title>
+
+            <Column style={{ marginLeft: 20, }}>
+                <Title style={{ fontSize: 16, }}>{item?.title} </Title>
+                <Label style={{ fontSize: 12, }}>{item?.publish_date}</Label>
+            </Column>
+            </Row>
+            <TouchableOpacity onPress={() => navigation.navigate('MangaPages', { chapter: item.chapter, id: item.id, itm: itm, total: total, })} style={{ backgroundColor: '#303030', padding: 12, borderRadius: 100, marginRight: 10, }} >
+                <AntDesign name="arrowright" size={24} color="#fff" />
+            </TouchableOpacity>
+        </Row>
+    )}
 
 const SkeletonBody = () => {
     return (
