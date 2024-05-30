@@ -14,4 +14,5 @@ const Card = memo(({ item }) => {
     )
 })
 
+
 export default Card;
