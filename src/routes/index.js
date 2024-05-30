@@ -18,6 +18,7 @@ import AccountPage from '../pages/account';
 import SearchPage from '../pages/search';
 import CategoryPage from '../pages/search/category';
 import EditorPage from '../pages/editor';
+import TestPage from '../pages/test';
 
 const Stack = createStackNavigator();
 
@@ -26,11 +27,9 @@ const Tab = createBottomTabNavigator();
 export default function Router() {
   return (
     <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='MangaPages'>
+        <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='Test'>
             <Stack.Screen name="Tabs" component={Tabs} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
-
-            <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , 
-              backBehavior: 'none',}}/>
+            <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS ,  backBehavior: 'none',}}/>
             <Stack.Screen name="Novidades" component={NovidadesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="MangalistDetails" component={MangalistDetailsPage} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
             <Stack.Screen name="MangaDetails" component={MangaDetailsPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
@@ -45,6 +44,8 @@ export default function Router() {
             <Stack.Screen name="Search" component={SearchPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Category" component={CategoryPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Editor" component={EditorPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
+
+            <Stack.Screen name="Test" component={TestPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
 
         </Stack.Navigator>
     </NavigationContainer>

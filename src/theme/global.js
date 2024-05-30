@@ -29,7 +29,6 @@ export const Button = styled(TouchableRipple).attrs(() => ({
   borderless: true, 
   rippleColor: "#FFFFFF90",
 }))`
-  background: ${({ color }) => color};
   border-radius: 6px;
   padding-left: 16px;
   padding-top: 8px;

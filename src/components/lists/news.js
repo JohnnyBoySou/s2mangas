@@ -4,13 +4,17 @@ import { FlatList, Image, TouchableOpacity } from 'react-native';
 import { Skeleton } from 'moti/skeleton'
 import requestNews from '../../api/manga/news';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import { getManga } from '../../api_v2/getManga';
 
 export default function NewsComponent() {
+
     const [data, setData] = useState([]);
+
     useEffect(() => {
-        requestNews().then((res) => {
-            setData(res?.mangas);
-        })
+        getManga()
+        //requestNews().then((res) => {
+       //     setData(res?.mangas);})
     }, [])
    // const snapOffsets = Array(data?.length).map(( i) => i * (300 - 40));
 
@@ -18,7 +22,7 @@ export default function NewsComponent() {
             <Column style={{ marginHorizontal: 20, }}>
                 {data?.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> :  <Column>
                 <Title>Novos capítulos</Title>
-                <Label>Última atualização à {data[0].release_date}</Label>
+                <Label>Última atualização à {data[0]?.release_date}</Label>
                 </Column>}
                 <FlatList
                     style={{ marginVertical: 16, marginHorizontal: -20, }}

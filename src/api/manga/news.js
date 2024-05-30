@@ -38,3 +38,22 @@ export function clearNews(html) {
   });
   return mangas
 }
+
+const manga = 
+  {
+    id: 'ea4b263d-f512-4935-b2ec-6b2708dd5b38',
+    name: "A Hedgehog Hurting Someone Unknowingl",
+    type: 'manga',
+    desc: '',
+    capa: '',
+    status: 'Completo',
+    adult: false,
+    year: 2022,
+    categories: ['Comédia', 'Romance', 'Slice of Life'],
+    chapters: 1,
+    createdAt: "2022-06-02T08:31:26+00:00",
+    updatedAt: "2023-12-06T02:47:31+00:00",
+    languages: ['pt-br', 'en', 'jp'],
+    lastChapter: {id: 'ea4b263d-f512-4935-b2ec-6b2708dd5b38', number: 1, title: 'Capítulo 1', release_date: '2022-06-02T08:31:26+00:00'},
+
+  }
