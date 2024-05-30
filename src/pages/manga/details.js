@@ -297,12 +297,12 @@ export default function MangaDetailsPage({ route, navigation }) {
                 </>}
 
             </Scroll>
-            <AnimatePresence> {headerShown &&  <Pressable onPress={scrollTop} style={{  position: 'absolute', right: 30, bottom: 30, }}>
+            <AnimatePresence> {headerShown &&  <Pressable onPress={scrollTop} style={{  position: 'absolute', right: 30, bottom: 80, }}>
                 <MotiImage 
                 from={{opacity: 0, transform: [{scale: 0}, {rotate: '0deg'}], }} 
                 animate={{opacity: 1, transform: [{scale: 1}, {rotate: '16deg'}],}} 
                 exit={{opacity: 0, transform: [{scale: 0}, {rotate: '0deg'}],}} 
-                exitTransition={{ type: 'spring',  duration: 300, }} source={{ uri: item?.capa }} style={{ width:50, height: 70, borderRadius: 4, marginLeft: 80,borderWidth: 1, borderColor: color.title,}} /></Pressable>}</AnimatePresence>
+                exitTransition={{ type: 'spring',  duration: 300, }} source={{ uri: item?.capa }} style={{ width:50, height: 70, borderRadius: 4, borderWidth: 1, borderColor: color.title,}} /></Pressable>}</AnimatePresence>
 
             <Modalize ref={modalAdd} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
                 <Column>

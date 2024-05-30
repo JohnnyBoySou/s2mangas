@@ -14,6 +14,7 @@ export default function MangaPages({ route, navigation }) {
     const [uid, setuid] = useState(id);
     const [currentChapter, setcurrentChapter] = useState(chapter);
    
+    const [loading, setLoading] = useState(false);
     const [nextChap, setnextChap] = useState();
     const [prevChap, setprevChap] = useState();
     const [pages, setpages] = useState();
@@ -25,6 +26,7 @@ export default function MangaPages({ route, navigation }) {
                 setpages(response.pages)
                 setprevChap(response.prev)
                 setnextChap(response.next)
+                setLoading(false)
             })
         };
         requestData()
@@ -33,13 +35,17 @@ export default function MangaPages({ route, navigation }) {
 
     const handleNextChapter = () => {
         if (nextChap) {
+            setLoading(true)
+            setCurrentPage(0)
             setuid(nextChap.id)
             setcurrentChapter(nextChap.chapter)
         }
     }
     const handlePrevChapter = () => {
         if (prevChap) {
+            setLoading(true)
             setuid(prevChap.id)
+            setCurrentPage(0)
             setcurrentChapter(prevChap.chapter)
         }
     }
@@ -73,11 +79,11 @@ export default function MangaPages({ route, navigation }) {
                 </Pressable>
             </Row>
             <Row style={{ position: 'absolute', zIndex: 99, top: 0, }}>
-                <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT,  }} onPress={handlePrevious} onLongPress={handlePrevChapter}/>
-                <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT, }} onPress={handleNext} onLongPress={handleNextChapter}/>
+                <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT,  }} onPress={handlePrevious} onLongPress={handlePrevChapter} delayLongPress={1000}/>
+                <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT, }} onPress={handleNext} onLongPress={handleNextChapter} delayLongPress={1000}/>
             </Row>
 
-
+            {loading ? <Load />: 
             <FlatList
                 style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT, backgroundColor: '#202020', flex: 1, }}
                 data={pages}
@@ -85,6 +91,7 @@ export default function MangaPages({ route, navigation }) {
                 ref={flatListRef}
                 keyExtractor={(item, index) => index.toString()}
                 horizontal={true}
+                ListEmptyComponent={<Load/>}
                 pagingEnabled={true} contentContainerStyle={{ alignItems: 'center' }}
                 renderItem={({ item }) => <Images url={item} />}
                 getItemLayout={(data, index) => ({
@@ -95,7 +102,7 @@ export default function MangaPages({ route, navigation }) {
                 onMomentumScrollEnd={(event) => {
                     setCurrentPage(Math.floor(event.nativeEvent.contentOffset.x / SCREEN_WIDTH));
                 }}
-            />
+            />}
         </Main>
     )
 }

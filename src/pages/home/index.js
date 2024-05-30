@@ -72,11 +72,11 @@ export default function HomePage({ navigation }) {
 
                 
                 {type === 'Tudo' && <Column>
-                    <ForYou />
-                    <Spacer height={30} />
+                    <Spacer height={10} />
+                    <LastedComponent />
                     <CollectionsComponent />
                     <Spacer />
-                    <LastedComponent />
+                    <ForYou />
                     <Spacer />
                     <RateComponent />
                     <Spacer />
