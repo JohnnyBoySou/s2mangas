@@ -1,153 +1,159 @@
-import React, { useEffect, useState, useCallback, useRef} from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Row, Scroll, Main, Column, Title, Label } from '../../theme/global';
-import { Pressable, FlatList, Dimensions, Image , View, } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-import requestPages from '../../api/manga/pages';
+import { Pressable, FlatList, Dimensions, Image, View, ActivityIndicator, StatusBar,  } from 'react-native';
 import { addChaptersToManga } from '../../api/user/progress';
-import { MotiView } from 'moti';
-
-import Bottom from './bottom';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { MotiView,  } from 'moti';
+import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { Album } from 'lucide-react-native';
-
-
-
-
-const { width, height: SCREEN_HEIGHT } = Dimensions.get('window'); 
-
+import { getPages } from '../../api_v2/getPages';
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function MangaPages({ route, navigation }) {
     //const {id, chapter, itm } = route.params;
     const a = false;
-    const [item, setItem] = useState();
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState();
+    const [pages, setpages] = useState();
+
     useEffect(() => {
         const requestData = async () => {
-            setLoading(true)
-          //addChaptersToManga(itm, chapter)  
-          requestPages(chapter, id).then((response) => {
-               setItem(response)
-                setLoading(false);
-                if(response.images.length === 0) {
-                    setError('Não foi possível carregar as páginas')
-                }
+            //addChaptersToManga(itm, chapter)  
+            getPages().then((response) => {
+                setpages(response)
             })
         };
-
-
+        requestData()
     }, [])
-    const handleSavePage = () => {
-    }
+
+    const flatListRef = useRef(null);
+    const [currentPage, setCurrentPage] = useState(0);
+
     const handleNext = () => {
-        setLoading(true);
-    }
-
-
-
-    const bottom = useRef(null);
-    const openBottom = useCallback(() => {
-        const isActive = bottom?.current?.isActive();
-        if (isActive) {
-            bottom?.current?.scrollTo(0);
-        } else {
-            bottom?.current?.scrollTo(300);
+        if (currentPage < pages.length - 1) {
+            setCurrentPage(currentPage + 1);
+            flatListRef.current.scrollToIndex({ animated: true, index: currentPage + 1 });
         }
-      }, []);
+    };
 
-      const pages = ['https://i.pinimg.com/564x/6a/50/5f/6a505f6b1837787e9e7f28c8f5a20988.jpg',]
-
-
+    const handlePrevious = () => {
+        if (currentPage > 0) {
+            setCurrentPage(currentPage - 1);
+            flatListRef.current.scrollToIndex({ animated: true, index: currentPage - 1 });
+        }
+    };
+    const handleSelectPage = (page) => {
+        setCurrentPage(page);
+        flatListRef.current.scrollToIndex({ animated: true, index: page });
+    }
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-        <Main>
+        <Main style={{ justifyContent: 'center', alignItems: 'center', }}>
+            <StatusBar hidden />
+            <Row style={{ position: 'absolute', zIndex: 99, top: 0, }}>
+                <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT,  }} onPress={handlePrevious} />
+                <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT, }} onPress={handleNext} />
+            </Row>
 
-            {a && <>
-              {loading && <MotiView style={{ justifyContent: 'center', alignItems: 'center',  paddingBottom: 200,}}>
-                    <Image blurRadius={40} source={{ uri: "https://i.pinimg.com/564x/db/d5/8d/dbd58dd3bee3763a0c34e73f6ed64b62.jpg" }} style={{ width: width, height: 1.1 * SCREEN_HEIGHT, opacity: 0.6,   zIndex: -2, position: 'absolute', }} />
-                    <Image src='https://i.pinimg.com/564x/ae/87/1a/ae871a9d054cd5f966b49a3c734ae8bc.jpg' style={{ width: 200, height: 300, margin: 10, marginTop: 200, objectFit: 'cover', borderRadius: 12, transform: [{rotateX: '12deg'}] }} />
-                    <Title>Gerando páginas</Title>
-                    <Label>Isso pode demorar um pouco...</Label>
-                </MotiView> }
-                {!loading && error && <MotiView style={{ justifyContent: 'center', alignItems: 'center', paddingBottom: 200,}}>
-                    <Image blurRadius={40} source={{ uri: "https://i.pinimg.com/564x/db/d5/8d/dbd58dd3bee3763a0c34e73f6ed64b62.jpg" }} style={{ width: width, height: 1.2 * SCREEN_HEIGHT, opacity: 0.6,   zIndex: -2, position: 'absolute', }} />
-                    <Image src='https://i.pinimg.com/564x/8f/83/a1/8f83a1f9c13373e854f4385974b1c8bd.jpg' style={{ width: 200, height: 300, margin: 10, marginTop: 200, objectFit: 'cover', borderRadius: 12, transform: [{rotateX: '12deg'}] }} />
-                    <Title>Encontramos um problema</Title>
-                    <Label>{error}</Label>
-                </MotiView>}
-                </>}
+            <Pagination currentIndex={currentPage} pages={pages} handleSelectPage={handleSelectPage} />
 
-            <Scroll>
-                {!loading && <ListPages item={item} />}
-            </Scroll>
-
-            <Bottom ref={bottom}>
-                <Column style={{ flex: 1, backgroundColor: '#202020', borderRadius: 24, paddingHorizontal: 20, paddingVertical: 20, }} >
-                    <Row style={{ marginBottom: 20,justifyContent: 'space-between', alignItems: 'center',  }}>
-                        <Pressable onPress={() => navigation.goBack()}>
-                            <AntDesign name="arrowleft" size={32} color="#fff" />
-                        </Pressable>
-                        <Title>Opções</Title>
-                        <Pressable onPress={() => navigation.goBack()}>
-                            <AntDesign name="arrowleft" size={32} color="#fff" />
-                        </Pressable>
-                    </Row>
-
-
-                    <Pressable style={{ flexDirection: 'row', borderRadius: 8, backgroundColor: "#303030", padding: 12, marginBottom: 12, }}>
-                        <Album color="#fff" size={24}/>
-                        <Label style={{ color: "#fff", marginLeft: 10, }}>Adicionar marcador</Label>
-                    </Pressable>
-                    <Pressable style={{ flexDirection: 'row', borderRadius: 8, backgroundColor: "#303030", padding: 12, marginBottom: 12, }}>
-                        <Album color="#fff" size={24}/>
-                        <Label style={{ color: "#fff", marginLeft: 10, }}>Adicionar marcador</Label>
-                    </Pressable>
-                    <Pressable style={{ flexDirection: 'row', borderRadius: 8, backgroundColor: "#303030", padding: 12, marginBottom: 12, }}>
-                        <Album color="#fff" size={24}/>
-                        <Label style={{ color: "#fff", marginLeft: 10, }}>Adicionar marcador</Label>
-                    </Pressable>
-                </Column>
-            </Bottom>
-
+            <FlatList
+                style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT, backgroundColor: '#202020', flex: 1, }}
+                data={pages}
+                showsHorizontalScrollIndicator={false}
+                ref={flatListRef}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal={true}
+                pagingEnabled={true} contentContainerStyle={{ alignItems: 'center' }}
+                renderItem={({ item }) => <Images url={item} />}
+                getItemLayout={(data, index) => ({
+                    length: SCREEN_WIDTH,
+                    offset: SCREEN_WIDTH * index,
+                    index,
+                })}
+                onMomentumScrollEnd={(event) => {
+                    setCurrentPage(Math.floor(event.nativeEvent.contentOffset.x / SCREEN_WIDTH));
+                }}
+            />
         </Main>
-        </GestureHandlerRootView>
     )
 }
 
-
-
-const Images = ({ item, format }) => {
-    const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
-
-    useEffect(() => {
-        Image.getSize(item, (width, height) => {
-            const screenWidth = Dimensions.get('window').width;
-            const scaleFactor = screenWidth / width;
-            const scaledHeight = height * scaleFactor;
-            setImageSize({ width: screenWidth, height: scaledHeight });
-        }, (error) => {
-            console.log("Error loading image:", error);
-        });
-    }, [item]);
-
+const Pagination = ({ currentIndex, pages, handleSelectPage }) => {
     return (
-        <Column>
-        <Image source={{ uri: item }} resizeMode='cover' style={{ width: imageSize.width, height: imageSize.height, margin: 10 }} /> 
-        </Column>
-    );
+        <Column  style={{ position: 'absolute', bottom: 50, zIndex: 999, }}>
+        <Row style={{ justifyContent: 'center', alignItems: 'center',  }}>
+            {pages?.map((_, index) => (
+                <Pressable onPress={() => handleSelectPage(index)} key={index} style={{ width: '4%', marginHorizontal: 4, height: 10, borderRadius: 100, backgroundColor: index === currentIndex ? 'red' : '#303030', }} />
+                ))}
+        </Row>
+    </Column>
+    )
 }
 
-const ListPages = ({ item }) => {
-    const pages = item?.images
-    const format = item?.format
+const Images = ({ url }) => {
+    const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+
+    useEffect(() => {
+        if (!url) return;
+
+        const imageLoad = () => {
+            setLoading(true);
+            setError(false);
+
+            Image.getSize(url, (width, height) => {
+                const scaleFactor = SCREEN_WIDTH / width;
+                const scaledHeight = height * scaleFactor;
+                setImageSize({ width: SCREEN_WIDTH, height: scaledHeight });
+                setLoading(false);
+            }, (error) => {
+                console.log("Error loading image:", error);
+                setError(true);
+                setLoading(false);
+            });
+        };
+
+        imageLoad();
+
+    }, [url]);
+
+    if (loading) {
+        return (
+            <Load />
+        );
+    }
+
+    if (error) {
+        return (
+            <Error />
+        );
+    }
 
     return (
-            <FlatList
-                style={{ marginTop: 20, }}
-                data={pages}
-                keyExtractor={(item) => item.toString()}
-                renderItem={({ item }) => <Images format={format} item={item} />}
-            />
+        <Image
+            source={{ uri: url }}
+            resizeMode='cover'
+            style={{ width: imageSize.width, height: imageSize.height }}
+        />
     );
 };
+
+const Load = () => {
+    return (
+        <MotiView style={{ justifyContent: 'center', alignItems: 'center', paddingBottom: 200, }}>
+            <Image blurRadius={40} source={{ uri: "https://i.pinimg.com/564x/db/d5/8d/dbd58dd3bee3763a0c34e73f6ed64b62.jpg" }} style={{ width: SCREEN_WIDTH, height: 1.1 * SCREEN_HEIGHT, opacity: 0.6, zIndex: -2, position: 'absolute', }} />
+            <Image src='https://i.pinimg.com/564x/ae/87/1a/ae871a9d054cd5f966b49a3c734ae8bc.jpg' style={{ width: 200, height: 300, margin: 10, marginTop: 200, objectFit: 'cover', borderRadius: 12, transform: [{ rotateX: '12deg' }] }} />
+            <Title>Gerando páginas</Title>
+            <Label>Isso pode demorar um pouco...</Label>
+        </MotiView>
+    )
+}
+const Error = (error) => {
+    return (
+        <MotiView style={{ justifyContent: 'center', alignItems: 'center', paddingBottom: 200, }}>
+            <Image blurRadius={40} source={{ uri: "https://i.pinimg.com/564x/db/d5/8d/dbd58dd3bee3763a0c34e73f6ed64b62.jpg" }} style={{ width: SCREEN_WIDTH, height: 1.2 * SCREEN_HEIGHT, opacity: 0.6, zIndex: -2, position: 'absolute', }} />
+            <Image src='https://i.pinimg.com/564x/8f/83/a1/8f83a1f9c13373e854f4385974b1c8bd.jpg' style={{ width: 200, height: 300, margin: 10, marginTop: 200, objectFit: 'cover', borderRadius: 12, transform: [{ rotateX: '12deg' }] }} />
+            <Title>Encontramos um problema</Title>
+            <Label>{error}</Label>
+        </MotiView>
+    )
+}

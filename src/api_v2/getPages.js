@@ -12,7 +12,6 @@ export async function getPages(chapterID = '6abbf820-dc5b-4e50-8335-af06e08f8cbc
       const { data } = resp; // Obtenha apenas os dados da resposta
       const chapterHash = data.chapter?.hash; // Obtenha a chave de hash do capítulo
       const pages = transformPage(chapterHash, data.chapter?.data); // Use transformPage para obter as URLs das páginas
-
       return pages;
   } catch (error) {
       console.error(error);
