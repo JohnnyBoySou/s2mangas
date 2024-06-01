@@ -26,7 +26,7 @@ const Tab = createBottomTabNavigator();
 export default function Router() {
   return (
     <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='Tabs'>
+        <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='AsyncStatic'>
             <Stack.Screen name="Tabs" component={Tabs} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS ,  backBehavior: 'none',}}/>
             <Stack.Screen name="Novidades" component={NovidadesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>

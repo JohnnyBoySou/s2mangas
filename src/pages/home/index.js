@@ -118,7 +118,7 @@ const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width 
 const ForYou = () => { 
     const [data, setData] = useState([]);
     useEffect(() => {
-        axios.get('https://www.s2mangas.com/api/mangalist?page=1')
+        axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=lasted')
             .then(response => {
                 setData(response.data);
             })
