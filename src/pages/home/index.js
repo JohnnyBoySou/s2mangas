@@ -90,8 +90,6 @@ export default function HomePage({ navigation }) {
                     <Spacer />
                     <RateComponent />
                     <Spacer />
-                    <NewsComponent />
-                    <Spacer />
                     <LastedComponent />
                     <Spacer />
                 </Column>}
@@ -167,8 +165,8 @@ const ForYou = () => {
         listChapter()
     }, [])
    
+    //<Label style={{ fontFamily: font.book, color: "#505050", fontSize: 14, marginTop: -2, }}>{item?.chapter - item?.chapters.length} capítulos restantes</Label>
 
-    const { color, font } = useContext(ThemeContext);
      if(!item) return null;
     return(
     <Pressable style={{ position: 'absolute',  bottom: 10, width: '100%',}} onPress={() => {navigation.navigate('Continue')}} >
@@ -182,8 +180,7 @@ const ForYou = () => {
                     <Row>
                         <MotiImage source={{uri: item?.capa}} style={{ width: 40, height: 40, borderRadius: 5,  }} />
                         <Column style={{ marginLeft: 16, justifyContent: 'center', }}>
-                        <Title style={{fontSize: 16, color: "#171717"}}>{item?.name.slice(0,12)}</Title>
-                        <Label style={{ fontFamily: font.book, color: "#505050", fontSize: 14, marginTop: -2, }}>{item?.chapter - item?.chapters.length} capítulos restantes</Label>
+                        <Title style={{fontSize: 22, color: "#171717"}}>{item?.name.slice(0,12)}</Title>
                         </Column>
                     </Row>
 

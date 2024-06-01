@@ -16,6 +16,8 @@ import { listChaptersToManga } from '@api/user/progress';
 import { getManga } from '@apiv2/getManga';
 import { getChapters } from '@apiv2/getChapters';
 import Check from '@components/check';
+import { BookDashed } from 'lucide-react-native'
+import LottieView from 'lottie-react-native';
 
 export default function MangaDetailsPage({ route, navigation }) {
     const id = route.params.id;
@@ -326,15 +328,6 @@ export default function MangaDetailsPage({ route, navigation }) {
 
 
 const ListChapters = ({ chapters, id, itm, chaptersRead, lidos }) => {
-
-    /*
-     "pages": 35, 
-     "volume": 8}, 
-     */
-
-     
-    
-
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -346,9 +339,9 @@ const ListChapters = ({ chapters, id, itm, chaptersRead, lidos }) => {
         for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) { pageNumbers.push(i); }
         return (
             <Row style={{ justifyContent: 'center', marginTop: 6, flexWrap: 'wrap' }}>
-                {pageNumbers.map((number) => (
+                {pageNumbers?.map((number, index) => (
                     <TouchableOpacity
-                        key={number}
+                        key={index}
                         onPress={() => paginate(number)}
                         style={{ width: 42, height: 42, backgroundColor: number === currentPage ? '#FFF' : '#505050', borderRadius: 100, marginHorizontal: 10, justifyContent: 'center', alignItems: 'center', }}>
                         <Label style={{ color: number === currentPage ? '#000' : '#fff', fontSize: 24, fontFamily: 'Font_Medium', marginTop: -4, marginRight: -4, }}>{number} </Label>
@@ -358,15 +351,25 @@ const ListChapters = ({ chapters, id, itm, chaptersRead, lidos }) => {
         );
     };
 
+    const setChaptersToRemove = new Set(chaptersRead);
+    const filteredItems = currentItems.filter(item => !setChaptersToRemove.has(item.chapter));
 
     return (
         <Column style={{}}>
             <FlatList
                 style={{ marginTop: 20, }}
-                data={currentItems}
+                data={lidos ? filteredItems :  currentItems}
+                ListEmptyComponent={<Column style={{ justifyContent: 'center', alignItems: 'center', marginVertical: 50, }}>
+                <LottieView autoPlay  style={{  width: 200,   height: 200, marginVertical: -30,  }}  source={require('@imgs/book.json')}
+                    />
+                <Title style={{ textAlign: 'center' }}>Todos os capítulos foram lidos</Title>    
+                <Label style={{ fontSize: 18, textAlign: 'center'}}>Pule para a próxima pagina clicando nos números abaixo</Label>
+            
+            </Column>}
                 keyExtractor={(item) => item.number}
                 renderItem={({ item }) => <Card item={item} id={id} itm={itm} chaptersRead={chaptersRead} lidos={lidos} total={chapters}/>}
-            />
+            />  
+
             <Pagination
                 itemsPerPage={itemsPerPage}
                 totalItems={chapters?.length}

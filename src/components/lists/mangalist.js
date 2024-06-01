@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 export function MangalistWeekendComponent() {
     const [data, setData] = useState([]);
     useEffect(() => {
-        axios.get('https://www.s2mangas.com/api/mangalist?page=1')
+        axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=weekend')
             .then(response => {
                 setData(response.data);
             })
@@ -45,7 +45,7 @@ export function MangalistWeekendComponent() {
 export function MangalistLastedComponent() {
     const [data, setData] = useState([]);
     useEffect(() => {
-        axios.get('https://www.s2mangas.com/api/mangalist?page=1')
+        axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=lasted')
             .then(response => {
                 setData(response.data);
             })
@@ -81,7 +81,7 @@ export function MangalistLastedComponent() {
 export  function MangalistRateComponent() {
     const [data, setData] = useState([]);
     useEffect(() => {
-        axios.get('https://www.s2mangas.com/api/mangalist?page=1')
+        axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=rate')
             .then(response => {
                 setData(response.data);
             })
@@ -122,8 +122,8 @@ const Card = React.memo(({ item }) => {
             });
           }} style={{ backgroundColor: "#303030", borderRadius: 6, width: 204, marginRight: 16, padding: 12, paddingBottom: 20, }}>
             <Image source={{ uri: item.capa }} style={{ width: 152, height: 152, borderRadius: 6, alignSelf: 'center', marginBottom: 6, }} />
-            <Title style={{ fontSize: 20, }}>{item.name}</Title>
-            <Label style={{ fontSize: 16, }}>{item.desc.slice(0, 45)}...</Label>
+            <Title style={{ fontSize: 18, }}>{item.name.slice(0, 22)}</Title>
+            <Label style={{ fontSize: 14, }}>{item.desc.slice(0, 45)}...</Label>
         </TouchableOpacity>
     )
 })

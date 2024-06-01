@@ -45,7 +45,8 @@
     "react-native-swipeable-item": "^2.0.9",
     "react-native-web": "~0.19.6",
     "react-navigation": "4.1.1",
-    "styled-components": "*"
+    "styled-components": "*",
+    "lottie-react-native": "6.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0"
