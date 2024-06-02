@@ -33,10 +33,10 @@ export default function PreferencesPage({ navigation, route, }) {
 
 
   const { color, font } = useContext(ThemeContext)
-  const [name, setName] = useState('JohnnyBoy');
+  const [name, setName] = useState('');
   const [avatar, setAvatar] = useState();
   const [capa, setCapa] = useState('https://i.pinimg.com/736x/de/03/23/de0323fd22083daa9a347e092d14407e.jpg');
-  const [bio, setBio] = useState('sou lindo demais');
+  const [bio, setBio] = useState('');
 
   const [step, setStep] = useState(1);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -84,7 +84,7 @@ export default function PreferencesPage({ navigation, route, }) {
         }
         createPreferences(params).then(res => {
           if(res){
-            navigation.navigate('Home')
+            navigation.replace('Tabs')
           }
         })
       }

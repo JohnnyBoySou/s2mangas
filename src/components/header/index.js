@@ -8,7 +8,7 @@ const { height, width } = Dimensions.get('window');
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from 'styled-components/native';
 
-function Header() {
+function Header({top}) {
     const {color, font } = useContext(ThemeContext);
     const [user, setUser] = useState();
     const navigation = useNavigation();
@@ -85,25 +85,46 @@ function Header() {
 
     return(
         <Column>
-            <Row style={{ alignSelf: 'flex-end', top: 46,}}>
-                <Pressable onPress={() => navigation.navigate('Novidades')}  style={{width: 46, height: 46,  borderRadius: 100,zIndex: 99, justifyContent: 'center', alignItems: 'center',   }}>
-                    <Feather name="bell" size={24} color="#fff" />
-                </Pressable>
-                <Pressable onPress={() => navigation.navigate('Search')}  style={{width: 46,  height: 46, borderRadius: 100,  zIndex: 99, justifyContent: 'center', alignItems: 'center',   }}>
-                    <Feather name="search" size={24} color="#fff" />
-                </Pressable>
-            </Row>
-            
-            <MotiView  transition={{type: 'timing', duration: 300,}} >
-                <MotiImage blurRadius={40} source={{ uri: user?.capa }} style={{ width: width, opacity: 0.6, top: -100, height: 180, left: -20, borderRadius: 32, right: 10, zIndex: -2, position: 'absolute', }} />
-                <Row>
+            <MotiImage blurRadius={40} source={{ uri: user?.capa }} style={{ width: width, opacity: 0.6, top: -60, height: 180, left: -20, borderRadius: 32, right: 10, zIndex: -2, position: 'absolute', }} />
+
+            <Row style={{ justifyContent: 'space-between', alignItems: 'center',  marginTop: 40,}}>
+
+                <Row style={{}}>
                     <Pressable onPress={() => navigation.navigate('Account')} >
-                        <MotiImage state={toggleImage} source={{ uri: user?.avatar }} style={{ width: 64, height: 64, borderRadius: 24,}} resizeMode='cover' transition={{ type: 'timing', duration: 300,  }}/>
+                            <MotiImage state={toggleImage} source={{ uri: user?.avatar }} style={{ width: 64, height: 64, borderRadius: 24,}} resizeMode='cover' transition={{ type: 'timing', duration: 300,  }}/>
                     </Pressable>
                     <MotiText transition={{ type: 'timing', duration: 300,  }} style={{ fontSize: 24, textAlign: 'left', letterSpacing: -1, marginTop: 10, fontFamily: font.book, color: "#fff", marginLeft: 20, }}>{hello},{"\n"}{user?.name}</MotiText>
                 </Row>
-            
-                <AnimatePresence>
+                <Row style={{ }}>
+                    <Pressable onPress={() => navigation.navigate('Novidades')}  style={{width: 46, height: 46,  borderRadius: 100,zIndex: 99, justifyContent: 'center', alignItems: 'center',   }}>
+                        <Feather name="bell" size={24} color="#fff" />
+                    </Pressable>
+                    <Pressable onPress={() => navigation.navigate('Search')}  style={{width: 46,  height: 46, borderRadius: 100,  zIndex: 99, justifyContent: 'center', alignItems: 'center',   }}>
+                        <Feather name="search" size={24} color="#fff" />
+                    </Pressable>
+                </Row>
+            </Row>
+            <Row style={{justifyContent: 'space-between', alignItems: 'center', flexGrow: 1, marginBottom:10, marginTop: 35, zIndex: 999,}}>
+                                    <Pressable onPress={() => {navigation.navigate('Account',{type: 'Like'})}} style={{ backgroundColor: "#262626", borderRadius: 8,  width: '49%', flexDirection: 'row',  alignItems: 'center', }}>
+                                        <MotiImage source={require('../../assets/imgs/heart.png')} style={{ width:64, height: 64, borderTopLeftRadius: 8, borderBottomLeftRadius: 8, backgroundColor: "#404040" }}/>
+                                        <Title style={{ fontFamily: 'Font_Medium', fontSize: 16, marginLeft: 8, }}>Mangás {'\n'}Curtidos</Title>
+                                    </Pressable>
+                                    <Spacer width={8} />
+                                    <Pressable onPress={() => {navigation.navigate('Collections')}}  style={{ backgroundColor: "#262626", borderRadius: 8, width: '49%', flexDirection: 'row',  alignItems: 'center', }}>
+                                        <MotiImage source={require('../../assets/imgs/collection.png')} style={{ width:64, height: 64, borderTopLeftRadius: 8, borderBottomLeftRadius: 8, backgroundColor: "#404040" }}/>
+                                        <Title style={{ fontFamily: 'Font_Medium', fontSize: 16, marginLeft: 8, }}>Suas {'\n'}Coleções</Title>
+                                    </Pressable>
+                        </Row>
+
+        </Column>
+    )
+}
+
+export default memo(Header);
+
+
+/**
+ * <AnimatePresence>
             {toggleIsOpen && 
                     <MotiView from={{translateY: -20, opacity: 0,}} animate={{ translateY: 0, opacity:1,}} transition={{type: 'timing', duration: 300,}}>
                         <Row style={{ justifyContent: 'space-between', alignItems: 'center',  marginTop: 30,}}>
@@ -138,26 +159,7 @@ function Header() {
                     </MotiView>
                 }
                 </AnimatePresence>
-            </MotiView>
-
-            <Column style={{marginBottom: 0, zIndex: 99, marginTop: 40, }}>
-                <Row style={{justifyContent: 'space-between', alignItems: 'center', flexGrow: 1,}}>
-                    <Pressable onPress={() => {navigation.navigate('Account',{type: 'Like'})}} style={{ backgroundColor: "#262626", borderRadius: 8,  width: '49%', flexDirection: 'row',  alignItems: 'center', }}>
-                        <MotiImage source={require('../../assets/imgs/heart.png')} style={{ width:64, height: 64, borderTopLeftRadius: 8, borderBottomLeftRadius: 8, backgroundColor: "#404040" }}/>
-                        <Title style={{ fontFamily: 'Font_Medium', fontSize: 16, marginLeft: 8, }}>Mangás {'\n'}Curtidos</Title>
-                    </Pressable>
-                    <Spacer width={8} />
-                    <Pressable onPress={() => {navigation.navigate('Collections')}}  style={{ backgroundColor: "#262626", borderRadius: 8, width: '49%', flexDirection: 'row',  alignItems: 'center', }}>
-                        <MotiImage source={require('../../assets/imgs/collection.png')} style={{ width:64, height: 64, borderTopLeftRadius: 8, borderBottomLeftRadius: 8, backgroundColor: "#404040" }}/>
-                        <Title style={{ fontFamily: 'Font_Medium', fontSize: 16, marginLeft: 8, }}>Suas {'\n'}Coleções</Title>
-                    </Pressable>
-                </Row>
-            </Column>
-        </Column>
-    )
-}
-
-export default memo(Header);
+ */
 
 /**<Row style={{justifyContent: 'space-between', alignItems: 'center', flexGrow: 1, marginTop: 8,}}>
                     <Pressable style={{ backgroundColor: "#262626", borderRadius: 8,  width: '49%', flexDirection: 'row',  alignItems: 'center', }}>

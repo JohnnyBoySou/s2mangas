@@ -39,7 +39,7 @@ export default function HomePage({ navigation }) {
 
 
     const [headerShown, setHeaderShown] = useState(false);
-
+    const [top, settop] = useState(true);
     return (
         <Main>
             <Scroll stickyHeaderIndices={[1]} onScroll={(event) => {
@@ -49,13 +49,22 @@ export default function HomePage({ navigation }) {
                 } else {
                     setHeaderShown(false);
                 }
-                }}>
+                if(scrolling > 120){
+                    settop(false)
+                }else{
+                    settop(true)
+                }
+                }} style={{ }}>
                 {type === 'Mangas' && <Column style={{ width: 100, height: 50 }} />}
                 {type === 'Mangalist' && <Column style={{ width: 100, height: 50 }} />}
-                {type === 'Tudo' && <Column style={{ paddingHorizontal: 20, }}><Header/></Column>}
+                {type === 'Tudo' && <Column style={{ paddingHorizontal: 20, }}><Header /></Column>}
 
 
-                <Row style={{ marginBottom: 0, backgroundColor: color.background, padding: 12, paddingTop: 40, marginTop: -20, zIndex: 99, }}>
+                <Column style={{   zIndex: 999,  marginTop: -40,  }}>
+                    
+                   
+
+                <Row style={{ marginBottom: 0,  padding: 12, paddingTop: 50, backgroundColor: color.background, zIndex: -99, }}>
                     <Pressable onPress={() => { setType('Tudo') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Tudo' ? color.light : color.off, borderRadius: 100, zIndex: 99,}}>
                         <Label style={{ color: type === 'Tudo' ? color.off : color.title, fontFamily: type === 'Tudo' ? font.bold : font.book, }}>Tudo</Label>
                     </Pressable>
@@ -69,6 +78,7 @@ export default function HomePage({ navigation }) {
                         <Label style={{ color: type === 'Collections' ? color.off : color.title, fontFamily: type === 'Collections' ? font.bold : font.book, }}>Coleções</Label>
                     </Pressable>
                 </Row>
+                </Column>
 
                 
                 {type === 'Tudo' && <Column>
@@ -104,7 +114,7 @@ export default function HomePage({ navigation }) {
                 </Column>}
 
                
-
+                <Column style={{height: 60, }} />
             </Scroll>
             <AnimatePresence> 
                 {headerShown && <ContinueBar navigation={navigation}/>}</AnimatePresence>

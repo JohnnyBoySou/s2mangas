@@ -298,7 +298,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                 </>}
 
             </Scroll>
-            <AnimatePresence> {headerShown &&  <Pressable onPress={scrollTop} style={{  position: 'absolute', right: 30, bottom: 80, }}>
+            <AnimatePresence> {headerShown &&  <Pressable onPress={scrollTop} style={{  position: 'absolute', left: 30, bottom: 80, }}>
                 <MotiImage 
                 from={{opacity: 0, transform: [{scale: 0}, {rotate: '0deg'}], }} 
                 animate={{opacity: 1, transform: [{scale: 1}, {rotate: '16deg'}],}} 
@@ -314,7 +314,7 @@ export default function MangaDetailsPage({ route, navigation }) {
             <Modalize ref={modalDesc} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }}>
                <Column style={{ padding: 20, }}>
                 <Title>Descrição</Title>
-                <Label style={{  fontSize: 18, lineHeight: 26, }}>{item?.description}</Label>
+                <Label style={{  fontSize: 18, lineHeight: 24, marginTop: 12, }}>{item?.description}</Label>
 
                 <Pressable onPress={() => { modalDesc.current?.close() }} style={{ paddingVertical: 12, paddingHorizontal: 24, backgroundColor: color.light , borderRadius: 100, alignSelf: 'center', marginVertical: 20, }}>
                         <Label style={{fontSize: 18, color: color.off, fontFamily: font.medium, }}>Fechar</Label>

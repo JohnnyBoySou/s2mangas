@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Row, Scroll, Main, Column, Title, Label } from '../../theme/global';
 import { Pressable, FlatList, Dimensions, Image, View, ActivityIndicator, StatusBar,  } from 'react-native';
 import { addChaptersToManga } from '../../api/user/progress';
-import { MotiView,  } from 'moti';
+import { AnimatePresence, MotiView,  } from 'moti';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { Album, ArrowLeft, ArrowRight } from 'lucide-react-native';
 import { getPages } from '../../api_v2/getPages';
@@ -73,10 +73,11 @@ export default function MangaPages({ route, navigation }) {
     return (
         <Main style={{ justifyContent: 'center', alignItems: 'center', }}>
             <StatusBar hidden />
-            <Row style={{ position: 'absolute', top: 20, zIndex: 9999, left: 20, }}>
+            <Row style={{ position: 'absolute', top: 20, zIndex: 9999, left: 20, right: 20, justifyContent: 'space-between', alignItems: 'center',  }}>
                 <Pressable onPress={() => navigation.goBack()} style={{  }}>
                     <ArrowLeft size={30} stroke='#fff' />
                 </Pressable>
+                <Title>{currentPage + 1}/{pages?.length}</Title>
             </Row>
             <Row style={{ position: 'absolute', zIndex: 99, top: 0, }}>
                 <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT,  }} onPress={handlePrevious} onLongPress={handlePrevChapter} delayLongPress={1000}/>
@@ -89,7 +90,7 @@ export default function MangaPages({ route, navigation }) {
                 data={pages}
                 showsHorizontalScrollIndicator={false}
                 ref={flatListRef}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item, index) => item?.chapter}
                 horizontal={true}
                 ListEmptyComponent={<Load/>}
                 pagingEnabled={true} contentContainerStyle={{ alignItems: 'center' }}
@@ -103,11 +104,26 @@ export default function MangaPages({ route, navigation }) {
                     setCurrentPage(Math.floor(event.nativeEvent.contentOffset.x / SCREEN_WIDTH));
                 }}
             />}
+            
+            {!loading && <Column style={{ position: 'absolute', bottom: 20, zIndex: 999,}}>
+            <AnimatePresence>
+                {currentPage < 2 &&
+                <MotiView from={{opacity:0, translateY: 40, }} animate={{opacity: 1, translateY: 0, }} exit={{opacity:0, translateY: 40,}}>
+                   <Pressable onPress={handlePrevChapter} style={{ backgroundColor: '#fff', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 6,  }}><Label style={{ color:'#000', }}>Capítulo anterior</Label></Pressable>
+                </MotiView>
+                   }
+                   {currentPage >= pages?.length -2 && nextChap &&
+                <MotiView from={{opacity:0, translateY: 40, }} animate={{opacity: 1, translateY: 0, }} exit={{opacity:0, translateY: 40,}}>
+                   <Pressable onPress={handleNextChapter} style={{ backgroundColor: '#fff', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 6,  }}><Label style={{ color:'#000', }}>Próximo capítulo</Label></Pressable>
+                </MotiView>
+                   }
+            </AnimatePresence>
+                   </Column>}
         </Main>
     )
 }
 //<Pagination currentIndex={currentPage} pages={pages} handleSelectPage={handleSelectPage} />
-
+/* 
 const Pagination = ({ currentIndex, pages, handleSelectPage }) => {
     return (
         <Column  style={{ position: 'absolute', bottom: 50, zIndex: 999, }}>
@@ -119,6 +135,7 @@ const Pagination = ({ currentIndex, pages, handleSelectPage }) => {
     </Column>
     )
 }
+*/
 
 const Images = ({ url }) => {
     const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
