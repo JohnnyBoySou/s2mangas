@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { getSearch } from '@apiv2/getSearch';
 import { Modalize } from 'react-native-modalize';
 import { FlatList, } from 'react-native-gesture-handler';
+import { X } from 'lucide-react-native';
 
 export default function SearchPage({navigation}){
     const { color , font } = useContext(ThemeContext)
@@ -25,9 +26,7 @@ export default function SearchPage({navigation}){
     const filtersModal = useRef(null);
     const getData = async () => {
         if(name === '') { setData([]);  return;}
-        if(!history.includes(name)){
-            saveWord(name);
-        }
+        if(!history.includes(name)){ saveWord(name);   }
         setLoading(true);
         getSearch(name).then(res => {
             setData(res)
@@ -128,12 +127,13 @@ export default function SearchPage({navigation}){
                         </Pressable>
                     </Row>
 
-                    <Row style={{}}>
+                    <Row>
                         <TextInput onFocus={() => {setopenSearch(true); toggleAnimation.transitionTo('open')}} onBlur={() => {if(name?.length == 0 ) {setopenSearch(false); toggleAnimation.transitionTo('close')}}} value={name} placeholderTextColor={color.title + 70} placeholder='Ex.: One Piece' onChangeText={setname} style={{ fontFamily: font.book, paddingVertical: 12, flexGrow: 1, backgroundColor: openSearch ? "#f7f7f7" : '#303030',  paddingHorizontal: 20, borderRadius: 12, fontSize: 20, borderColor: name.length > 2 ? color.green : "transparent", borderWidth: 2, color: "#000", borderTopRightRadius: 0, borderBottomRightRadius: 0, }} />
-                        <Pressable disabled={loading} onPress={getData} style={{ backgroundColor: color.primary, borderTopRightRadius: 12, borderBottomRightRadius: 12, width: 58,  justifyContent: 'center', alignItems: 'center',  }}>
+                        <Pressable  onPress={getData} style={{ backgroundColor: color.primary, borderTopRightRadius: 12, borderBottomRightRadius: 12, width: 58,  justifyContent: 'center', alignItems: 'center',  }}>
                             <Feather name="search" size={24} color="#fff" />
                         </Pressable>
                     </Row>
+                    
                     <AnimatePresence>
                     {openSearch && <>
                         {history.length > 0 && 
@@ -168,14 +168,10 @@ export default function SearchPage({navigation}){
                     <Title style={{ fontSize: 24, marginBottom: 6, marginTop: 20,}}>Navegue por categorias</Title>
                     <FlatList data={tags} numColumns={2} style={{ marginHorizontal: -8, }} renderItem={({item}) => <Category item={item}/>} keyExtractor={(item) => item.id}/>
                 </Column>}
-                
-                {data?.length > 0 &&
-                <Column>
-                    <Title style={{ fontSize: 24, marginBottom: 10, marginTop: 20,}}>Mais Relevante</Title>
-                    <FlatList data={data.slice(0,1)} style={{ alignSelf: 'center' }} renderItem={({item}) => <RelevantResult item={item}/>} keyExtractor={(item) => item.id}/> 
-                    <Title style={{ fontSize: 24, marginTop: 20, marginBottom: 4}}>Todos</Title>
-                    <FlatList data={data.slice(1,)} numColumns={2} style={{ alignSelf: 'center', marginHorizontal: -8, }} renderItem={({item}) => <Result item={item}/>} keyExtractor={(item) => item.id}/>
-                </Column>}
+
+                 {data?.length > 0 &&
+                    <List data={data}/>
+                    }
 
                </Column>
         </Scroll>
@@ -208,6 +204,21 @@ export default function SearchPage({navigation}){
     </Main>
     )}
 
+
+const List = ({data}) => {
+    const { color } = useContext(ThemeContext)
+    return (
+        <Column>
+            <Row style={{ marginTop: 30, marginBottom: 10, justifyContent: 'space-between', alignItems: 'center', }}>
+                <Title style={{ fontSize: 24, }}>Todos</Title>
+                <Pressable onPress={() => { setData([]) }} >
+                    <X size={24} color={color.red} />
+                </Pressable>
+            </Row>
+            <FlatList data={data} numColumns={2} style={{ alignSelf: 'center', marginHorizontal: -8, }} renderItem={({ item }) => <Result item={item} />} keyExtractor={(item) => item.id} />
+        </Column>
+    )
+}
 
 /*
     <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: 20, }}>

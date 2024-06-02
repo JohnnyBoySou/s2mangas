@@ -165,7 +165,7 @@ const ForYou = () => {
         listChapter()
     }, [])
    
-    //<Label style={{ fontFamily: font.book, color: "#505050", fontSize: 14, marginTop: -2, }}>{item?.chapter - item?.chapters.length} capítulos restantes</Label>
+    //
 
      if(!item) return null;
     return(
@@ -180,7 +180,8 @@ const ForYou = () => {
                     <Row>
                         <MotiImage source={{uri: item?.capa}} style={{ width: 40, height: 40, borderRadius: 5,  }} />
                         <Column style={{ marginLeft: 16, justifyContent: 'center', }}>
-                        <Title style={{fontSize: 22, color: "#171717"}}>{item?.name.slice(0,12)}</Title>
+                        <Title style={{fontSize: 18, color: "#171717"}}>{item.name.length >= 30 ? item?.name.slice(0,30) + '...' : item.name}</Title>
+                        <Label style={{ fontFamily: 'Font_Book', color: "#505050", fontSize: 14, marginTop: -2, }}>{item?.chapter - item?.chapters.length} capítulos restantes</Label>
                         </Column>
                     </Row>
 

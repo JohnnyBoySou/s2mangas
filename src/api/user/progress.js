@@ -35,7 +35,6 @@ const addChaptersToManga = async (manga, newChapter) => {
       await AsyncStorage.setItem(KEY, JSON.stringify(preferences));
       
      const test = await AsyncStorage.getItem(KEY);
-     console.log(test)
       console.log('Capítulos adicionados ao progresso com sucesso!');
     } catch (error) {
       console.error('Erro ao adicionar capítulos ao progresso:', error);
@@ -89,4 +88,25 @@ const listLastManga = async () => {
     }
 }
 
-  export { addChaptersToManga, listChaptersToManga, listLastManga };
+const excludeMangaProgress = async (id) => {
+    try {
+        const preferencesData = await AsyncStorage.getItem(KEY);
+        const preferences = preferencesData ? JSON.parse(preferencesData) : {};
+        if (!preferences.progress) {
+            console.log('Nenhum mangá em progresso encontrado.');
+            return [];
+        }
+        const mangaIndex = preferences.progress.findIndex(item => item.id === id);
+        if (mangaIndex !== -1) {
+            preferences.progress.splice(mangaIndex, 1);
+        }
+        await AsyncStorage.setItem(KEY, JSON.stringify(preferences));
+        console.log('Mangá excluído do progresso com sucesso!');
+        return true
+    } catch (error) {
+        console.error('Erro ao excluir mangá do progresso:', error);
+    }
+}
+
+
+  export { addChaptersToManga, listChaptersToManga, listLastManga, excludeMangaProgress };

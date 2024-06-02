@@ -19,8 +19,8 @@ const { width, height } = Dimensions.get('window');
 export default function ContinuePage({ navigation }) {
   
   const [step, setStep] = useState(1);
- // const [item, setItem] = useState([]);
-  const item = {
+  const [item, setItem] = useState([]);
+  const cache = {
     capa: 'https://i.pinimg.com/736x/5d/00/0a/5d000ae8c44687a0603c6671d48c1c06.jpg',
     name: 'Sousou no Frieren',
     chapter: 130,
@@ -39,14 +39,14 @@ export default function ContinuePage({ navigation }) {
  
   useEffect(() => {
     const getManga = async () => {
-    //  await listLastManga().then((manga) => {
-     //   setItem(manga)
-     // })
+      await listLastManga().then((manga) => {
+       setItem(manga)
+      })
 
      // const res = await requestSimilar(item?.id)
       //setSimilar(res?.mangas)
       
-     // const likedResponse = await verifyLiked(item?.id);
+      const likedResponse = await verifyLiked(item?.id);
       setLiked(true);
       
       //const mark = await getPreferences()
@@ -71,10 +71,8 @@ export default function ContinuePage({ navigation }) {
             res => setLiked(true)
         )
     }
-}
-
-  const handleRemix = (params) => {
   }
+
   const handleComplete = () => {
     if(completed){
       let r = removeComplete(item?.id)
@@ -91,7 +89,6 @@ export default function ContinuePage({ navigation }) {
 
 
   const [showvideo, setshowvideo] = useState(false);
-
   const a = false
 
   const openIn = useAnimationState({
@@ -130,9 +127,10 @@ export default function ContinuePage({ navigation }) {
     <>
     <Main>
         {!item.video && <MotiImage blurRadius={100} source={{ uri: item.capa }} style={{ width: width, height: 1.1 *  height, opacity: 0.6, position: 'absolute', top: 0, left: 0, }} />}
-        <Scroll style={{ marginTop: -30,  }} onScroll={(event) => { const scrolling = event.nativeEvent.contentOffset.y; if (scrolling > 100) {openIn.transitionTo('open'); setshowvideo(false);} else if (scrolling < 100){openIn.transitionTo('close');setshowvideo(true); }}}>
+        <Scroll style={{ marginTop: -30,  }} 
+        //onScroll={(event) => { const scrolling = event.nativeEvent.contentOffset.y; if (scrolling > 100) {openIn.transitionTo('open'); setshowvideo(false);} else if (scrolling < 100){openIn.transitionTo('close');setshowvideo(true); }}}
+        >
         {item?.video &&  <Video source={{ uri: item.video }} ref={wall}  rate={1.0}  volume={0.0} isMuted={true}  resizeMode="cover" shouldPlay isLooping style={{ width: width, height: 910, borderRadius: 24, position: 'absolute', top: 0, left: 0, }}/>}
-
         <Column style={{  paddingVertical: 22, zIndex: 999,  }}>
           <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 20, paddingTop: 20,  }}>
             <Pressable onPress={() => { navigation.goBack() }}>
@@ -152,7 +150,7 @@ export default function ContinuePage({ navigation }) {
           {!item.video ? <MotiImage
               source={{ uri: item.capa }}
               style={{
-                objectFit: 'cover',
+                objectFit: 'contain',
                 width: 300,
                 height: 520,
                 borderRadius: 6,
@@ -207,7 +205,7 @@ export default function ContinuePage({ navigation }) {
 
               <MotiView  from={{  translateY: 60, opacity: 0,}} animate={{ translateY: 0, opacity: 1,}} exit={{ translateY: 60, opacity:0,}} transition={{type:'timing'}}>
                 <Row style={{ alignItems: 'center', justifyContent: 'center', marginTop: -10, }}>
-                  <Pressable onPress={handleLike} style={{ width: 42, height: 32, marginRight: 20, justifyContent: 'center', alignItems: 'center', }}>
+                  <Pressable  style={{ width: 42, height: 32, marginRight: 20, justifyContent: 'center', alignItems: 'center', }}>
               <AntDesign name="sharealt" size={32} color="#d4d4d4" />
             </Pressable>
 
@@ -244,7 +242,7 @@ export default function ContinuePage({ navigation }) {
            
           </Column>
 
-          {!showvideo &&  <MotiView from={{opacity: 0, translateY: 50}} animate={{opacity: 1, translateY: 0,}} exit={{opacity: 0, translateY: 50}}>
+          {showvideo &&  <MotiView from={{opacity: 0, translateY: 50}} animate={{opacity: 1, translateY: 0,}} exit={{opacity: 0, translateY: 50}}>
               <LinearGradient colors={["transparent",  '#171717']} style={{ width: '100%',  height: 170,  zIndex: 99, marginTop: -140,  }} />
           </MotiView> }
 
@@ -282,7 +280,6 @@ export default function ContinuePage({ navigation }) {
         <Column style={{height: 60,}}/>
         </Column>
         </Scroll>
-
 
     </Main>
 

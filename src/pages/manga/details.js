@@ -5,7 +5,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome5, Feather, Ionicons, Fontisto, FontAwesome } from '@expo/vector-icons';
 import { ThemeContext } from 'styled-components/native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-
 import { Skeleton } from 'moti/skeleton';
 import { AnimatePresence, MotiImage, MotiView } from 'moti';
 import { addComplete, addFollow, addLike, removeComplete, removeFollow, removeLike, verifyComplete, verifyFollow, verifyLiked } from '@api/user/preferences';
@@ -16,7 +15,6 @@ import { listChaptersToManga } from '@api/user/progress';
 import { getManga } from '@apiv2/getManga';
 import { getChapters } from '@apiv2/getChapters';
 import Check from '@components/check';
-import { BookDashed } from 'lucide-react-native'
 import LottieView from 'lottie-react-native';
 
 export default function MangaDetailsPage({ route, navigation }) {
@@ -163,7 +161,7 @@ export default function MangaDetailsPage({ route, navigation }) {
 
                     <Title style={{ fontSize: 32, marginBottom: 5, marginTop: 10, fontFamily: 'Font_Bold', letterSpacing: -1, marginHorizontal: 20,}}>{item?.name}</Title>
                     <TouchableOpacity onPress={() => { modalDesc.current?.open() }}>
-                        <Label style={{ fontSize: 18, lineHeight: 26, marginHorizontal: 20,}}>{item?.description.slice(0, 138)}...</Label>
+                        <Label style={{ fontSize: 18, lineHeight: 26, marginHorizontal: 20,}}>{item?.description?.slice(0, 138)}...</Label>
                     </TouchableOpacity>
 
                     <Row style={{ alignItems: 'center', marginTop: 10, marginHorizontal: 20,}}>
@@ -462,7 +460,6 @@ const SkeletonBody = () => {
 }
 
 const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width }} />
-
 
 const Reaction = ({ reaction, }) => { return(
     <Row style={{ alignItems: 'center', justifyContent: 'space-between', padding: 12, backgroundColor: reaction_color, marginTop: 20, borderRadius: 12, }}>

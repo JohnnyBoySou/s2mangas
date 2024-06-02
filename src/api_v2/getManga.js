@@ -28,7 +28,7 @@ export async function getManga(mangaID = '8f3e1818-a015-491d-bd81-3addc4d7d56a')
 
 const removeLinksFromText = (text) => {
     // Remove qualquer URL da string
-    return text.replace(/https?:\/\/[^\s]+/g, '');
+    return text?.replace(/https?:\/\/[^\s]+/g, '');
 };
 
 

@@ -94,12 +94,12 @@ function Header() {
             </Row>
 
             
-            <MotiView state={toggleAnimation} transition={{type: 'timing', duration: 300,}} style={{ marginBottom: -80, }}>
+            <MotiView  transition={{type: 'timing', duration: 300,}} style={{ marginBottom: -80, }}>
                 <MotiImage blurRadius={40} source={{ uri: user?.capa }} style={{ width: width, height: '100%', opacity: 0.6, top: -100, left: -20, borderRadius: 32, right: 10, zIndex: -2, position: 'absolute', }} />
                 <Pressable onPress={() => navigation.navigate('Account')} >
                     <MotiImage state={toggleImage} source={{ uri: user?.avatar }} style={{ width: 170, height: 170, borderRadius: 24,}} resizeMode='cover' transition={{ type: 'timing', duration: 300,  }}/>
                 </Pressable>
-                <MotiText state={toggleTitle} transition={{ type: 'timing', duration: 300,  }} style={{ fontSize: 46, textAlign: toggleIsOpen ? 'center' : 'left', letterSpacing: -2, fontFamily: toggleIsOpen ? font.bold : font.book, color: "#fff", alignSelf: 'center',}}>{hello},{"\n"}{user?.name}</MotiText>
+                <MotiText transition={{ type: 'timing', duration: 300,  }} style={{ fontSize: 38, textAlign: 'left', marginTop: -4, letterSpacing: -1, fontFamily: font.book, color: "#fff", marginLeft: -10, alignSelf: 'center',}}>{hello},{"\n"}{user?.name}</MotiText>
             
             <AnimatePresence>
             {toggleIsOpen && 
