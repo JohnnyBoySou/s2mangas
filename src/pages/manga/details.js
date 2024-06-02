@@ -31,6 +31,7 @@ export default function MangaDetailsPage({ route, navigation }) {
     const [lidos, setlidos] = useState(false);
     const a = false;
 
+
     const itm = {
         name: item?.name,
         capa: item?.capa,
