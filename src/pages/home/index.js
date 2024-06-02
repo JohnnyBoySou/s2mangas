@@ -120,7 +120,7 @@ const ForYou = () => {
     useEffect(() => {
         axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=lasted')
             .then(response => {
-                setData(response.data);
+                setData(response.data[0]);
             })
             .catch(error => {
                 console.log(error);
@@ -139,7 +139,7 @@ const ForYou = () => {
                 <Column style={{ marginLeft: 24, flexGrow: 1, justifyContent: 'center',  }}>
                     <Label style={{ fontSize: 16,color: "#ED274A", fontFamily: 'Font_Medium', width: 100, }}>Mangalist</Label>
                     <Title style={{ fontSize: 20, marginTop: 5, lineHeight: 26, width:150,}}>{item?.name}</Title>
-                    <Label style={{ fontSize: 14, width: 160, }}>{item?.desc.slice(0, 62)}...</Label>
+                    <Label style={{ fontSize: 14, width: 160, }}>{item?.desc?.slice(0, 62)}...</Label>
                 </Column>
             </Pressable>
         )
@@ -148,7 +148,7 @@ const ForYou = () => {
     return(
             <Column style={{  marginHorizontal: 20, marginTop: 10, }}> 
                 <Title>Escolhido para você</Title>
-               <Card item={data[3]} />
+               <Card item={data} />
             </Column>
     )
  }

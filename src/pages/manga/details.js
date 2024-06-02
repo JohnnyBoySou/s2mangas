@@ -37,7 +37,7 @@ export default function MangaDetailsPage({ route, navigation }) {
         rate: item?.rate,
         type: item?.type,
         id: item?.id,
-        chapter: item?.chapters,
+        chapter: chapters.length,
     };
     useEffect(() => {
         const fetchData = async () => {
