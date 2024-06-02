@@ -75,11 +75,12 @@ function Header() {
     }
     useEffect(() => {
         getPreferences().then(res => setUser(res))
-        toggleAnimation.transitionTo('close')
+      /*  toggleAnimation.transitionTo('close')
         toggleImage.transitionTo('close')
         toggleText.transitionTo('close')
         toggleTitle.transitionTo('close')
         setToggleIsOpen(false)
+                */
     }, [])  
 
     return(
@@ -92,16 +93,17 @@ function Header() {
                     <Feather name="search" size={24} color="#fff" />
                 </Pressable>
             </Row>
-
             
-            <MotiView  transition={{type: 'timing', duration: 300,}} style={{ marginBottom: -80, }}>
-                <MotiImage blurRadius={40} source={{ uri: user?.capa }} style={{ width: width, height: '100%', opacity: 0.6, top: -100, left: -20, borderRadius: 32, right: 10, zIndex: -2, position: 'absolute', }} />
-                <Pressable onPress={() => navigation.navigate('Account')} >
-                    <MotiImage state={toggleImage} source={{ uri: user?.avatar }} style={{ width: 170, height: 170, borderRadius: 24,}} resizeMode='cover' transition={{ type: 'timing', duration: 300,  }}/>
-                </Pressable>
-                <MotiText transition={{ type: 'timing', duration: 300,  }} style={{ fontSize: 38, textAlign: 'left', marginTop: -4, letterSpacing: -1, fontFamily: font.book, color: "#fff", marginLeft: -10, alignSelf: 'center',}}>{hello},{"\n"}{user?.name}</MotiText>
+            <MotiView  transition={{type: 'timing', duration: 300,}} >
+                <MotiImage blurRadius={40} source={{ uri: user?.capa }} style={{ width: width, opacity: 0.6, top: -100, height: 180, left: -20, borderRadius: 32, right: 10, zIndex: -2, position: 'absolute', }} />
+                <Row>
+                    <Pressable onPress={() => navigation.navigate('Account')} >
+                        <MotiImage state={toggleImage} source={{ uri: user?.avatar }} style={{ width: 64, height: 64, borderRadius: 24,}} resizeMode='cover' transition={{ type: 'timing', duration: 300,  }}/>
+                    </Pressable>
+                    <MotiText transition={{ type: 'timing', duration: 300,  }} style={{ fontSize: 24, textAlign: 'left', letterSpacing: -1, marginTop: 10, fontFamily: font.book, color: "#fff", marginLeft: 20, }}>{hello},{"\n"}{user?.name}</MotiText>
+                </Row>
             
-            <AnimatePresence>
+                <AnimatePresence>
             {toggleIsOpen && 
                     <MotiView from={{translateY: -20, opacity: 0,}} animate={{ translateY: 0, opacity:1,}} transition={{type: 'timing', duration: 300,}}>
                         <Row style={{ justifyContent: 'space-between', alignItems: 'center',  marginTop: 30,}}>
@@ -136,12 +138,9 @@ function Header() {
                     </MotiView>
                 }
                 </AnimatePresence>
-            
-            
             </MotiView>
 
-
-            <Column style={{marginBottom: 0, zIndex: 99, }}>
+            <Column style={{marginBottom: 0, zIndex: 99, marginTop: 40, }}>
                 <Row style={{justifyContent: 'space-between', alignItems: 'center', flexGrow: 1,}}>
                     <Pressable onPress={() => {navigation.navigate('Account',{type: 'Like'})}} style={{ backgroundColor: "#262626", borderRadius: 8,  width: '49%', flexDirection: 'row',  alignItems: 'center', }}>
                         <MotiImage source={require('../../assets/imgs/heart.png')} style={{ width:64, height: 64, borderTopLeftRadius: 8, borderBottomLeftRadius: 8, backgroundColor: "#404040" }}/>
@@ -153,9 +152,7 @@ function Header() {
                         <Title style={{ fontFamily: 'Font_Medium', fontSize: 16, marginLeft: 8, }}>Suas {'\n'}Coleções</Title>
                     </Pressable>
                 </Row>
-                
             </Column>
-
         </Column>
     )
 }
