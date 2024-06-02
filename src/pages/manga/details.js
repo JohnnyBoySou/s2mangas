@@ -392,7 +392,7 @@ const Card = ({ item, id, itm, chaptersRead, lidos, total}) => {
             <Title style={{ fontSize: 22, marginLeft: 20, }}>#{item?.chapter}</Title>
 
             <Column style={{ marginLeft: 20, }}>
-                <Title style={{ fontSize: 16, }}>{item?.title} </Title>
+                <Title style={{ fontSize: 16, }}>{item?.title.slice(0, 26)} </Title>
                 <Label style={{ fontSize: 12, }}>{item?.publish_date}</Label>
             </Column>
             </Row>
