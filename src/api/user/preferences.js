@@ -10,6 +10,17 @@ async function getPreferences() {
   }
 }
 
+async function createPreferences(preferences) {
+  try {
+    await AsyncStorage.setItem("@settings", JSON.stringify(preferences));
+    return true;
+  } catch (error) {
+    console.error("Error creating preference:", error);
+    return false;
+  }
+}
+
+
 async function editPreferences(updatedPreferences) {
   try {
     const preferences = { ...getPreferences(), ...updatedPreferences };
@@ -17,16 +28,6 @@ async function editPreferences(updatedPreferences) {
     return true;
   } catch (error) {
     console.error("Error editing preferences:", error);
-    return false;
-  }
-}
-
-async function createPreferences(preferences) {
-  try {
-    await AsyncStorage.setItem("@settings", JSON.stringify(preferences));
-    return true;
-  } catch (error) {
-    console.error("Error creating preference:", error);
     return false;
   }
 }
