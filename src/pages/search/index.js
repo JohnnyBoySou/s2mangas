@@ -114,7 +114,7 @@ export default function SearchPage({navigation}){
     const [publicoSelect, setpublicoSelect] = useState('shounen');
     const [statusSelect, setstatusSelect] = useState('ongoing');
     const [classificacaoSelect, setclassificacaoSelect] = useState();
-
+    const a = false;
     return(
     <Main>
         <Scroll ref={ScrollMain}>
@@ -163,8 +163,11 @@ export default function SearchPage({navigation}){
 
                 {data?.length === 0 && 
                 <Column>
+                    {a && <>
                     <Title style={{ fontSize: 24, marginBottom: 6, marginTop: 40,}}>Suas categorias favoritas</Title>
                     <FlatList data={user?.items} numColumns={2} style={{ marginHorizontal: -8, }} renderItem={({item}) => <Category item={item}/>} keyExtractor={(item) => item.id}/>
+                    </>}
+                  
                     <Title style={{ fontSize: 24, marginBottom: 6, marginTop: 20,}}>Navegue por categorias</Title>
                     <FlatList data={tags} numColumns={2} style={{ marginHorizontal: -8, }} renderItem={({item}) => <Category item={item}/>} keyExtractor={(item) => item.id}/>
                 </Column>}

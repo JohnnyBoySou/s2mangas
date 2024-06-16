@@ -392,7 +392,7 @@ const Card = ({ item, id, itm, chaptersRead, lidos, total}) => {
             <Title style={{ fontSize: 22, marginLeft: 20, }}>#{item?.chapter}</Title>
 
             <Column style={{ marginLeft: 20, }}>
-                <Title style={{ fontSize: 16, }}>{item?.title.slice(0, 26)} </Title>
+                <Title style={{ fontSize: 16, }}>{item?.title?.slice(0, 26)} </Title>
                 <Label style={{ fontSize: 12, }}>{item?.publish_date}</Label>
             </Column>
             </Row>
@@ -484,7 +484,7 @@ const CardManga = React.memo(({ item }) => {
     return (
         <Pressable onPress={() => { navigation.navigate('MangaDetails', {id: item.id });}} style={{ backgroundColor: "#303030", borderRadius: 6, width: 162, margin: 8, padding: 12, paddingBottom: 10, }}>
             <Image source={{ uri: item.capa }} style={{ width: 102, height: 152, borderRadius: 6, alignSelf: 'center', marginBottom: 6, }} />
-            <Title style={{ fontSize: 16, textAlign: 'center', fontFamily: 'Font_Book', lineHeight: 18,}}>{item?.name.slice(0,50)}</Title>
+            <Title style={{ fontSize: 16, textAlign: 'center', fontFamily: 'Font_Book', lineHeight: 18,}}>{item?.name?.slice(0,50)}</Title>
         </Pressable>
     )
 })

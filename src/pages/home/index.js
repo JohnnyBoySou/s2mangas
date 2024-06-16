@@ -82,17 +82,14 @@ export default function HomePage({ navigation }) {
 
                 
                 {type === 'Tudo' && <Column>
+                    <WeekendComponent />
                     <Spacer height={10} />
-                    <LastedComponent />
                     <CollectionsComponent />
                     <Spacer />
                     <ForYou />
                     <Spacer />
-                    <RateComponent />
-                    <Spacer />
                     <MangalistWeekendComponent />
                     <Spacer />
-                    <WeekendComponent />
                     <Spacer />
                 </Column>}
                 {type === 'Mangas' && <Column >

@@ -11,14 +11,14 @@ export async function getCategory(name, page) {
         const includedTagIDs = tags.data.data
             .filter(tag => includedTagNames.includes(tag.attributes.name.en))
             .map(tag => tag.id);
-        console.log(includedTagIDs)
         const resp = await axios({
             method: 'GET',
             url: `${baseUrl}/manga/`,
             params: {
                 'includedTags': includedTagIDs,
+                availableTranslatedLanguage: ['pt-br'],
                 includes: ['cover_art', 'score', 'chapter',],
-                offset: 20 * page
+                offset: 20 * page,
             }
         });
         
