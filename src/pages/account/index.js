@@ -150,7 +150,7 @@ export default function AccountPage({ navigation, route}) {
                     animate={{opacity: 1, transform: [{scale: 1}, {rotate: '0deg'}],}} 
                     exit={{opacity: 0, transform: [{scale: 0}, {rotate: '45deg'}],}} 
                     exitTransition={{ type: 'spring',  duration: 300, }}>
-                    <Pressable  onPress={() => { ScrollMain.current?.scrollTo({ x: 0, y: 0, animated: true });}}  style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: "#fff", width: 50, height: 50, borderRadius: 100, }}>
+                    <Pressable  onPress={() => { ScrollMain.current?.scrollToOffset({ offset: 0, animated: true });}}  style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: "#fff", width: 50, height: 50, borderRadius: 100, }}>
                         <AntDesign name="arrowup" size={24} color="#000" />
                     </Pressable>
                 </MotiView>}

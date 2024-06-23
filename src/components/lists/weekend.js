@@ -1,5 +1,5 @@
 import React, { useState, useEffect,  } from 'react';
-import { Column, Row, Title, Label, } from '../../theme/global';
+import { Column, Row, Title, Label, } from '@theme/global';
 import { FlatList} from 'react-native';
 import { Skeleton } from 'moti/skeleton'
 import requestWeekend from '../../api/manga/weekend';
@@ -32,9 +32,6 @@ export default function WeekendComponent() {
             </Column>
         );
 }
-
-
-
 
 const Loading = () => {
     return (
