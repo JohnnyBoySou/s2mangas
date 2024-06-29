@@ -178,7 +178,7 @@ export default function OnboardingPage({ navigation, route, }) {
             <Column style={{ paddingHorizontal: 30, marginBottom: 20, }}>
                 {!first &&
                     <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
-                        <Pressable rippleColor='#ffffff90' borderless onPress={() => navigation.navigate('Preferences')} style={{ paddingHorizontal: 20, backgroundColor: color.off, paddingVertical: 10, borderRadius: 100, }}>
+                        <Pressable rippleColor='#ffffff90' borderless onPress={() => navigation.replaces('Preferences')} style={{ paddingHorizontal: 20, backgroundColor: color.off, paddingVertical: 10, borderRadius: 100, }}>
                             <Label>Pular</Label>
                         </Pressable>
                     </Row>
@@ -198,7 +198,7 @@ export default function OnboardingPage({ navigation, route, }) {
             </>}
 
             {current === 4 && <Row style={{ position: 'absolute', bottom: 50, flexGrow: 1, alignSelf: 'center', marginHorizontal: 30, justifyContent: 'space-between', }}>
-                        <Pressable rippleColor='#ffffff90' borderless onPress={() => navigation.navigate('Preferences')}
+                        <Pressable rippleColor='#ffffff90' borderless onPress={() => navigation.replace('Preferences')}
                             style={{ backgroundColor: color.primary, alignSelf: 'center', borderRadius: 100, paddingVertical: 12, paddingHorizontal: 24, }}>
                             <Title style={{ fontSize: 18, }}>Continuar</Title>
                         </Pressable>

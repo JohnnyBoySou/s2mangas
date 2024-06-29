@@ -7,7 +7,7 @@ import dark from './src/theme/dark';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
-import { View } from 'react-native';
+import { View, LogBox } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -15,6 +15,7 @@ export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
+    LogBox.ignoreAllLogs(true)
     async function prepare() {
       try{
         await Font.loadAsync({

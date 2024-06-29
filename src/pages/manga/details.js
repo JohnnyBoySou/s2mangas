@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useContext, } from 'react';
 import { Column, Row, Title, Label, Scroll, Main } from '@theme/global';
 import { Image, TouchableOpacity, Dimensions, FlatList, Pressable, ImageBackground, } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { AntDesign, FontAwesome5, Feather, Ionicons, Fontisto, FontAwesome } from '@expo/vector-icons';
+import { AntDesign, FontAwesome5, Feather, Ionicons, Fontisto, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { ThemeContext } from 'styled-components/native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Skeleton } from 'moti/skeleton';
@@ -14,11 +14,12 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import { listChaptersToManga } from '@api/user/progress';
 import { getManga } from '@apiv2/getManga';
 import { getChapters } from '@apiv2/getChapters';
+import { getCovers } from '@apiv2/getCovers';
 import Check from '@components/check';
 import LottieView from 'lottie-react-native';
 
 export default function MangaDetailsPage({ route, navigation }) {
-    const id = route.params.id;
+    const id = route?.params?.id ? route.params.id : '58b09ce2-ea05-405e-8e1c-a9361df9bdd9'
     const [headerShown, setHeaderShown] = useState();
     const { color, font } = useContext(ThemeContext);
     const [item, setItem] = useState();
@@ -26,9 +27,11 @@ export default function MangaDetailsPage({ route, navigation }) {
     const [chaptersRead, setChaptersRead] = useState([]);
     const [similar, setSimilar] = useState();
     const [loading, setLoading] = useState(true);
+    const [covers, setCovers] = useState();
     const [lidos, setlidos] = useState(false);
     const a = false;
 
+    const [lg, setlg] = useState('pt-br');
 
     const itm = {
         name: item?.name,
@@ -37,37 +40,42 @@ export default function MangaDetailsPage({ route, navigation }) {
         type: item?.type,
         id: item?.id,
         chapter: chapters.length,
+        long: item?.long,
     };
     useEffect(() => {
         const fetchData = async () => {
             try {
+
+                const mangaResponse = await getManga(id);
+                setItem(mangaResponse);
                 
-              const mangaResponse = await getManga(id);
-              setItem(mangaResponse);
-      
-              const chaptersResponse = await getChapters(id);
-              setChapters(chaptersResponse);
-      
-            //  const similarResponse = await requestSimilar(id);
-              //setSimilar(similarResponse.mangas);
-      
-              const likedResponse = await verifyLiked(id);
-              setLiked(likedResponse);
-      
-              const completedResponse = await verifyComplete(id);
-              setCompleted(completedResponse);
-      
-              const followResponse = await verifyFollow(id);
-              setFollow(followResponse);
-      
-              setLoading(false);
+                const coversResponse = await getCovers(id);
+                setCovers(coversResponse);
+                console.log(coversResponse)
+
+                const chaptersResponse = await getChapters(id, lg);
+                setChapters(chaptersResponse);
+
+                //const similarResponse = await requestSimilar(id);
+                //setSimilar(similarResponse.mangas);
+
+                const likedResponse = await verifyLiked(id);
+                setLiked(likedResponse);
+
+                const completedResponse = await verifyComplete(id);
+                setCompleted(completedResponse);
+
+                const followResponse = await verifyFollow(id);
+                setFollow(followResponse);
+
+                setLoading(false);
             } catch (error) {
-              console.error('Erro ao buscar dados:', error.message);
-              setLoading(false);  
+                console.error('Erro ao buscar dados:', error.message);
+                setLoading(false);
             }
-          };
-      
-          fetchData();
+        };
+
+        fetchData();
 
     }, [])
 
@@ -80,6 +88,13 @@ export default function MangaDetailsPage({ route, navigation }) {
         fetchData();
     }, [isFocused])
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const chaptersResponse = await getChapters(id, lg);
+            setChapters(chaptersResponse);
+        }
+        fetchData();
+    }, [lg])
 
     const [liked, setLiked] = useState();
     const handleLike = async () => {
@@ -100,7 +115,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                 if (r) setCompleted(false);
             });
         } else {
-            
+
             addComplete(itm).then((r) => {
                 if (r) setCompleted(true);
             });
@@ -118,23 +133,27 @@ export default function MangaDetailsPage({ route, navigation }) {
             });
         }
     };
-    const handlePlay = () => {  navigation.navigate('MangaPages', { chapter: 1, id: id, }) }
+    const handlePlay = () => { navigation.navigate('MangaPages', { chapter: 1, id: id, }) }
 
     const cl = item?.type === 'MANGA' ? "#FFA8B7" : item?.type === 'MANHWA' ? "#BBD2FF" : item?.type === 'MANHUA' ? "#BFFFC6" : '#FFF';
     const reaction = item?.rate >= 4 ? 'Ótimo' : item?.rate >= 3 ? 'Bom' : item?.rate <= 2 ? 'Ruim' : 'Regular';
 
     const [type, setType] = useState('Capitulos');
+
     const modalAdd = useRef();
     const modalDesc = useRef();
     const scrollMain = useRef();
-    const scrollTop = () => {scrollMain.current?.scrollTo({ x: 0, y: 0, animated: true });}
+    const modalTranslate = useRef();
+
+    const scrollTop = () => { scrollMain.current?.scrollTo({ x: 0, y: 0, animated: true }); }
     const scrollY = useSharedValue(0);
     const imageStyle = useAnimatedStyle(() => {
         const scale = scrollY.value > 142 ? 1.3 - (scrollY.value - 142) / 200 : 1.3;
         return {
-          opacity: scale,
-          transform:[{ scale:scale }]
-        };});
+            opacity: scale,
+            transform: [{ scale: scale }]
+        };
+    });
 
     if (loading) return <Main><Scroll><LinearGradient colors={['#404040', 'transparent']} style={{ width: '100%', height: 300, position: 'absolute', top: 0, left: 0, }} /><SkeletonBody /></Scroll></Main>
     return (
@@ -147,24 +166,24 @@ export default function MangaDetailsPage({ route, navigation }) {
                 } else {
                     setHeaderShown(false);
                 }
-                }}
-            scrollEventThrottle={16}
-            ref={scrollMain}>
+            }}
+                scrollEventThrottle={16}
+                ref={scrollMain}>
 
-                <Column style={{  marginBottom: -20, zIndex: 98,}}>
-                    <Pressable onPress={() => {navigation.goBack()}}  style={{ width: 90, height: 10, backgroundColor: '#30303090', borderRadius: 100, alignSelf: 'center', marginBottom: -20, zIndex: 99, marginTop: 10, }}/>
-                    <ImageBackground blurRadius={40} source={{ uri: item?.capa }} style={{ height: 410,  flexGrow: 1,  justifyContent: 'center',   }} >
-                        <Animated.Image source={{ uri: item?.capa }} style={[{ width: 170, height: 240, marginTop: 24,  alignSelf: 'center', borderRadius: 4, zIndex: 99, }, imageStyle]} />
+                <Column style={{ marginBottom: -20, zIndex: 98, }}>
+                    <Pressable onPress={() => { navigation.goBack() }} style={{ width: 90, height: 10, backgroundColor: '#30303090', borderRadius: 100, alignSelf: 'center', marginBottom: -20, zIndex: 99, marginTop: 10, }} />
+                    <ImageBackground blurRadius={40} source={{ uri: item?.capa }} style={{ height: 410, flexGrow: 1, justifyContent: 'center', }} >
+                        <Animated.Image source={{ uri: item?.capa }} style={[{ width: 170, height: 240, marginTop: 24, alignSelf: 'center', borderRadius: 4, zIndex: 99, }, imageStyle]} />
                     </ImageBackground>
 
-                    <LinearGradient colors={['transparent', '#171717']} style={{ width: '100%', height: 200,  marginTop: -198,}} />
+                    <LinearGradient colors={['transparent', '#171717']} style={{ width: '100%', height: 200, marginTop: -198, }} />
 
-                    <Title style={{ fontSize: 32, marginBottom: 5, marginTop: 10, fontFamily: 'Font_Bold', letterSpacing: -1, marginHorizontal: 20,}}>{item?.name}</Title>
+                    <Title style={{ fontSize: 32, marginBottom: 5, marginTop: 10, fontFamily: 'Font_Bold', letterSpacing: -1, marginHorizontal: 20, }}>{item?.name}</Title>
                     <TouchableOpacity onPress={() => { modalDesc.current?.open() }}>
-                        <Label style={{ fontSize: 18, lineHeight: 26, marginHorizontal: 20,}}>{item?.description?.slice(0, 138)}...</Label>
+                        <Label style={{ fontSize: 18, lineHeight: 26, marginHorizontal: 20, }}>{item?.description?.slice(0, 138)}...</Label>
                     </TouchableOpacity>
 
-                    <Row style={{ alignItems: 'center', marginTop: 10, marginHorizontal: 20,}}>
+                    <Row style={{ alignItems: 'center', marginTop: 10, marginHorizontal: 20, }}>
                         <Label style={{ backgroundColor: cl, color: "#000", fontSize: 16, lineHeight: 20, borderRadius: 100, paddingVertical: 10, paddingHorizontal: 10, }}>✶ {item?.type} ✦</Label>
                         <Row style={{ backgroundColor: "#303030", borderRadius: 100, justifyContent: 'center', marginHorizontal: 10, alignItems: 'center', }}>
                             <AntDesign name="calendar" size={16} color="#fff" style={{ backgroundColor: "#505050", padding: 8, borderRadius: 100, margin: 6, }} />
@@ -178,149 +197,244 @@ export default function MangaDetailsPage({ route, navigation }) {
 
                 </Column>
 
-                <Row style={{  justifyContent: 'space-between', flexGrow: 1,  backgroundColor: color.background, paddingTop: 16, marginTop: 20, paddingBottom: 10, marginBottom: -20,  paddingHorizontal: 24, zIndex: 98,}}>
-                        <Row style={{  alignItems: 'center', }}>
-                            <Pressable onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
-                                {liked ? <AnimatePresence>
+                <Row style={{ justifyContent: 'space-between', flexGrow: 1, backgroundColor: color.background, paddingTop: 32, marginTop: 10, paddingBottom: 10, marginBottom: -20, paddingHorizontal: 24, zIndex: 98, }}>
+                    <Row style={{ alignItems: 'center', }}>
+                        <Pressable onPress={handleLike} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                            {liked ? <AnimatePresence>
+                                <MotiView from={{ scale: 0, opacity: 0, }} animate={{ scale: 1, opacity: 1, }} transition={{ type: 'spring', duration: 500, }}>
+                                    <AntDesign name='heart' size={26} color="#EB5757" />
+                                </MotiView>
+                            </AnimatePresence> :
+                                <MotiView from={{ rotation: -45, opacity: 0, }} animate={{ rotation: 0, opacity: 1, }} transition={{ type: 'timing', duration: 500, }}>
+                                    <AntDesign name='hearto' size={26} color="#d4d4d4" />
+                                </MotiView>}
+
+                        </Pressable>
+                        <Pressable onPress={handleComplete} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                            {completed ?
+                                <AnimatePresence>
                                     <MotiView from={{ scale: 0, opacity: 0, }} animate={{ scale: 1, opacity: 1, }} transition={{ type: 'spring', duration: 500, }}>
-                                        <AntDesign name='heart' size={26} color="#EB5757" />
+                                        <Ionicons name='checkmark-done-circle' size={28} color="#27AE60" />
                                     </MotiView>
                                 </AnimatePresence> :
-                                    <MotiView from={{ rotation: -45, opacity: 0, }} animate={{ rotation: 0, opacity: 1, }} transition={{ type: 'timing', duration: 500, }}>
-                                        <AntDesign name='hearto' size={26} color="#d4d4d4" />
-                                    </MotiView>}
-
-                            </Pressable>
-                            <Pressable onPress={handleComplete} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
-                                {completed ?
-                                <AnimatePresence>
-                                <MotiView from={{ scale: 0, opacity: 0, }}  animate={{ scale: 1, opacity: 1, }} transition={{ type: 'spring', duration: 500,  }}>
-                                    <Ionicons name='checkmark-done-circle' size={28} color="#27AE60" />
-                                </MotiView> 
-                                </AnimatePresence> :
-                                <MotiView from={{ scale: 1.5, opacity: 0, }}  animate={{ scale: 1,  opacity: 1, }}  transition={{ type: 'timing', duration: 500,  }}>
+                                <MotiView from={{ scale: 1.5, opacity: 0, }} animate={{ scale: 1, opacity: 1, }} transition={{ type: 'timing', duration: 500, }}>
                                     <Ionicons name='checkmark-done-circle-outline' size={28} color="#d4d4d4" />
                                 </MotiView>}
-                            </Pressable>
-                            <Pressable onPress={handleFollow} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
-                                {follow ?
+                        </Pressable>
+                        <Pressable onPress={handleFollow} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                            {follow ?
                                 <AnimatePresence>
-                                <MotiView from={{ scale: 0, rotate: '-45deg', opacity: 0, }}  animate={{ scale: 1, rotate: '0deg', opacity: 1, }} transition={{ type: 'spring', duration: 500,  }}>
-                                    <FontAwesome name='bell' size={26} color="#719fdd" />
-                                </MotiView> 
+                                    <MotiView from={{ scale: 0, rotate: '-45deg', opacity: 0, }} animate={{ scale: 1, rotate: '0deg', opacity: 1, }} transition={{ type: 'spring', duration: 500, }}>
+                                        <FontAwesome name='bell' size={26} color="#719fdd" />
+                                    </MotiView>
                                 </AnimatePresence> :
-                                <MotiView from={{ rotate: '45deg', opacity: 0, }}  animate={{ rotate: '0deg',  opacity: 1, }}  transition={{ type: 'timing', duration: 500,  }}>
+                                <MotiView from={{ rotate: '45deg', opacity: 0, }} animate={{ rotate: '0deg', opacity: 1, }} transition={{ type: 'timing', duration: 500, }}>
                                     <FontAwesome name='bell-o' size={26} color="#d4d4d4" />
                                 </MotiView>}
-                            </Pressable>
-                            <Pressable onPress={() => {modalAdd.current?.open()}}  style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
-                                <Ionicons name="add-circle-outline" size={32} color="#d4d4d4" />
-                            </Pressable>
-
-
-                        </Row>
-                        <Pressable onPress={handlePlay} style={{ backgroundColor: "#fff", width: 46, marginLeft: 10, height: 46, borderRadius: 100, justifyContent: 'center', alignItems: 'center', position: 'absolute', right: 0, }}>
-                            <FontAwesome5 name="play" size={18} color="#ED274A" />
                         </Pressable>
+                        <Pressable onPress={() => { modalAdd.current?.open() }} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                            <Ionicons name="add-circle-outline" size={32} color="#d4d4d4" />
+                        </Pressable>
+                        <Pressable onPress={() => { modalTranslate.current?.open() }} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                            <MaterialIcons name="translate" size={28} color="#d4d4d4" />
+                        </Pressable>
+
+
+                    </Row>
+                    <Pressable onPress={handlePlay} style={{ backgroundColor: "#fff", width: 46, marginLeft: 10, height: 46, borderRadius: 100, justifyContent: 'center', alignItems: 'center', position: 'absolute', right: 0, }}>
+                        <FontAwesome5 name="play" size={18} color="#ED274A" />
+                    </Pressable>
                 </Row>
 
-                <Row style={{ paddingHorizontal: 10, marginTop: 40,}}>
-                    <Pressable onPress={() => { setType('Capitulos') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Capitulos' ? color.light : color.off, borderRadius: 100,  }}>
-                        <Label style={{fontSize: 18, color: type === 'Capitulos' ? color.off : color.title, fontFamily: type === 'Capitulos' ? font.bold : font.book, }}>Capítulos</Label>
+                <Row style={{ paddingHorizontal: 10, marginTop: 40, }}>
+                    <Pressable onPress={() => { setType('Capitulos') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Capitulos' ? color.light : color.off, borderRadius: 100, }}>
+                        <Label style={{ fontSize: 18, color: type === 'Capitulos' ? color.off : color.title, fontFamily: type === 'Capitulos' ? font.bold : font.book, }}>Capítulos</Label>
                     </Pressable>
-                  {a && <Pressable onPress={() => { setType('Similares') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Similares' ? color.light : color.off, borderRadius: 100, }}>
-                        <Label style={{fontSize: 18, color: type === 'Similares' ? color.off : color.title, fontFamily: type === 'Similares' ? font.bold : font.book, }}>Similares</Label>
+                    {a && <Pressable onPress={() => { setType('Similares') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Similares' ? color.light : color.off, borderRadius: 100, }}>
+                        <Label style={{ fontSize: 18, color: type === 'Similares' ? color.off : color.title, fontFamily: type === 'Similares' ? font.bold : font.book, }}>Similares</Label>
                     </Pressable>}
-                    <Pressable onPress={() => { setType('Marcadores') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Marcadores' ? color.light : color.off, borderRadius: 100,  }}>
-                        <Label style={{fontSize: 18, color: type === 'Marcadores' ? color.off : color.title, fontFamily: type === 'Marcadores' ? font.bold : font.book, }}>Marcadores</Label>
+                    <Pressable onPress={() => { setType('Marcadores') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Marcadores' ? color.light : color.off, borderRadius: 100, }}>
+                        <Label style={{ fontSize: 18, color: type === 'Marcadores' ? color.off : color.title, fontFamily: type === 'Marcadores' ? font.bold : font.book, }}>Marcadores</Label>
+                    </Pressable>
+                    <Pressable onPress={() => { setType('Capas') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Capas' ? color.light : color.off, borderRadius: 100, }}>
+                        <Label style={{ fontSize: 18, color: type === 'Capas' ? color.off : color.title, fontFamily: type === 'Capas' ? font.bold : font.book, }}>Capas</Label>
                     </Pressable>
                 </Row>
 
                 {type == 'Similares' && <>
-                <Column style={{ marginHorizontal: 20, marginTop: 10,}}>
-                    <Title  style={{ fontSize: 24, marginTop: 8, }}>Similares</Title>
-                    <Label>Mangás parecidos com esse</Label>
-                    <FlatList
-                        style={{ marginTop: 10, }}
-                        data={similar}
-                        numColumns={2}
-                        columnWrapperStyle={{ justifyContent: 'space-between', }}
-                        keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => <CardManga item={item} id={id} />}
-                    />
-                </Column>
+                    <Column style={{ marginHorizontal: 20, marginTop: 10, }}>
+                        <Title style={{ fontSize: 24, marginTop: 8, }}>Similares</Title>
+                        <Label>Mangás parecidos com esse</Label>
+                        <FlatList
+                            style={{ marginTop: 10, }}
+                            data={similar}
+                            numColumns={2}
+                            columnWrapperStyle={{ justifyContent: 'space-between', }}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => <CardManga item={item} id={id} />}
+                        />
+                    </Column>
                 </>
                 }
                 {type == 'Marcadores' && <>
-                <Column style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, paddingVertical: 30, }}>
-                    <Image source={{ uri: 'https://i.pinimg.com/736x/4e/e7/c9/4ee7c956df651885166f2af1e53b0988.jpg'}} style={{ width: 100, height: 150, borderRadius: 12, transform: [{rotate: '12deg',}]  }} />
-                    <Title style={{ fontSize: 24, marginTop: 8, }}>Sem marcadores</Title>
-                    <Label style={{ textAlign: 'center', }}>Adicione marcadores para facilitar a organização</Label>
-                    <Pressable style={{ backgroundColor: "#fff", borderRadius: 100, paddingVertical: 10, paddingHorizontal: 16, marginTop: 15,}}>
-                        <Label style={{ color: "#000" }}>Adicionar marcador</Label>
-                    </Pressable>
-                </Column>
-                  </>
-                  }
+                    <Column style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, paddingVertical: 30, }}>
+                        <Image source={{ uri: 'https://i.pinimg.com/736x/4e/e7/c9/4ee7c956df651885166f2af1e53b0988.jpg' }} style={{ width: 100, height: 150, borderRadius: 12, transform: [{ rotate: '12deg', }] }} />
+                        <Title style={{ fontSize: 24, marginTop: 8, }}>Sem marcadores</Title>
+                        <Label style={{ textAlign: 'center', }}>Adicione marcadores para facilitar a organização</Label>
+                        <Pressable style={{ backgroundColor: "#fff", borderRadius: 100, paddingVertical: 10, paddingHorizontal: 16, marginTop: 15, }}>
+                            <Label style={{ color: "#000" }}>Adicionar marcador</Label>
+                        </Pressable>
+                    </Column>
+                </>
+                }
                 {type == 'Capitulos' && <>
-                <Column style={{ paddingHorizontal: 20, marginTop: 10,  borderRadius: 16, }}>
-                    <Row style={{ justifyContent: 'space-between', alignItems: 'center',  }}>
-                        <Column>
-                            <Title style={{ fontSize: 24, marginTop: 8, }}>Recentes</Title>
-                            <Label style={{}}>Confira os últimos capítulos</Label>
-                        </Column>
-                        <Pressable style={{ width: 42, height: 42, borderRadius: 100, backgroundColor: "#404040", justifyContent: 'center', alignItems: 'center', }}>
-                            <Feather name="search" size={18} color="#fff" />
-                        </Pressable>
-                    </Row>
-                    <FlatList
-                        style={{ marginTop: 20, }}
-                        data={chapters?.slice(0, 5)}
-                        keyExtractor={(item) => item.number}
-                        renderItem={({ item }) => <Card item={item} id={id} itm={itm} />}
-                    />
-                </Column>
-                <Column style={{ marginTop: 20, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16,  marginBottom: 20, }}>
-                    <Row style={{ justifyContent: 'space-between', alignItems: 'center',  }}>
 
-                    <Column>
-                    <Title style={{ fontSize: 24, marginTop: 8, }}>Todos ({chapters?.length})</Title>
-                    <Label style={{}}>Confira todos capítulos</Label>
+                   {chapters.length > 0 ? <>
+                    <Column style={{ paddingHorizontal: 20, marginTop: 10, borderRadius: 16, }}>
+                        <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
+                            <Column>
+                                <Title style={{ fontSize: 24, marginTop: 8, }}>Recentes</Title>
+                                <Label style={{}}>Confira os últimos capítulos</Label>
+                            </Column>
+                            <Pressable style={{ width: 42, height: 42, borderRadius: 100, backgroundColor: "#404040", justifyContent: 'center', alignItems: 'center', }}>
+                                <Feather name="search" size={18} color="#fff" />
+                            </Pressable>
+                        </Row>
+                        <FlatList
+                            style={{ marginTop: 20, }}
+                            data={chapters?.slice(0, 5)}
+                            keyExtractor={(item) => item.number}
+                            renderItem={({ item }) => <Card item={item} id={id} itm={itm} />}
+                        />
                     </Column>
-                    <Column style={{ justifyContent: 'center', alignItems: 'center',  }}>
-                        <Pressable onPress={() => {setlidos(!lidos)}} >
-                            <Check status={lidos}/>
+                    <Column style={{ marginTop: 20, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16, marginBottom: 20, }}>
+                        <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
+
+                            <Column>
+                                <Title style={{ fontSize: 24, marginTop: 8, }}>Todos ({chapters?.length})</Title>
+                                <Label style={{}}>Confira todos capítulos</Label>
+                            </Column>
+                            <Column style={{ justifyContent: 'center', alignItems: 'center', }}>
+                                <Pressable onPress={() => { setlidos(!lidos) }} >
+                                    <Check status={lidos} />
+                                </Pressable>
+                            </Column>
+                        </Row>
+                        <ListChapters chapters={chapters} id={id} itm={itm} chaptersRead={chaptersRead} lidos={lidos} />
+                    </Column>
+                    </> :
+                    <Column style={{ justifyContent: 'center', alignItems: 'center', marginVertical: 40, marginHorizontal: 32, }}>
+                        <Title style={{ textAlign: 'center', fontSize: 24, lineHeight: 26, fontFamily: 'Font_Medium' }}>Não encontramos nenhum capítulo traduzido para o idioma brasileiro.</Title>
+                        <Row style={{ justifyContent: 'center', alignItems: 'center', borderRadius: 100, backgroundColor: '#d4d4d4', marginVertical: 12,}}>
+                        <Pressable onPress={() => { modalTranslate.current?.open() }} style={{ width: 42, height: 42, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', }}>
+                            <MaterialIcons name="translate" size={28} color="#000" />
                         </Pressable>
+                        <Title style={{ fontSize: 18, fontFamily: 'Font_Medium', marginHorizontal: 12, color: "#00000099", marginRight: 14,}}>Alterar idioma</Title>
+                        </Row>
+                        <Label style={{ textAlign: 'center', }}>Selecione outro idioma para ver os capítulos traduzidos.</Label>
                     </Column>
-                    </Row>
-                    <ListChapters chapters={chapters} id={id} itm={itm} chaptersRead={chaptersRead} lidos={lidos}/>
-                </Column>
+                    }
+
                 </>}
+                {type == 'Capas' && <>
+                    <Column style={{ marginHorizontal: 20, marginTop: 10, }}>
+                        <Title style={{ fontSize: 24, marginTop: 8, }}>Capas</Title>
+                        <Label>Todas as capas dos volumes lançados</Label>
+                        <FlatList
+                            style={{ marginTop: 10, }}
+                            data={covers}
+                            numColumns={2}
+                            columnWrapperStyle={{ justifyContent: 'space-between', }}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => <MotiImage source={{uri: item?.img}} style={{ flexGrow: 1, height: 220, margin: 8, borderRadius: 6, objectFit: 'cover', }} />}
+                        />
+                        <Column style={{height: 50, }} />
+                    </Column>
+                </>
+                }
 
             </Scroll>
-            <AnimatePresence> {headerShown &&  <Pressable onPress={scrollTop} style={{  position: 'absolute', left: 30, bottom: 80, }}>
-                <MotiImage 
-                from={{opacity: 0, transform: [{scale: 0}, {rotate: '0deg'}], }} 
-                animate={{opacity: 1, transform: [{scale: 1}, {rotate: '16deg'}],}} 
-                exit={{opacity: 0, transform: [{scale: 0}, {rotate: '0deg'}],}} 
-                exitTransition={{ type: 'spring',  duration: 300, }} source={{ uri: item?.capa }} style={{ width:50, height: 70, borderRadius: 4, borderWidth: 1, borderColor: color.title,}} /></Pressable>}</AnimatePresence>
+
+            <AnimatePresence>
+                {headerShown &&
+                    <MotiView
+                        from={{ opacity: 0, transform: [{ scale: 0 }, { rotate: '0deg' }], }}
+                        animate={{ opacity: 1, transform: [{ scale: 1 }, { rotate: '0deg' }], }}
+                        exit={{ opacity: 0, transform: [{ scale: 0 }, { rotate: '0deg' }], }}
+                        exitTransition={{ type: 'spring', duration: 300, }}
+                        style={{ zIndex: 3, position: 'absolute', alignSelf: 'center', top: 100, }}>
+                        <Pressable onPress={scrollTop} style={{ flexDirection: 'row' }}>
+                            <Column style={{ width: 42, height: 42, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', marginRight: -15,  zIndex: 99,}}>
+                                <AntDesign name='arrowup' size={24} color="#000" />
+                            </Column>
+                            <MotiImage
+                                from={{ opacity: 0, transform: [{ scale: 0 },], }}
+                                animate={{ opacity: 1, transform: [{ scale: 1 },], }}
+                                exit={{ opacity: 0, transform: [{ scale: 0 },], }}
+                                exitTransition={{ type: 'spring', duration: 300, }} source={{ uri: item?.capa }} style={{ width: 42, height: 42, borderRadius: 100, borderWidth: 3, borderColor: color.title, }} />
+                        </Pressable>
+                    </MotiView>}
+
+            </AnimatePresence>
 
             <Modalize ref={modalAdd} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
                 <Column>
-                    <ModalAddCollection item={itm}/>
+                    <ModalAddCollection item={itm} />
                 </Column>
             </Modalize>
 
             <Modalize ref={modalDesc} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }}>
-               <Column style={{ padding: 20, }}>
-                <Title>Descrição</Title>
-                <Label style={{  fontSize: 18, lineHeight: 24, marginTop: 12, }}>{item?.description}</Label>
+                <Column style={{ padding: 20, }}>
+                    <Title>Descrição</Title>
+                    <Label style={{ fontSize: 18, lineHeight: 24, marginTop: 12,  marginBottom: 12,}}>{item?.description}</Label>
+                    <Label style={{ fontSize: 14, lineHeight: 20, }}>Lançado em: {item?.create_date}</Label>
+                    <Label style={{ fontSize: 14, lineHeight: 20,}}>Status: {item?.status}.</Label>
+                    <Label style={{ fontSize: 14, lineHeight: 20, }}>Seguidores: {item?.followers}</Label>
+                    <Label style={{ fontSize: 14, lineHeight: 20, }}>Tipo: {item?.type}</Label>
+                    {item.categories?.length > 0 && <Label style={{ fontSize: 14, }}>Categorias: {item?.categories?.join(', ')}</Label>}
 
-                <Pressable onPress={() => { modalDesc.current?.close() }} style={{ paddingVertical: 12, paddingHorizontal: 24, backgroundColor: color.light , borderRadius: 100, alignSelf: 'center', marginVertical: 20, }}>
-                        <Label style={{fontSize: 18, color: color.off, fontFamily: font.medium, }}>Fechar</Label>
+                    
+                    <Row>
+                    <Label style={{ fontSize: 14, lineHeight: 20, }}>Idiomas: </Label>
+                    {item.languages?.length > 0 && item.languages.map((lang, index) => (
+                        <Label key={index} style={{ fontSize: 14, }}>- {lang.name} </Label>
+                        ))}
+                    </Row>
+
+
+
+                    <Pressable onPress={() => { modalDesc.current?.close() }} style={{ paddingVertical: 12, paddingHorizontal: 24, backgroundColor: color.light, borderRadius: 100, alignSelf: 'center', marginVertical: 20, }}>
+                        <Label style={{ fontSize: 18, color: color.off, fontFamily: font.medium, }}>Fechar</Label>
                     </Pressable>
-               </Column>
+                </Column>
             </Modalize>
+            <Modalize ref={modalTranslate} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }}>
+                <Column style={{ padding: 20, }}>
+                    <Title>Tradução</Title>
+                    <Label>Esses são os idiomas disponíveis</Label>
+                        <FlatList
+                            style={{ marginTop: 10, }}
+                            data={item?.languages}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => <Pressable onPress={() => {setlg(item.id); modalTranslate.current?.close()}}  style={{ 
+                                backgroundColor: item.id === lg ? color.light : color.off,
+                                borderRadius: 18, 
+                                paddingVertical: 14, 
+                                paddingHorizontal: 16, 
+                                marginTop: 15, 
+                             }}>
+                                <Label style={{ color: item.id === lg ? color.off : color.light, textAlign: 'center', fontFamily: lg === item.id ? 'Font_Bold' : 'Font_Medium' }}>{item?.name}</Label></Pressable>}
+                        />
+                        <Label style={{ textAlign: 'center', marginVertical: 12, fontSize: 14, }}>Selecione outro idioma para ver os capítulos traduzidos.</Label>
+
+
+
+                    <Pressable onPress={() => { modalTranslate.current?.close() }} style={{ paddingVertical: 12, paddingHorizontal: 24, backgroundColor: color.light, borderRadius: 100, alignSelf: 'center', marginVertical: 20, }}>
+                        <Label style={{ fontSize: 18, color: color.off, fontFamily: font.medium, }}>Fechar</Label>
+                    </Pressable>
+                </Column>
+            </Modalize>
+
         </Main>
     )
 }
@@ -357,17 +471,17 @@ const ListChapters = ({ chapters, id, itm, chaptersRead, lidos }) => {
         <Column style={{}}>
             <FlatList
                 style={{ marginTop: 20, }}
-                data={lidos ? filteredItems :  currentItems}
+                data={lidos ? filteredItems : currentItems}
                 ListEmptyComponent={<Column style={{ justifyContent: 'center', alignItems: 'center', marginVertical: 50, }}>
-                <LottieView autoPlay  style={{  width: 200,   height: 200, marginVertical: -30,  }}  source={require('@imgs/book.json')}
+                    <LottieView autoPlay style={{ width: 200, height: 200, marginVertical: -30, }} source={require('@imgs/book.json')}
                     />
-                <Title style={{ textAlign: 'center' }}>Todos os capítulos foram lidos</Title>    
-                <Label style={{ fontSize: 18, textAlign: 'center'}}>Pule para a próxima pagina clicando nos números abaixo</Label>
-            
-            </Column>}
+                    <Title style={{ textAlign: 'center' }}>Todos os capítulos foram lidos</Title>
+                    <Label style={{ fontSize: 18, textAlign: 'center' }}>Pule para a próxima pagina clicando nos números abaixo</Label>
+
+                </Column>}
                 keyExtractor={(item) => item.number}
-                renderItem={({ item }) => <Card item={item} id={id} itm={itm} chaptersRead={chaptersRead} lidos={lidos} total={chapters}/>}
-            />  
+                renderItem={({ item }) => <Card item={item} id={id} itm={itm} chaptersRead={chaptersRead} lidos={lidos} total={chapters} />}
+            />
 
             <Pagination
                 itemsPerPage={itemsPerPage}
@@ -380,27 +494,28 @@ const ListChapters = ({ chapters, id, itm, chaptersRead, lidos }) => {
     );
 };
 
-const Card = ({ item, id, itm, chaptersRead, lidos, total}) => {
+const Card = ({ item, id, itm, chaptersRead, lidos, total }) => {
     const { color, font } = useContext(ThemeContext);
     const read = chaptersRead?.includes(item.chapter);
     const navigation = useNavigation();
-    if(lidos && read) return null;
+    if (lidos && read) return null;
     return (
-        <Row style={{ backgroundColor: "#202020", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 6, opacity: read ? 0.4 : 1, }}>
-            {read && <Title style={{ fontSize: 12, backgroundColor: color.green, paddingVertical: 4, paddingHorizontal: 8, borderBottomRightRadius: 6, borderTopLeftRadius: 6, position: 'absolute', top: 0, left: 0,  }}>Lido</Title>}
-            <Row style={{ justifyContent: 'center', alignItems: 'center',  }}>
-            <Title style={{ fontSize: 22, marginLeft: 20, }}>#{item?.chapter}</Title>
+        <Row style={{ backgroundColor: "#202020", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 16, opacity: read ? 0.4 : 1, }}>
+            {read && <Title style={{ fontSize: 12, backgroundColor: color.green, paddingVertical: 4, paddingHorizontal: 8, borderBottomRightRadius: 6, borderTopLeftRadius: 6, position: 'absolute', top: 0, left: 0, }}>Lido</Title>}
+            <Row style={{ justifyContent: 'center', alignItems: 'center', }}>
+                <Title style={{ fontSize: 22, marginLeft: 20,  }}>#{item?.chapter}</Title>
 
-            <Column style={{ marginLeft: 20, }}>
-                <Title style={{ fontSize: 16, }}>{item?.title?.slice(0, 26)} </Title>
-                <Label style={{ fontSize: 12, }}>{item?.publish_date}</Label>
-            </Column>
+                <Column style={{ marginLeft: 20, }}>
+                    <Title style={{ fontSize: 14, fontFamily: 'Font_Medium', letterSpacing: -0.5, textTransform: 'lowercase' }}>{item.title.length > 23 ? item?.title?.slice(0, 23) + '...' : item.title} </Title>
+                    <Label style={{ fontSize: 10, }}>{item?.publish_date}</Label>
+                </Column>
             </Row>
             <TouchableOpacity onPress={() => navigation.navigate('MangaPages', { chapter: item.chapter, id: item.id, itm: itm, total: total, })} style={{ backgroundColor: '#303030', padding: 12, borderRadius: 100, marginRight: 10, }} >
                 <AntDesign name="arrowright" size={24} color="#fff" />
             </TouchableOpacity>
         </Row>
-    )}
+    )
+}
 
 const SkeletonBody = () => {
     return (
@@ -432,11 +547,11 @@ const SkeletonBody = () => {
                     <Spacer height={6} width={12} />
                     <Skeleton width={42} height={42} radius={100} />
                 </Row>
-                <Column style={{width: 42, height: 42, backgroundColor: "#fff", borderRadius: 100,}}/>
+                <Column style={{ width: 42, height: 42, backgroundColor: "#fff", borderRadius: 100, }} />
             </Row>
 
             <Row style={{ marginTop: 20, }}>
-                <Column style={{width: 100, height: 42, backgroundColor: "#fff", borderRadius: 100,}}/>
+                <Column style={{ width: 100, height: 42, backgroundColor: "#fff", borderRadius: 100, }} />
                 <Spacer height={6} width={12} />
                 <Skeleton width={110} height={42} radius={100} />
                 <Spacer height={6} width={12} />
@@ -461,30 +576,32 @@ const SkeletonBody = () => {
 
 const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width }} />
 
-const Reaction = ({ reaction, }) => { return(
-    <Row style={{ alignItems: 'center', justifyContent: 'space-between', padding: 12, backgroundColor: reaction_color, marginTop: 20, borderRadius: 12, }}>
-    <Column style={{ marginRight: 14,  }}>
-        <Image source={{ uri: reaction_image }} alt='reaction manga' width={44} height={44} />
-    </Column>
-    <Column style={{ flexGrow: 1, }}>
-        <Title style={{ color: "#000", fontFamily: 'Font_Bold', letterSpacing: -1}}>{reaction}</Title>
-        <Label style={{ color: "#303030", width: 170, fontSize: 14, }}>{reaction_desc}</Label>
-    </Column>
-    <Row style={{ backgroundColor: "#ffffff50", justifyContent: 'center', alignItems: 'center', borderRadius: 100, paddingHorizontal: 14, paddingVertical: 8, }}>
-        <AntDesign name="staro" size={16} color="#000" />
-        <Label style={{ fontFamily: 'Font_Medium', fontSize: 24, color: "#000", marginLeft: 6, }}>{item?.rate === 'Rate this mangas' ? 'Sem nota' : item?.rate}</Label>
-    </Row>
-</Row>
+const Reaction = ({ reaction, }) => {
+    return (
+        <Row style={{ alignItems: 'center', justifyContent: 'space-between', padding: 12, backgroundColor: reaction_color, marginTop: 20, borderRadius: 12, }}>
+            <Column style={{ marginRight: 14, }}>
+                <Image source={{ uri: reaction_image }} alt='reaction manga' width={44} height={44} />
+            </Column>
+            <Column style={{ flexGrow: 1, }}>
+                <Title style={{ color: "#000", fontFamily: 'Font_Bold', letterSpacing: -1 }}>{reaction}</Title>
+                <Label style={{ color: "#303030", width: 170, fontSize: 14, }}>{reaction_desc}</Label>
+            </Column>
+            <Row style={{ backgroundColor: "#ffffff50", justifyContent: 'center', alignItems: 'center', borderRadius: 100, paddingHorizontal: 14, paddingVertical: 8, }}>
+                <AntDesign name="staro" size={16} color="#000" />
+                <Label style={{ fontFamily: 'Font_Medium', fontSize: 24, color: "#000", marginLeft: 6, }}>{item?.rate === 'Rate this mangas' ? 'Sem nota' : item?.rate}</Label>
+            </Row>
+        </Row>
 
-) }
+    )
+}
 
 
 const CardManga = React.memo(({ item }) => {
     const navigation = useNavigation();
     return (
-        <Pressable onPress={() => { navigation.navigate('MangaDetails', {id: item.id });}} style={{ backgroundColor: "#303030", borderRadius: 6, width: 162, margin: 8, padding: 12, paddingBottom: 10, }}>
+        <Pressable onPress={() => { navigation.navigate('MangaDetails', { id: item.id }); }} style={{ backgroundColor: "#303030", borderRadius: 6, width: 162, margin: 8, padding: 12, paddingBottom: 10, }}>
             <Image source={{ uri: item.capa }} style={{ width: 102, height: 152, borderRadius: 6, alignSelf: 'center', marginBottom: 6, }} />
-            <Title style={{ fontSize: 16, textAlign: 'center', fontFamily: 'Font_Book', lineHeight: 18,}}>{item?.name?.slice(0,50)}</Title>
+            <Title style={{ fontSize: 16, textAlign: 'center', fontFamily: 'Font_Book', lineHeight: 18, }}>{item?.name?.slice(0, 50)}</Title>
         </Pressable>
     )
 })

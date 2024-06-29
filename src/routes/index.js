@@ -31,7 +31,7 @@ export default function Router() {
             <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS ,  backBehavior: 'none',}}/>
             <Stack.Screen name="Novidades" component={NovidadesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="MangalistDetails" component={MangalistDetailsPage} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
-            <Stack.Screen name="MangaDetails" component={MangaDetailsPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
+            <Stack.Screen name="MangaDetails" component={MangaDetailsPage} options={{...TransitionPresets.ModalSlideFromBottomIOS   , }}/>
             <Stack.Screen name="MangaPages" component={MangaPages} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
             <Stack.Screen name="Onboarding" component={OnboardingPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Continue" component={ContinuePage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>

@@ -2,13 +2,13 @@ import axios from 'axios';
 
 const baseUrl = 'https://api.mangadex.org';
 
-export async function getChapters(mangaID) {
+export async function getChapters(mangaID, lg = 'pt-br') {
     try {
         const resp = await axios({
             method: 'GET',
             url: `${baseUrl}/manga/${mangaID}/feed`,
             params: {
-                translatedLanguage: ['pt-br', ],
+                translatedLanguage: [lg],
                 order: {
                     chapter: 'desc',
                 },

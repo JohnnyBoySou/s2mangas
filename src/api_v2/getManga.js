@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import iso639Languages from './iso639';
 const baseUrl = 'https://api.mangadex.org';
 
 export async function getManga(mangaID = '8f3e1818-a015-491d-bd81-3addc4d7d56a') {
@@ -8,7 +8,7 @@ export async function getManga(mangaID = '8f3e1818-a015-491d-bd81-3addc4d7d56a')
             method: 'GET',
             url: `${baseUrl}/manga/${mangaID}`,
             params: {
-                includes: ['cover_art', 'score', 'chapter',],
+                includes: ['cover_art',],
             }
         });
         const stat = await axios({
@@ -51,7 +51,6 @@ const transformData = (data, stats) => {
             createdAt = '',
             updatedAt = '',
             availableTranslatedLanguages = [],
-            latestUploadedChapter = '',
         } = {},
         relationships = []
     } = data;
@@ -76,6 +75,7 @@ const transformData = (data, stats) => {
 
     // Extrai categorias dos tags
     const categories = tags.map(tag => tag.attributes.name.en);
+    const long = categories.find(tag => tag === 'Long Strip')
 
     // Encontra o relacionamento de cover_art e extrai o nome do arquivo
     const coverArtRelationship = relationships.find(rel => rel.type === 'cover_art');
@@ -88,6 +88,13 @@ const transformData = (data, stats) => {
 
     const cleanDescription = removeLinksFromText(description["pt-br"] || description[0]);
     const types = type === 'manga' ? 'Mangá' : type === 'manhwa' ? 'Manhwa' : 'Manhua';
+
+    const translatedLanguages = availableTranslatedLanguages.map(lang => ({
+        id: lang,
+        name: iso639Languages[lang] || lang
+    }));
+
+
     // Transforma os dados para o formato desejado
     const manga = {
         id,
@@ -104,7 +111,8 @@ const transformData = (data, stats) => {
         chapters: 1, // Pode ser ajustado se houver dados sobre capítulos
         create_date: formatDateToShort(createdAt),
         release_date: formatDate(updatedAt),
-        languages: availableTranslatedLanguages,
+        languages: translatedLanguages,
+        long: long ? true : false,
     };
 
     return manga;
