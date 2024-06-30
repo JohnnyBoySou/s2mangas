@@ -39,7 +39,7 @@ export default function MangaDetailsPage({ route, navigation }) {
         rate: item?.rate,
         type: item?.type,
         id: item?.id,
-        chapter: chapters.length,
+        chapter: chapters?.length,
         long: item?.long,
     };
     useEffect(() => {
@@ -289,7 +289,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                 }
                 {type == 'Capitulos' && <>
 
-                   {chapters.length > 0 ? <>
+                   {chapters?.length > 0 ? <>
                     <Column style={{ paddingHorizontal: 20, marginTop: 10, borderRadius: 16, }}>
                         <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
                             <Column>
@@ -506,7 +506,7 @@ const Card = ({ item, id, itm, chaptersRead, lidos, total }) => {
                 <Title style={{ fontSize: 22, marginLeft: 20,  }}>#{item?.chapter}</Title>
 
                 <Column style={{ marginLeft: 20, }}>
-                    <Title style={{ fontSize: 14, fontFamily: 'Font_Medium', letterSpacing: -0.5, textTransform: 'lowercase' }}>{item.title.length > 23 ? item?.title?.slice(0, 23) + '...' : item.title} </Title>
+                    <Title style={{ fontSize: 14, fontFamily: 'Font_Medium', letterSpacing: -0.5, textTransform: 'lowercase' }}>{item?.title?.length > 23 ? item?.title?.slice(0, 23) + '...' : item?.title} </Title>
                     <Label style={{ fontSize: 10, }}>{item?.publish_date}</Label>
                 </Column>
             </Row>

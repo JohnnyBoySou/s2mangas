@@ -2,8 +2,7 @@ import axios from 'axios';
 
 const baseUrl = 'https://api.mangadex.org';
 
-export async function getPages(chapterID = '6abbf820-dc5b-4e50-8335-af06e08f8cbc', mangaID) {
-
+export async function getPages(chapterID, mangaID) {
   try {
       const resp = await axios({
           method: 'GET',
@@ -13,7 +12,7 @@ export async function getPages(chapterID = '6abbf820-dc5b-4e50-8335-af06e08f8cbc
         method: 'GET',
         url: `${baseUrl}/manga/${mangaID}/feed`,
         params: {
-            translatedLanguage: ['pt-br', ],
+            translatedLanguage: ['pt-br',],
             order: {
                 chapter: 'desc',
             },

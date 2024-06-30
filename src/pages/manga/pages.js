@@ -76,7 +76,7 @@ export default function MangaPages({ route, navigation }) {
 
     return (
         <Main style={{ justifyContent: 'center', alignItems: 'center', }}>
-            <Row style={{ position: 'absolute', top: 20, zIndex: 9999, left: 20, right: 20, justifyContent: 'space-between', alignItems: 'center', }}>
+            <Row style={{ position: 'absolute', top: 50, zIndex: 9999, left: 20, right: 20, justifyContent: 'space-between', alignItems: 'center', }}>
                 <Pressable onPress={() => navigation.goBack()} style={{}}>
                     <ArrowLeft size={30} stroke='#fff' />
                 </Pressable>
