@@ -1,210 +1,164 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { Image, Pressable, } from 'react-native'
-import { ThemeContext } from 'styled-components/native'
-import { Column, Title, Main, Row, Label, } from '../../theme/global';
-import { Svg, Path, Defs, Stop, LinearGradient } from 'react-native-svg';
-import Animated, { FadeInRight, FadeInLeft, FadeInDown, FadeOutLeft } from 'react-native-reanimated';
-import { MotiImage, MotiView } from 'moti';
+import React, { useState, useContext, useRef, useEffect } from 'react';
+import { Image, Pressable, Animated, Dimensions, FlatList } from 'react-native';
+import { ThemeContext } from 'styled-components/native';
+import { Column, Title, Main, Row, Label, Button, Scroll } from '@theme/global';
+import { ArrowRight, CircleAlert } from 'lucide-react-native';
+import { ExpandingDot } from "react-native-animated-pagination-dots";
+import { AnimatePresence, MotiImage, MotiView, useAnimationState } from 'moti';
+import Select from '@components/select';
+import { useNavigation } from '@react-navigation/native';
+
+const { width, height } = Dimensions.get('window');
 
 export default function OnboardingPage({ navigation, route, }) {
     const { color, font } = useContext(ThemeContext)
-    const [current, setCurrent] = useState(0);
-    const [first, setFirst] = useState(true);
+    const scrollX = useRef(new Animated.Value(0)).current;
+    const screens = [<Screen1 />,  <Screen2 />]
 
-
-    const Screen4 = ({ }) => {
-        return (
-            <Animated.View entering={FadeInRight.delay(400)} exiting={FadeOutLeft}>
-                <Column style={{ alignSelf: 'center', width: '100%', }}>
-                    <Animated.View entering={FadeInDown.delay(150)}>
-                        <Image source={require('./img4.png')} style={{
-                            width: 200, height: 256, position: 'absolute', zIndex: 2, borderRadius: 16,
-                            alignSelf: 'center', top: 130,
-                        }} />
-                    </Animated.View>
-                    <Svg width={311} style={{ alignSelf: 'center', zIndex: -99, }} height={470} viewBox="0 0 181 310" fill="none"><Path opacity={0.9} d="M88.407 11C116.314 58.8983 15.719 59.4356 29.6806 97.964C46.2816 143.776 119.141 55.5102 154.161 89.3925C201.032 134.742 -14.5972 145.737 26.1568 196.655C46.443 222 118.674 156.585 140.443 196.655C164.724 241.346 27.9349 234.488 41.4433 282C48.4924 306.793 139.161 261.5 147.443 302" stroke="url(#paint0_linear_911_85)" strokeWidth={40} /><Defs><LinearGradient id="paint0_linear_911_85" x1={64.3995} y1={216.618} x2={138.204} y2={252.312} gradientUnits="userSpaceOnUse"><Stop stopColor="#FFA826" /><Stop offset={1} stopColor="#FF81AE" /></LinearGradient></Defs></Svg>
-                    <Row style={{ position: 'absolute', top: 100, alignSelf: 'center', }}>
-                        <Animated.View entering={FadeInLeft.delay(300)} style={{ position: 'absolute', top: 220, left: -140, }}>
-                            <Pressable style={{ paddingVertical: 10, borderRadius: 100, alignSelf: 'center', paddingHorizontal: 16, backgroundColor: "#E977A0", }}>
-                                <Title style={{ color: "#000" }}>CARDS</Title>
-                            </Pressable>
-                        </Animated.View>
-                        <Animated.View entering={FadeInRight.delay(500)} style={{ position: 'absolute', top: 50, right: -140, }}>
-                            <Pressable style={{ paddingVertical: 10, borderRadius: 100, alignSelf: 'center', paddingHorizontal: 16, backgroundColor: "#E99B26", }}>
-                                <Title style={{ color: "#000" }}>COLEÇÕES</Title>
-                            </Pressable>
-                        </Animated.View>
-                    </Row>
-
-                    <Title style={{ fontSize: 38, textAlign: 'center', fontFamily: 'Font_Book', marginTop: 20, }}>E muuuuito {'\n'}mais!</Title>
-                    <Label style={{ fontSize: 16, textAlign: 'center', marginTop: 2, }}>Novas funções e atualizações frequentemente.</Label>
-
-                </Column>
-            </Animated.View>
-        )
-    }
-
-
-    const Screen0 = ({ }) => {
-        return (
-            <Animated.View entering={FadeInRight.delay(400)} exiting={FadeOutLeft}>
-            <Column style={{ alignSelf: 'center', width: '100%', }}>
-                <Animated.View entering={FadeInDown.delay(150)}>
-                    <Image source={{uri: 'https://i.pinimg.com/564x/f5/26/78/f526784c88391452ad6f7f35d3a118e9.jpg'}} style={{
-                        width: 200, height: 256, position: 'absolute', zIndex: 2, borderRadius: 16,
-                        alignSelf: 'center', top: 130,
-                    }} />
-                </Animated.View>
-
-                <Svg width={311} style={{ alignSelf: 'center', zIndex: -99, }} height={470} viewBox="0 0 181 310" fill="none"><Path opacity={0.9} d="M88.407 11C116.314 58.8983 15.719 59.4356 29.6806 97.964C46.2816 143.776 119.141 55.5102 154.161 89.3925C201.032 134.742 -14.5972 145.737 26.1568 196.655C46.443 222 118.674 156.585 140.443 196.655C164.724 241.346 27.9349 234.488 41.4433 282C48.4924 306.793 139.161 261.5 147.443 302" stroke="url(#paint0_linear_898_30)" strokeWidth={40} /><Defs><LinearGradient id="paint0_linear_898_30" x1={64.3995} y1={216.618} x2={138.204} y2={252.312} gradientUnits="userSpaceOnUse"><Stop stopColor="#F7DAB0" /><Stop offset={1} stopColor="#67616A" /></LinearGradient></Defs></Svg>
-               
-                <Row style={{ position: 'absolute', top: 100, alignSelf: 'center', }}>
-                    <Animated.View entering={FadeInLeft.delay(300)} style={{ position: 'absolute', top: 10, left: -160, }}>
-                        <Pressable style={{ paddingVertical: 10, borderRadius: 100, alignSelf: 'center', paddingHorizontal: 16, backgroundColor: "#F7DAB0", }}>
-                            <Title style={{ color: "#000" }}>MUITOS MANGÁS</Title>
-                        </Pressable>
-                    </Animated.View>
-                    <Animated.View entering={FadeInRight.delay(500)} style={{ position: 'absolute', bottom: -300, right: -150, }}>
-                        <Pressable style={{ paddingVertical: 10, borderRadius: 100, alignSelf: 'center', paddingHorizontal: 16, backgroundColor: "#67616A", }}>
-                            <Title style={{ color: "#fff" }}>PARA VOCÊ</Title>
-                        </Pressable>
-                    </Animated.View>
-                </Row>
-                <Title style={{ fontSize: 38, textAlign: 'center', fontFamily: 'Font_Book', marginTop: 10, }}>Bem-vindo{'\n'}viajante!</Title>
-                <Label style={{ fontSize: 16, textAlign: 'center', marginTop: 2, width: 300, alignSelf: 'center', lineHeight: 20,}}>Aqui, você pode descobrir mangás incríveis, se envolver em narrativas emocionantes e se juntar a uma comunidade de fãs entusiasmados.</Label>
-            </Column>
-        </Animated.View>
-        )
-    }
-
-
-    const Screen1 = ({ }) => {
-        return (
-            <Animated.View entering={FadeInRight.delay(400)} exiting={FadeOutLeft}>
-                <Column style={{ alignSelf: 'center', width: '100%', }}>
-                    <Animated.View entering={FadeInDown.delay(150)}>
-                        <Image source={require('./img1.png')} style={{
-                            width: 200, height: 256, position: 'absolute', zIndex: 2, borderRadius: 16,
-                            alignSelf: 'center', top: 130,
-                        }} />
-                    </Animated.View>
-
-                    <Svg width={311} style={{ alignSelf: 'center', zIndex: -99, }} height={470} viewBox="0 0 181 310" fill="none"><Path opacity={0.9} d="M88.407 11C116.314 58.8983 15.719 59.4356 29.6806 97.964C46.2816 143.776 119.141 55.5102 154.161 89.3925C201.032 134.742 -14.5972 145.737 26.1568 196.655C46.443 222 118.674 156.585 140.443 196.655C164.724 241.346 27.9349 234.488 41.4433 282C48.4924 306.793 139.161 261.5 147.443 302" stroke="url(#paint0_linear_898_30)" strokeWidth={40} /><Defs><LinearGradient id="paint0_linear_898_30" x1={64.3995} y1={216.618} x2={138.204} y2={252.312} gradientUnits="userSpaceOnUse"><Stop stopColor="#7D53DE" /><Stop offset={1} stopColor="#51D6FF" /></LinearGradient></Defs></Svg>
-                   
-                    <Row style={{ position: 'absolute', top: 100, alignSelf: 'center', }}>
-                        <Animated.View entering={FadeInLeft.delay(300)} style={{ position: 'absolute', top: 10, left: -160, }}>
-                            <Pressable style={{ paddingVertical: 10, borderRadius: 100, alignSelf: 'center', paddingHorizontal: 16, backgroundColor: "#4EC0E8", }}>
-                                <Title style={{ color: "#000" }}>NEW WEEK</Title>
-                            </Pressable>
-                        </Animated.View>
-                        <Animated.View entering={FadeInRight.delay(500)} style={{ position: 'absolute', bottom: -300, right: -150, }}>
-                            <Pressable style={{ paddingVertical: 10, borderRadius: 100, alignSelf: 'center', paddingHorizontal: 16, backgroundColor: "#9E7CEC", }}>
-                                <Title style={{ color: "#000" }}>PARA VOCÊ</Title>
-                            </Pressable>
-                        </Animated.View>
-                    </Row>
-                    <Title style={{ fontSize: 38, textAlign: 'center', fontFamily: 'Font_Book', marginTop: 10, }}>Seu Feed {'\n'}personalizado!</Title>
-                    <Label style={{ fontSize: 16, textAlign: 'center', marginTop: 2, }}>Conforme você lê, novas recomendações!</Label>
-                </Column>
-            </Animated.View>
-        )
-    }
-
-    const Screen2 = ({ }) => {
-        return (
-            <Animated.View entering={FadeInRight.delay(400)} exiting={FadeOutLeft}>
-                <Column style={{ alignSelf: 'center', width: '100%', }}>
-                    <Animated.View entering={FadeInDown.delay(150)}>
-                        <Image source={require('./img2.png')} style={{ width: 200, height: 256, position: 'absolute', zIndex: 2, borderRadius: 16, alignSelf: 'center', top: 130, }} />
-                    </Animated.View>
-                    <Svg width={311} style={{ alignSelf: 'center', zIndex: -99, }} height={470} viewBox="0 0 181 310" fill="none" xmlns="http://www.w3.org/2000/svg"><Path opacity={0.9} d="M88.407 11C116.314 58.8983 15.719 59.4356 29.6806 97.964C46.2816 143.776 119.141 55.5102 154.161 89.3925C201.032 134.742 -14.5972 145.737 26.1568 196.655C46.443 222 118.674 156.585 140.443 196.655C164.724 241.346 27.9349 234.488 41.4433 282C48.4924 306.793 139.161 261.5 147.443 302" stroke="url(#paint0_linear_897_3)" strokeWidth={40} /><Defs><LinearGradient id="paint0_linear_897_3" x1={64.3995} y1={216.618} x2={138.204} y2={252.312} gradientUnits="userSpaceOnUse"><Stop stopColor="#ED274A" /><Stop offset={1} stopColor="#FF620A" /></LinearGradient></Defs></Svg>
-                    <Row style={{ position: 'absolute', top: 100, alignSelf: 'center', }}>
-                        <Animated.View entering={FadeInLeft.delay(300)} style={{ position: 'absolute', top: 235, left: -160, zIndex: 99, }}>
-                            <Pressable style={{ paddingVertical: 10, borderRadius: 100, alignSelf: 'center', paddingHorizontal: 16, backgroundColor: "#E95C0D", }}>
-                                <Title style={{ color: "#fff" }}>IMPORTE</Title>
-                            </Pressable>
-                        </Animated.View>
-                        <Animated.View entering={FadeInRight.delay(500)} style={{ position: 'absolute', top: 40, right: -170, zIndex: 99, }}>
-                            <Pressable style={{ paddingVertical: 10, borderRadius: 100, alignSelf: 'center', paddingHorizontal: 16, backgroundColor: "#D92646", }}>
-                                <Title style={{ color: "#fff" }}>ORGANIZADO? SOU</Title>
-                            </Pressable>
-                        </Animated.View>
-                    </Row>
-
-                    <Title style={{ fontSize: 38, textAlign: 'center', fontFamily: 'Font_Book', marginTop: 10, }}>Salve na sua {'\n'}Coleção</Title>
-                    <Label style={{ fontSize: 16, textAlign: 'center', marginTop: 2, }}>Organize como preferir seus favoritos!</Label>
-
-                </Column>
-            </Animated.View>
-        )
-    }
-
-    const Screen3 = ({ }) => {
-        return (
-            <Animated.View entering={FadeInRight.delay(400)} exiting={FadeOutLeft}>
-                <Column style={{ alignSelf: 'center', width: '100%', }}>
-                    <Animated.View entering={FadeInDown.delay(150)}>
-                        <Image source={require('./img3.png')} style={{
-                            width: 200, height: 256, position: 'absolute', zIndex: 2, borderRadius: 16,
-                            alignSelf: 'center', top: 130,
-                        }} />
-                    </Animated.View>
-                    <Svg width={311} style={{ alignSelf: 'center', zIndex: -99, }} height={470} viewBox="0 0 181 310" fill="none"><Path opacity={0.9} d="M88.407 11C116.314 58.8983 15.719 59.4356 29.6806 97.964C46.2816 143.776 119.141 55.5102 154.161 89.3925C201.032 134.742 -14.5972 145.737 26.1568 196.655C46.443 222 118.674 156.585 140.443 196.655C164.724 241.346 27.9349 234.488 41.4433 282C48.4924 306.793 139.161 261.5 147.443 302" stroke="url(#paint0_linear_898_44)" strokeWidth={40} /><Defs><LinearGradient id="paint0_linear_898_44" x1={64.3995} y1={216.618} x2={138.204} y2={252.312} gradientUnits="userSpaceOnUse"><Stop stopColor="#52C4A2" /><Stop offset={1} stopColor="#FFF50A" /></LinearGradient></Defs></Svg>
-                    <Row style={{ position: 'absolute', top: 100, alignSelf: 'center', }}>
-                        <Animated.View entering={FadeInLeft.delay(300)} style={{ position: 'absolute', top: 220, left: -140, }}>
-                            <Pressable style={{ paddingVertical: 10, borderRadius: 100, alignSelf: 'center', paddingHorizontal: 16, backgroundColor: "#E9E00D", }}>
-                                <Title style={{ color: "#000" }}>FILTROS</Title>
-                            </Pressable>
-                        </Animated.View>
-                        <Animated.View entering={FadeInRight.delay(500)} style={{ position: 'absolute', top: 50, right: -140, }}>
-                            <Pressable style={{ paddingVertical: 10, borderRadius: 100, alignSelf: 'center', paddingHorizontal: 16, backgroundColor: "#52C4A2", }}>
-                                <Title style={{ color: "#000" }}>ZOOOM!</Title>
-                            </Pressable>
-                        </Animated.View>
-                    </Row>
-                    <Title style={{ fontSize: 38, textAlign: 'center', fontFamily: 'Font_Book', marginTop: 10, }}>Ferramentas {'\n'}para leitura!</Title>
-                    <Label style={{ fontSize: 16, textAlign: 'center', marginTop: 2, }}>Filtros, zoom, paginação e muito mais...</Label>
-
-                </Column>
-            </Animated.View>
-        )
-    }
-    
-    const screens = [<Screen0 />, <Screen1 />, <Screen2 />, <Screen3 />, <Screen4 />]
 
     return (
-        <Main style={{ paddingTop: 50, flex: 1, }}>
-            
-            <Column style={{ paddingHorizontal: 30, marginBottom: 20, }}>
-                {!first &&
-                    <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
-                        <Pressable rippleColor='#ffffff90' borderless onPress={() => navigation.replaces('Preferences')} style={{ paddingHorizontal: 20, backgroundColor: color.off, paddingVertical: 10, borderRadius: 100, }}>
-                            <Label>Pular</Label>
-                        </Pressable>
-                    </Row>
-                }
-            </Column>
-           <>{screens[current]}</>
+        <Main style={{ paddingTop: 50, }}>
 
-            {current < 4 && <>
-                    <Row style={{ position: 'absolute', bottom: 50, flexGrow: 1, width: '80%', alignSelf: 'center', marginHorizontal: 30, justifyContent: 'space-between', }}>
-                        <Pressable rippleColor='#ffffff90' borderless disabled={current === 0} onPress={() => setCurrent(current - 1)} style={{ backgroundColor: color.off, marginRight: 20, borderRadius: 100, paddingVertical: 12, paddingHorizontal: 24, }}>
-                            <Title style={{ fontSize: 18, }}>Anterior</Title>
-                        </Pressable>
-                        <Pressable rippleColor='#ffffff90' borderless disabled={current === 4} onPress={() => setCurrent(current + 1)} style={{ backgroundColor: color.primary, borderRadius: 100, paddingVertical: 12, paddingHorizontal: 24, }}>
-                            <Title style={{ fontSize: 18, }}>Próximo</Title>
-                        </Pressable>
-                    </Row>
-            </>}
+            <Row style={{ position: 'absolute', bottom: 40, zIndex: 99, justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingHorizontal: 30, marginBottom: 20, }}>
+                <ExpandingDot
+                    data={screens}
+                    expandingDotWidth={25}
+                    scrollX={scrollX}
+                    containerStyle={{ position: 'relative', marginTop: 0, top: 0, }}
+                    dotStyle={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: 5,
+                        marginHorizontal: 2,
+                    }}
+                    activeDotColor={color.primary}
+                    inActiveDotColor={color.primary + 50}
+                />
 
-            {current === 4 && <Row style={{ position: 'absolute', bottom: 50, flexGrow: 1, alignSelf: 'center', marginHorizontal: 30, justifyContent: 'space-between', }}>
-                        <Pressable rippleColor='#ffffff90' borderless onPress={() => navigation.replace('Preferences')}
-                            style={{ backgroundColor: color.primary, alignSelf: 'center', borderRadius: 100, paddingVertical: 12, paddingHorizontal: 24, }}>
-                            <Title style={{ fontSize: 18, }}>Continuar</Title>
-                        </Pressable>
-                    </Row>}
+            </Row>
+
+            <Scroll horizontal pagingEnabled onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: false, })} showsHorizontalScrollIndicator={false}>{screens}</Scroll>
+
         </Main>
     )
 }
 
 
+
+const Screen1 = ({ }) => {
+    const [refresh, setrefresh] = useState(false);
+    const { color} = useContext(ThemeContext)
+    const scale = useAnimationState({
+        from: {
+            scale: 1.7,
+        },
+        to: {
+            scale: 4.7,
+        }
+    })
+
+    const toggle = () => {
+        if(refresh){
+            setrefresh(false)
+            scale.transitionTo('from')
+        }else{
+            setrefresh(true)
+            scale.transitionTo('to')
+        }
+    }
+
+    useEffect(() => {
+        scale.transitionTo('from')
+    }, [])
+
+    return (
+        <MotiView style={{ width: width,overflow: 'hidden' }}>
+            <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 60, }}>
+                <MotiImage source={{ uri: 'https://i.pinimg.com/564x/e0/b6/7a/e0b67a673882c4f727d2289689dd4c04.jpg' }} from={{ translateY: -300, rotate: '10deg', }} transition={{ duration: 12500, delay: 1000, }} animate={{ translateY: 90, rotate: '0deg' }} style={{ borderRadius: 12, width: 104, height: 150, backgroundColor: '#303030', position: 'absolute', }} />
+                <MotiImage source={{ uri: 'https://i.pinimg.com/736x/91/a9/06/91a90649fc657370c6ab99388c91b468.jpg' }} from={{ translateY: -300, rotate: '-20deg', }} transition={{ duration: 12500, delay: 1500, }} animate={{ translateY: 80, rotate: '12deg' }} style={{ borderRadius: 12, width: 104, height: 150, left: 30, position: 'absolute', backgroundColor: '#303030', }} />
+                <MotiImage source={{ uri: 'https://i.pinimg.com/736x/08/6a/76/086a768ffc51d78c753c5c7cdaad4167.jpg' }} from={{ translateY: -300, rotate: '-50deg', }} transition={{ duration: 12500, delay: 1200, }} animate={{ translateY: 70, rotate: '-20deg' }} style={{ borderRadius: 12, width: 104, height: 150, right: 30, position: 'absolute', backgroundColor: '#303030', }} />
+
+                <MotiImage source={{ uri: 'https://i.pinimg.com/564x/64/ce/90/64ce9064bc86aa85f80b4766286bcff1.jpg' }} from={{ translateY: -300, rotate: '40deg', }} transition={{ duration: 12500, delay: 700, }} animate={{ translateY: 250, rotate: '20deg' }} style={{ borderRadius: 12, width: 104, left: 30, height: 150, position: 'absolute', backgroundColor: '#303030', }} />
+                <MotiImage source={{ uri: 'https://i.pinimg.com/564x/13/4f/31/134f315dba6a843b718c0d2d33f16af0.jpg' }} from={{ translateY: -300, rotate: '40deg', }} transition={{ duration: 12500, delay: 700, }} animate={{ translateY: 250, rotate: '4deg' }} style={{ borderRadius: 12, width: 104, height: 150, position: 'absolute', backgroundColor: '#303030', }} />
+                <MotiImage source={{ uri: 'https://i.pinimg.com/564x/b8/6c/45/b86c4516be31199f34e7dfbb837081ba.jpg' }} from={{ translateY: -300, rotate: '40deg', }} transition={{ duration: 12500, delay: 700, }} animate={{ translateY: 250, rotate: '-20deg' }} style={{ borderRadius: 12, width: 104, right: 30, height: 150, position: 'absolute', backgroundColor: '#303030', }} />
+
+                <MotiImage source={{ uri: 'https://i.pinimg.com/736x/80/41/eb/8041eb348c18463a471f4d124ca8ced2.jpg' }} from={{ translateY: -300, rotate: '40deg', }} transition={{ duration: 12500, delay: 600, }} animate={{ translateY: 390, rotate: '-20deg' }} style={{ borderRadius: 12, width: 104, height: 150, left: 30, position: 'absolute', backgroundColor: '#303030', }} />
+                <MotiImage source={{ uri: 'https://i.pinimg.com/736x/a1/e0/07/a1e0079cef2bdcb59eeeb436bf80a9ec.jpg' }} from={{ translateY: -300, rotate: '-50deg', }} transition={{ duration: 12500, delay: 1200, }} animate={{ translateY: 410, rotate: '20deg' }} style={{ borderRadius: 12, width: 104, height: 150, right: 20, position: 'absolute', backgroundColor: '#303030', }} />
+                <MotiImage source={{ uri: 'https://i.pinimg.com/564x/1f/73/a3/1f73a32d9f57c7c6b96b767cb75d1ac9.jpg' }} from={{ translateY: -400, rotate: '-50deg', }} transition={{ duration: 12500, delay: 1200, }} animate={{ translateY: 400, rotate: '0deg' }} style={{ borderRadius: 12, width: 104, height: 150, position: 'absolute', backgroundColor: '#303030', }} />
+            </Row>
+            <Pressable onPress={toggle} style={{ position: 'absolute', alignSelf: 'center', bottom: -110, }}>
+                <AnimatePresence>
+                {refresh && <MotiView style={{ position: 'absolute', zIndex: 99, top: -220, backgroundColor: '#fff', borderRadius: 12, padding: 20, width: 300, alignSelf: 'center',}} from={{opacity: 0,}} animate={{opacity: 1,}} exit={{opacity: 0,}} transition={{ type: 'timing', duration: 200, }}>
+                    <MotiImage source={require('@imgs/circle_logo.png')} style={{ width: 64, height: 64, alignSelf: 'center', }} />
+                    <Title style={{ textAlign: 'center', color: "#000000", }}>Sua experiência {'\n'}melhor aqui!</Title>
+                    <Label style={{ textAlign: 'center', color: "#00000090",}}>Personalize sua experiência. {'\n'}Ajuste o modo de leitura, crie listas personalizadas, aplique filtros e muito mais.</Label>
+                    <Label style={{ textAlign: 'center', color: color.primary, fontFamily: 'Font_Bold',}}>arrasta pro lado</Label>
+                </MotiView>}
+                </AnimatePresence>
+
+                <Column style={{ justifyContent: 'center', zIndex: 99, top: 50, }}>
+                    <Title style={{ textAlign: 'center' }}>Bem vindo ao {'\n'}S2Mangás</Title>
+                    <Label style={{ textAlign: 'center', color: color.title+99, }}>Clique aqui</Label>
+                </Column>
+                <MotiImage state={scale} from={{ rotate: '20deg', }} delay={200} animate={{ rotate: '-20deg' }} source={require('@imgs/circle.png')} style={{ width: 200, height: 200, borderRadius: 100, }} />
+            </Pressable>
+        </MotiView>
+    )
+}
+
+const Screen2 = ({ }) => {
+    const { color } = useContext(ThemeContext)
+    const navigation = useNavigation();
+    const [languagesSelect, setlanguagesSelect] = useState(['pt-br']);
+    const languages = [
+        { type: 'pt-br', name: 'Português Brasileiro' },
+        { type: 'en', name: 'Inglês' },
+        { type: 'es', name: 'Espanhol' },
+        { type: 'ja', name: 'Japonês' },
+        { type: 'ko', name: 'Coreano' },
+        { type: 'zh', name: 'Chinês' },
+    ]
+
+    const toggleLanguage = (type) => {
+        setlanguagesSelect((prev) =>
+            prev.includes(type)
+                ? prev.filter(item => item !== type)
+                : [...prev, type]
+        );
+    };
+
+
+    return (
+        <MotiView style={{ width: width, justifyContent: 'center', alignItems: 'center', padding: 30, }}>
+            <Title style={{ textAlign: 'center', }}>Selecione as linguagens que deseja ler</Title>
+            <AnimatePresence>
+                <Row style={{ marginTop: 10, }}>
+                    {languagesSelect?.map((item) => <MotiView from={{ opacity: 0, scale: 0, }} animate={{ opacity: 1, scale: 1, }} exit={{ opacity: 0, scale: 0, }} transition={{ type: 'spring', duration: 300 }}><Label key={item} style={{ color: color.off, marginHorizontal: 6, backgroundColor: '#fff', paddingHorizontal: 6, paddingVertical: 4, borderRadius: 5, textAlign: 'center', fontFamily: 'Font_Bold', textTransform: 'uppercase', }}>{item}</Label></MotiView>)}
+                </Row>
+            </AnimatePresence>
+            <FlatList
+                data={languages}
+                renderItem={({ item }) => (
+                    <Button
+                        onPress={() => toggleLanguage(item.type)}
+                        style={{ borderRadius: 8, marginTop: 16 }}
+                    >
+                        <Select status={languagesSelect.includes(item.type)} name={item.name} />
+                    </Button>
+                )}
+                keyExtractor={(item) => item.type}
+            />
+
+
+
+            <Row style={{ top: -25, }}>
+                <CircleAlert size={24} color={color.primary} />
+                <Label style={{ color: color.primary, marginLeft: 6, }}>Selecione pelo menos uma</Label>
+            </Row>
+            
+            <Button disabled={languagesSelect.length < 1} onPress={() => {navigation.navigate('Preferences', {lg: languagesSelect})}}  style={{ zIndex: 99, backgroundColor: color.primary, borderRadius: 100, justifyContent: 'center', alignItems: 'center', width: 52, height: 52, }}>
+                    <ArrowRight size={28} color="#fff" />
+                </Button>
+        </MotiView>
+    )
+}

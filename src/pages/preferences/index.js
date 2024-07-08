@@ -19,6 +19,7 @@ import { MotiImage, MotiView } from 'moti';
 import { Feather, Play } from 'lucide-react-native';
 
 export default function PreferencesPage({ navigation, route, }) {
+  const lgs = route.params.lg
   const [geral, setGeral] = useState();
   const [geralbg, setGeralbg] = useState();
   useEffect(() => {
@@ -69,6 +70,7 @@ export default function PreferencesPage({ navigation, route, }) {
       if (selectedItems.length >= 1) {
         const params = {
           "items": selectedItems, 
+          "lg": lgs,
           "name": name, 
           "avatar": avatar, 
           "capa": capa, 
