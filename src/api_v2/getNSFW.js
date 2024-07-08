@@ -1,62 +1,28 @@
 import axios from 'axios';
+
 const baseUrl = 'https://api.mangadex.org';
 
-export async function getSearch(name = 'Arpeggio of Blue', publico, status, classificacao, ) {
+export async function getNSFW(page, tag) {
     try {
         const resp = await axios({
             method: 'GET',
             url: `${baseUrl}/manga/`,
             params: {
-                title: name,
-                publicationDemographic: [publico],
-                status: [status],
-                contentRating: [classificacao],
-                includes: ['cover_art', ],
+                availableTranslatedLanguage: ['pt-br'],
+                includes: ['cover_art', 'chapter',],
+                contentRating: ['pornographic'],
+                offset: 20 * page,
+                limit: 20,
+
             }
         });
-        
         const data = transformDataArray(resp?.data?.data)
         return data;
     } catch (error) {
         console.error(error);
         return null;
-    } finally {
-        console.log('Finalizou');
     }
 }
-
-export async function getSearchFilters(params) {
-    try {
-        const resp = await axios({
-            method: 'GET',
-            url: `${baseUrl}/manga/`,
-            params: {
-                title: name,
-                publicationDemographic: [publico],
-                status: [status],
-                contentRating: [classificacao],
-                includes: ['cover_art', ],
-            }
-        });
-        
-        const data = transformDataArray(resp?.data?.data)
-        return data;
-    } catch (error) {
-        console.error(error);
-        return null;
-    } finally {
-        console.log('Finalizou');
-    }
-}
-
-
-
-
-
-
-
-
-
 
 const removeLinksFromText = (text) => {
     // Remove qualquer URL da string

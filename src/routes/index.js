@@ -18,7 +18,8 @@ import AccountPage from '../pages/account';
 import SearchPage from '../pages/search';
 import CategoryPage from '../pages/search/category';
 import EditorPage from '../pages/editor';
-import TestPage from '../pages/test';
+import TestPage from '@pages/test';
+import NSFWPage from '@pages/search/nsfw';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -44,6 +45,7 @@ export default function Router() {
             <Stack.Screen name="Category" component={CategoryPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Editor" component={EditorPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
 
+            <Stack.Screen name="NSFW" component={NSFWPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Test" component={TestPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
 
         </Stack.Navigator>

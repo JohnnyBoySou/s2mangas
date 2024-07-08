@@ -23,6 +23,7 @@ export default function HomePage({ navigation }) {
     const { color, font } = useContext(ThemeContext);
     const [type, setType] = useState('Tudo');
     const [user, setUser] = useState();
+    const a = false;
     useEffect(() => {
         const fechtData = async () => {
             getPreferences().then(user => {
@@ -44,8 +45,6 @@ export default function HomePage({ navigation }) {
             <Scroll stickyHeaderIndices={[2]} onScroll={(event) => {  const scrolling = event.nativeEvent.contentOffset.y;  if (scrolling > 330) {  setHeaderShown(true);  } else { setHeaderShown(false); } }} >
                 <Header />
                 <Column style={{ height: 95, }} />
-
-
                 <Column style={{ zIndex: 999,  }}>
                     <Row style={{ marginBottom: 0, padding: 12, paddingTop: 50, backgroundColor: color.background, zIndex: -99, }}>
                         <Pressable onPress={() => { setType('Tudo') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Tudo' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
@@ -54,26 +53,21 @@ export default function HomePage({ navigation }) {
                         <Pressable onPress={() => { setType('Mangas') }} style={{ paddingVertical: 10, marginHorizontal: 8, paddingHorizontal: 16, backgroundColor: type === 'Mangas' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
                             <Label style={{ color: type === 'Mangas' ? color.off : color.title, fontFamily: type === 'Mangas' ? font.bold : font.book, }}>Mangás</Label>
                         </Pressable>
-                        <Pressable onPress={() => { setType('Mangalist') }} style={{ marginRight: 8, paddingVertical: 10, paddingHorizontal: 16, backgroundColor: type === 'Mangalist' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
+                       {a && <Pressable onPress={() => { setType('Mangalist') }} style={{ marginRight: 8, paddingVertical: 10, paddingHorizontal: 16, backgroundColor: type === 'Mangalist' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
                             <Label style={{ color: type === 'Mangalist' ? color.off : color.title, fontFamily: type === 'Mangalist' ? font.bold : font.book, }}>Mangalist</Label>
-                        </Pressable>
+                        </Pressable>}
                         <Pressable onPress={() => { navigation.navigate('Collections') }} style={{ marginRight: 8, paddingVertical: 10, paddingHorizontal: 16, backgroundColor: type === 'Collections' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
                             <Label style={{ color: type === 'Collections' ? color.off : color.title, fontFamily: type === 'Collections' ? font.bold : font.book, }}>Coleções</Label>
                         </Pressable>
                     </Row>
                 </Column>
-
-
                 <>
                 {type === 'Tudo' && <Column>
                     <WeekendComponent />
                     <Spacer height={10} />
                     <CollectionsComponent />
                     <Spacer />
-                    <ForYou />
-                    <Spacer />
-                    <MangalistWeekendComponent />
-                    <Spacer />
+                    <RateComponent />
                     <Spacer />
                 </Column>}
                 {type === 'Mangas' && <Column >
@@ -94,7 +88,6 @@ export default function HomePage({ navigation }) {
                     <Spacer />
                 </Column>}
                 </>
-
                 <Column style={{ height: 60, }} />
             </Scroll>
             <AnimatePresence>{headerShown && <ContinueBar navigation={navigation} />}</AnimatePresence>
@@ -143,7 +136,6 @@ const ForYou = () => {
         </Column>
     )
 }
-
 
 const ContinueBar = ({ navigation }) => {
     const [item, setitem] = useState();

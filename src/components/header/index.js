@@ -34,9 +34,6 @@ function Header({ top }) {
                             <MotiText transition={{ type: 'timing', duration: 300, }} style={{ fontSize: 24, textAlign: 'left', letterSpacing: -1, marginTop: 10, fontFamily: font.book, color: "#fff", marginLeft: 20, }}>{hello},{"\n"}{user?.name}</MotiText>
                         </Row>
                         <Row style={{}}>
-                            <Pressable onPress={() => navigation.navigate('Novidades')} style={{ width: 46, height: 46, borderRadius: 100, zIndex: 99, justifyContent: 'center', alignItems: 'center', }}>
-                                <Feather name="bell" size={24} color="#fff" />
-                            </Pressable>
                             <Pressable onPress={() => navigation.navigate('Search')} style={{ width: 46, height: 46, borderRadius: 100, zIndex: 99, justifyContent: 'center', alignItems: 'center', }}>
                                 <Feather name="search" size={24} color="#fff" />
                             </Pressable>
@@ -53,9 +50,6 @@ function Header({ top }) {
                         <MotiText transition={{ type: 'timing', duration: 300, }} style={{ fontSize: 24, textAlign: 'left', letterSpacing: -1, marginTop: 10, fontFamily: font.book, color: "#fff", marginLeft: 20, }}>{hello},{"\n"}{user?.name}</MotiText>
                     </Row>
                         <Row style={{}}>
-                            <Pressable onPress={() => navigation.navigate('Novidades')} style={{ width: 46, height: 46, borderRadius: 100, zIndex: 99, justifyContent: 'center', alignItems: 'center', }}>
-                                <Feather name="bell" size={24} color="#fff" />
-                            </Pressable>
                             <Pressable onPress={() => navigation.navigate('Search')} style={{ width: 46, height: 46, borderRadius: 100, zIndex: 99, justifyContent: 'center', alignItems: 'center', }}>
                                 <Feather name="search" size={24} color="#fff" />
                             </Pressable>
@@ -84,3 +78,8 @@ function Header({ top }) {
 
 export default memo(Header);
 
+/**
+ * <Pressable onPress={() => navigation.navigate('Novidades')} style={{ width: 46, height: 46, borderRadius: 100, zIndex: 99, justifyContent: 'center', alignItems: 'center', }}>
+                                <Feather name="bell" size={24} color="#fff" />
+                            </Pressable>
+ */
