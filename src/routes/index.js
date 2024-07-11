@@ -3,23 +3,25 @@ import { createStackNavigator, TransitionPresets, } from '@react-navigation/stac
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, getFocusedRouteNameFromRoute, useRoute  } from '@react-navigation/native';
 import { Home, Library, Search } from 'lucide-react-native';
-import HomePage from '../pages/home';
-import MangalistDetailsPage from '../pages/mangalists/details';
-import MangaDetailsPage from '../pages/manga/details';
-import MangaPages from '../pages/manga/pages';
-import NovidadesPage from '../pages/novidades';
-import ContinuePage from '../pages/continue';
-import PreferencesPage from './../pages/preferences/index';
-import OnboardingPage from '../pages/onboarding/index';
-import AsyncStatic from '../pages/async';
-import CollectionsPage from './../pages/collections/index';
-import CollectionDetailsPage from './../pages/collections/details';
-import AccountPage from '../pages/account';
-import SearchPage from '../pages/search';
-import CategoryPage from '../pages/search/category';
-import EditorPage from '../pages/editor';
-import TestPage from '@pages/test';
-import NSFWPage from '@pages/search/nsfw';
+
+import HomePage from '@pages/tabs/home';
+import SearchPage from '@pages/tabs/search/search';
+import AccountPage from '@pages/tabs/account';
+import ContinuePage from '@pages/tabs/continue';
+import CategoryPage from '@pages/tabs/search/category';
+import NSFWPage from '@pages/tabs/search/nsfw';
+
+import MangalistDetailsPage from '@pages/mangalists/details';
+import MangaDetailsPage from '@pages/manga/details';
+import MangaPages from '@pages/manga/pages';
+import NovidadesPage from '@pages/novidades';
+
+import PreferencesPage from '@pages/auth/preferences';
+import OnboardingPage from '@pages/auth/onboarding';
+import AsyncStatic from '@pages/auth/async';
+
+import CollectionsPage from '@pages/collections/collections';
+import CollectionDetailsPage from '@pages/collections/details';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -43,11 +45,7 @@ export default function Router() {
             <Stack.Screen name="Account" component={AccountPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Search" component={SearchPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Category" component={CategoryPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
-            <Stack.Screen name="Editor" component={EditorPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
-
             <Stack.Screen name="NSFW" component={NSFWPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
-            <Stack.Screen name="Test" component={TestPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
-
         </Stack.Navigator>
     </NavigationContainer>
    );

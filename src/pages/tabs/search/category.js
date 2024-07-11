@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Column, Row, Main, Scroll, Title, Label, } from '../../theme/global';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Column, Row, Main, Scroll, Title, Label, } from '@theme/global';
 import { Pressable, FlatList, Image } from 'react-native';
 import { getCategory } from '@apiv2/getCategory';
 import { MotiView } from 'moti';

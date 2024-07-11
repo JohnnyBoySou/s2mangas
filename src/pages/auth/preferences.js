@@ -1,22 +1,14 @@
 
 import React, { useState, useContext, useEffect } from 'react'
-import { Dimensions, Image, TouchableOpacity, TextInput, FlatList, ScrollView, Pressable } from 'react-native'
+import { Image, TouchableOpacity, TextInput, ScrollView, } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
-import {
-  Wrapper, Title,
-  Main,
-  Label,
-  VerAgora,
-  Spacing,
-} from './styles'
-import { tags } from '../../api/tags/index';
+import { tags } from '@api/tags/index';
 import { ThemeContext } from 'styled-components/native'
-import { Column, Row } from '../../theme/global'
-import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { Column, Row, Title, Label, Main, Spacing, Wrapper  } from '@theme/global'
+import Animated, { FadeInUp } from 'react-native-reanimated';
 import axios from 'axios';
-import { createPreferences } from '../../api/user/preferences';
+import { createPreferences } from '@api/user/preferences';
 import { MotiImage, MotiView } from 'moti';
-import { Feather, Play } from 'lucide-react-native';
 
 export default function PreferencesPage({ navigation, route, }) {
   const lgs = route.params.lg
