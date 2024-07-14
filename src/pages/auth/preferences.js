@@ -1,12 +1,11 @@
-
 import React, { useState, useContext, useEffect } from 'react'
 import { Image, TouchableOpacity, TextInput, ScrollView, } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { tags } from '@api/tags/index';
-import { ThemeContext } from 'styled-components/native'
-import { Column, Row, Title, Label, Main, Spacing, Wrapper  } from '@theme/global'
+import { Column, Row, Title, Label, Main, Spacing, Scroll, Button,  } from '@theme/global'
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import axios from 'axios';
+import { ThemeContext } from 'styled-components/native'
 import { createPreferences } from '@api/user/preferences';
 import { MotiImage, MotiView } from 'moti';
 
@@ -78,7 +77,7 @@ export default function PreferencesPage({ navigation, route, }) {
         }
         createPreferences(params).then(res => {
           if(res){
-            navigation.replace('Tabs')
+            navigation.replace('Tabs', {screen: 'Home'})
           }
         })
       }
@@ -95,19 +94,12 @@ export default function PreferencesPage({ navigation, route, }) {
 
   const [animate, setanimate] = useState(true);
 
-  /**
-   *   <Pressable onPress={() => setanimate(!animate)} style={{ position: 'absolute', bottom: 20, zIndex: 99, left: 150, alignSelf: 'center', }}>
-            <Play   size={24} color="#FFF" />
-        </Pressable>  
-   */
   return (
     <Main>
-      
-      <Wrapper >
+      <Scroll>
         
         <Column style={{ paddingHorizontal: 20, flex: 1, paddingTop: 50, }}>
-        
-        {animate &&  <MotiView from={{translateY: -300,}} animate={{ translateY: -100,}} style={{ width: 300, height: 300, marginBottom: -70,  borderRadius: 16, alignSelf: 'center'}}>
+          {animate && <MotiView from={{translateY: -300,}} animate={{ translateY: -100,}} style={{ width: 300, height: 300, marginBottom: -70,  borderRadius: 16, alignSelf: 'center'}}>
             <MotiImage blurRadius={200}  transition={{ type: 'timing', duration: 1000 }} source={{ uri: capa }} style={{ width: 300, height: 300, position: 'absolute', borderRadius: 12, }}  />
             <Row  style={{ position: 'absolute', bottom: 20, left: 20, justifyContent: 'space-between', alignItems: 'center', right: 20, }}>
               <Column>
@@ -118,11 +110,8 @@ export default function PreferencesPage({ navigation, route, }) {
             </Row>
             <Column style={{ width: 12, height: 300, position: 'absolute', right: 40, backgroundColor: "#171717" }}/>
             <Column style={{ width: 12, height: 300, position: 'absolute', right: 60, backgroundColor: "#171717" }}/>
-
           </MotiView>
           }
-
-
 
           {step == 1 &&
             <Animated.View entering={FadeInUp}>
@@ -211,8 +200,8 @@ export default function PreferencesPage({ navigation, route, }) {
           {step == 4 &&
             <Animated.View entering={FadeInUp}>
               <Column style={{ marginTop: 20, }}>
-                <Title>O que você quer ver?</Title>
-                <Label>Restam {8 - Number(selectedItems.length)} opções</Label>
+                <Title style={{ textAlign: 'center' }}>O que você quer ver?</Title>
+                <Label style={{ textAlign: 'center' }}>Restam {8 - Number(selectedItems.length)} opções</Label>
                 <Spacing />
                 <Column>
                   <Row style={{flexWrap: 'wrap', marginBottom: 50, justifyContent: 'center' }}>
@@ -226,19 +215,16 @@ export default function PreferencesPage({ navigation, route, }) {
               </Column>
             </Animated.View>}
 
-
         </Column>
-
-      </Wrapper>
+      </Scroll>
       <Row style={{ justifyContent: 'space-between', width: '88%', marginHorizontal: 24, position: 'absolute', bottom: 20, }}>
-        <VerAgora style={{ marginTop: 20, backgroundColor: color.off, }} onPress={handleBack}>
+        <Button style={{ marginTop: 20, backgroundColor: color.off, width:  56, height: 56, justifyContent: 'center', alignItems: 'center', borderRadius:100, }} onPress={handleBack}>
           <AntDesign name='arrowleft' size={24} color={color.title} />
-        </VerAgora>
-        <VerAgora style={{ marginTop: 20, }} onPress={handleNext}>
+        </Button>
+        <Button style={{ marginTop: 20, width:  56, height: 56, justifyContent: 'center', alignItems: 'center', borderRadius:100, backgroundColor: color.primary,}} onPress={handleNext}>
           <AntDesign name='arrowright' size={24} color={color.title} />
-        </VerAgora>
+        </Button>
       </Row>
-
     </Main>
   )
 }

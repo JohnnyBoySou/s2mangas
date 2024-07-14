@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const baseUrl = 'https://api.mangadex.org';
 
-export async function getNSFW(page, tag) {
+export async function getNSFW(page) {
     try {
         const resp = await axios({
             method: 'GET',

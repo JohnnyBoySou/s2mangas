@@ -1,6 +1,7 @@
 const iso639Languages = {
     en: 'Inglês',
     pt: 'Português',
+    'pt-br': 'Português (Brasil)',
     es: 'Espanhol',
     fr: 'Francês',
     de: 'Alemão',

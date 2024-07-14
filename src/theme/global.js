@@ -49,7 +49,10 @@ export const ButtonIcon = styled.View`
   margin-bottom: -20px;
 `
 
-
+export const Spacing = styled.View`
+  width: 20px;
+  height: 20px;
+`
 
 export const Label = styled.Text`
   color: ${props => props.theme.color.label};

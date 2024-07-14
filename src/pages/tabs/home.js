@@ -1,44 +1,21 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
-import { Pressable, Dimensions } from 'react-native';
-import { Column, Label, Row, Main, Scroll, Title, } from '../../theme/global';
+import React, { useState, useContext, useEffect } from 'react';
+import { Pressable } from 'react-native';
+import { Column, Label, Row, Main, Scroll, Title, } from '@theme/global';
 import { ThemeContext } from "styled-components/native";
-import { MangalistLastedComponent, MangalistRateComponent, MangalistWeekendComponent } from '../../components/lists/mangalist';
-import NewsComponent from '../../components/lists/news';
-import LastedComponent from './../../components/lists/lasted';
-import RateComponent from '../../components/lists/rate';
-import WeekendComponent from '../../components/lists/weekend';
-import Header from '../../components/header';
-import { getPreferences } from '../../api/user/preferences';
-import CollectionsComponent from '../../components/lists/collections';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { MangalistLastedComponent, MangalistRateComponent, MangalistWeekendComponent } from '@components/lists/mangalist';
+import LastedComponent from '@components/lists/lasted';
+import RateComponent from '@components/lists/rate';
+import WeekendComponent from '@components/lists/weekend';
+import Header from '@components/header';
+import CollectionsComponent from '@components/lists/collections';
 import { AnimatePresence, MotiImage, MotiView } from 'moti';
-import axios from 'axios'
-import { Space } from 'lucide-react-native';
-import { FontAwesome5, Ionicons } from '@expo/vector-icons';
-import { listLastManga } from '../../api/user/progress';
-const { width, height } = Dimensions.get('window');
-
+import { Ionicons } from '@expo/vector-icons';
+import { listLastManga } from '@api/user/progress';
 
 export default function HomePage({ navigation }) {
     const { color, font } = useContext(ThemeContext);
     const [type, setType] = useState('Tudo');
-    const [user, setUser] = useState();
     const a = false;
-    useEffect(() => {
-        const fechtData = async () => {
-            getPreferences().then(user => {
-                if (user?.name) {
-                    setUser(user)
-                } else {
-                    navigation.navigate('Onboarding')
-                }
-            }
-            )
-        }
-        fechtData()
-    }, [])
-
-
     const [headerShown, setHeaderShown] = useState(false);
     return (
         <Main>
@@ -69,6 +46,7 @@ export default function HomePage({ navigation }) {
                     <Spacer />
                     <RateComponent />
                     <Spacer />
+                    <LastedComponent />
                 </Column>}
                 {type === 'Mangas' && <Column >
                     <WeekendComponent />
@@ -95,47 +73,7 @@ export default function HomePage({ navigation }) {
     )
 }
 
-
 const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width }} />
-
-const ForYou = () => {
-    const [data, setData] = useState([]);
-    useEffect(() => {
-        axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=lasted')
-            .then(response => {
-                setData(response.data[0]);
-            })
-            .catch(error => {
-                console.log(error);
-            })
-    }, [])
-
-
-    const Card = React.memo(({ item }) => {
-        const navigation = useNavigation();
-        return (
-            <Pressable onPress={() => {
-                navigation.navigate('MangalistDetails', {
-                    item: item,
-                });
-            }} style={{ backgroundColor: "#303030", borderRadius: 10, flexGrow: 1, marginTop: 12, flexDirection: 'row' }}>
-                <MotiImage source={{ uri: item?.capa }} style={{ width: 152, height: 152, borderRadius: 10, }} />
-                <Column style={{ marginLeft: 24, flexGrow: 1, justifyContent: 'center', }}>
-                    <Label style={{ fontSize: 16, color: "#ED274A", fontFamily: 'Font_Medium', width: 100, }}>Mangalist</Label>
-                    <Title style={{ fontSize: 20, marginTop: 5, lineHeight: 26, width: 150, }}>{item?.name}</Title>
-                    <Label style={{ fontSize: 14, width: 160, }}>{item?.desc?.slice(0, 62)}...</Label>
-                </Column>
-            </Pressable>
-        )
-    })
-
-    return (
-        <Column style={{ marginHorizontal: 20, marginTop: 10, }}>
-            <Title>Escolhido para você</Title>
-            <Card item={data} />
-        </Column>
-    )
-}
 
 const ContinueBar = ({ navigation }) => {
     const [item, setitem] = useState();
@@ -181,9 +119,3 @@ const ContinueBar = ({ navigation }) => {
     )
 }
 
-
-/**
- *  <Pressable style={{ marginRight: 12, }}>
-                        <Ionicons name='checkmark-done-circle-outline' size={28} color="#000" />
-                    </Pressable>
- */
