@@ -23,13 +23,16 @@ import AsyncStatic from '@pages/auth/async';
 import CollectionsPage from '@pages/collections/collections';
 import CollectionDetailsPage from '@pages/collections/details';
 
+import WeekendSectionScreen from '@pages/sections/weekend';
+
+import LoginPage from '@pages/auth/login';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function Router() {
   return (
     <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='AsyncStatic'>
+        <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='Weekend'>
             <Stack.Screen name="Tabs" component={Tabs} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
             <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS ,  backBehavior: 'none',}}/>
             <Stack.Screen name="Novidades" component={NovidadesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
@@ -46,6 +49,8 @@ export default function Router() {
             <Stack.Screen name="Search" component={SearchPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Category" component={CategoryPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="NSFW" component={NSFWPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
+            <Stack.Screen name="Login" component={LoginPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
+            <Stack.Screen name="Weekend" component={WeekendSectionScreen} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
         </Stack.Navigator>
     </NavigationContainer>
    );
