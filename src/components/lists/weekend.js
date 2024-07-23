@@ -29,8 +29,8 @@ export default function WeekendComponent() {
             <Column style={{ marginHorizontal: 20, }}>
                 <Row style={{ justifyContent: 'space-between', alignItems: 'center',  }}>
                     <Column>
-                        <Title>Em alta</Title>
-                        <Label>Mais lidos da semana</Label>
+                        <Title style={{ fontSize: 24, letterSpacing: -1, }}>Em alta</Title>
+                        <Label style={{ fontSize: 16, letterSpacing: -1, }}>Mais lidos da semana</Label>
                     </Column>
                     <Button onPress={() => {navigation.navigate('Weekend')}}  style={{ width: 46, height: 46, borderRadius: 100, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center',  }}>
                         <ArrowUpRight size={28} color="#fff" />

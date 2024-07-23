@@ -12,6 +12,7 @@ export default function MangaPages({ route, navigation }) {
     const itm = route?.params?.itm
     const chapter = route?.params?.chapter
     const id = route?.params?.id
+    const lg = route?.params?.lg
     const [cid, setcid] = useState(id ? id : 'd950d8a3-6204-4094-8f42-8de4491a92b2');
     const [mid, setmid] = useState(itm?.id ? itm?.id : '58b09ce2-ea05-405e-8e1c-a9361df9bdd9');
     const [currentChapter, setcurrentChapter] = useState(chapter);
@@ -26,7 +27,8 @@ export default function MangaPages({ route, navigation }) {
         const fecthData = async () => {
             try {
                 await addChaptersToManga(itm, currentChapter)
-                const res = await getPages(cid, mid)
+                const res = await getPages(cid, mid, lg,)
+                console.log(res)
                 if(res?.pages?.length > 0) {
                     setpages(res.pages)
                     setprevChap(res.prev)
@@ -94,6 +96,7 @@ const ImagesVertical = ({ url }) => {
     const [imageSize, setImageSize] = useState({ width: SCREEN_WIDTH, height: 0 });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    console.log(url)
 
     useEffect(() => {
         if (!url) return;
@@ -108,7 +111,7 @@ const ImagesVertical = ({ url }) => {
                 setImageSize({ width: SCREEN_WIDTH, height: scaledHeight });
                 setLoading(false);
             }, (error) => {
-                console.log("Error loading image:", error);
+                console.log(error);
                 setError(true);
                 setLoading(false);
             });
@@ -120,15 +123,15 @@ const ImagesVertical = ({ url }) => {
     if (error) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>Error loading image</Text>
+                <Text>Erro ao carregar imagem</Text>
             </View>
         );
     }
 
     if (loading) {
         return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" color="#fff" />
+            <View style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#ED274A" />
             </View>
         );
     }
@@ -137,56 +140,13 @@ const ImagesVertical = ({ url }) => {
         <ExpoImage
             source={url}
             contentFit="contain"
-            transition={500}
+            transition={100}
             style={{ width: imageSize.width, height: imageSize.height, backgroundColor: '#fff' }}
-            decodeFormat='argb'
-            priority='high'
         />
     );
 };
 
-const Images = ({ url }) => {
-    const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
 
-    useEffect(() => {
-        if (!url) return;
-
-        const imageLoad = () => {
-            setLoading(true);
-            setError(false);
-
-            Image.getSize(url, (width, height) => {
-                const scaleFactor = SCREEN_WIDTH / width;
-                const scaledHeight = height * scaleFactor;
-                setImageSize({ width: SCREEN_WIDTH, height: scaledHeight });
-                setLoading(false);
-            }, (error) => {
-                console.log("Error loading image:", error);
-                setError(true);
-                setLoading(false);
-            });
-        };
-
-        imageLoad();
-
-    }, [url]);
-
-    if (error) {
-        return (
-            <Error />
-        );
-    }
-
-    return (
-        <Image
-            source={{ uri: url }}
-            resizeMode='cover'
-            style={{ width: imageSize.width, height: imageSize.height, backgroundColor: '#fff', }}
-        />
-    );
-};
 const Load = () => {
     return (
         <MotiView style={{ justifyContent: 'center', alignItems: 'center', width: SCREEN_WIDTH, }}>
@@ -207,45 +167,3 @@ const Error = (error) => {
     )
 }
 
-
-/*
- <>
-                    <Row style={{ position: 'absolute', zIndex: 99, top: 0, }}>
-                        <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT, }} onPress={handlePrevious} onLongPress={handlePrevChapter} delayLongPress={1000} />
-                        <Pressable style={{ width: SCREEN_WIDTH / 2, height: SCREEN_HEIGHT, }} onPress={handleNext} onLongPress={handleNextChapter} delayLongPress={1000} />
-                    </Row>
-                        <FlatList style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT, backgroundColor: '#202020', flex: 1, }}
-                            data={pages}
-                            showsHorizontalScrollIndicator={false}
-                            ref={flatListRef}
-                            keyExtractor={(item, index) => item?.chapter}
-                            horizontal={true}
-                            ListEmptyComponent={<Load />}
-                            pagingEnabled={true} contentContainerStyle={{ alignItems: 'center' }}
-                            renderItem={({ item }) => <Images url={item} />}
-                            getItemLayout={(data, index) => ({
-                                length: SCREEN_WIDTH,
-                                offset: SCREEN_WIDTH * index,
-                                index,
-                            })}
-                            onMomentumScrollEnd={(event) => {
-                                setCurrentPage(Math.floor(event.nativeEvent.contentOffset.x / SCREEN_WIDTH));
-                        }}
-                    />
-
-                    {!loading && <Column style={{ position: 'absolute', bottom: 20, zIndex: 999, }}>
-                        <AnimatePresence>
-                            {currentPage < 2 &&
-                                <MotiView from={{ opacity: 0, translateY: 40, }} animate={{ opacity: 1, translateY: 0, }} exit={{ opacity: 0, translateY: 40, }}>
-                                    <Pressable onPress={handlePrevChapter} style={{ backgroundColor: '#fff', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 6, }}><Label style={{ color: '#000', }}>Capítulo anterior</Label></Pressable>
-                                </MotiView>
-                            }
-                            {currentPage >= pages?.length - 2 && nextChap &&
-                                <MotiView from={{ opacity: 0, translateY: 40, }} animate={{ opacity: 1, translateY: 0, }} exit={{ opacity: 0, translateY: 40, }}>
-                                    <Pressable onPress={handleNextChapter} style={{ backgroundColor: '#fff', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 6, }}><Label style={{ color: '#000', }}>Próximo capítulo</Label></Pressable>
-                                </MotiView>
-                            }
-                        </AnimatePresence>
-                    </Column>}
-                </>}
- */

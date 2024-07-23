@@ -24,17 +24,17 @@ export default function HomePage({ navigation }) {
                 <Column style={{ height: 95, }} />
                 <Column style={{ zIndex: 999,  }}>
                     <Row style={{ marginBottom: 0, padding: 12, paddingTop: 50, backgroundColor: color.background, zIndex: -99, }}>
-                        <Pressable onPress={() => { setType('Tudo') }} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: type === 'Tudo' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
-                            <Label style={{ color: type === 'Tudo' ? color.off : color.title, fontFamily: type === 'Tudo' ? font.bold : font.book, }}>Tudo</Label>
+                        <Pressable onPress={() => { setType('Tudo') }} style={{ paddingVertical: 8, paddingHorizontal: 14, marginLeft: 10, backgroundColor: type === 'Tudo' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
+                            <Label style={{ color: type === 'Tudo' ? color.off : color.title, fontFamily: type === 'Tudo' ? font.bold : font.book, fontSize: 16, }}>Tudo</Label>
                         </Pressable>
-                        <Pressable onPress={() => { setType('Mangas') }} style={{ paddingVertical: 10, marginHorizontal: 8, paddingHorizontal: 16, backgroundColor: type === 'Mangas' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
-                            <Label style={{ color: type === 'Mangas' ? color.off : color.title, fontFamily: type === 'Mangas' ? font.bold : font.book, }}>Mangás</Label>
+                        <Pressable onPress={() => { setType('Mangas') }} style={{ paddingVertical: 8, marginHorizontal: 8, paddingHorizontal: 14, backgroundColor: type === 'Mangas' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
+                            <Label style={{ color: type === 'Mangas' ? color.off : color.title, fontFamily: type === 'Mangas' ? font.bold : font.book, fontSize: 16,}}>Mangás</Label>
                         </Pressable>
-                       {a && <Pressable onPress={() => { setType('Mangalist') }} style={{ marginRight: 8, paddingVertical: 10, paddingHorizontal: 16, backgroundColor: type === 'Mangalist' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
-                            <Label style={{ color: type === 'Mangalist' ? color.off : color.title, fontFamily: type === 'Mangalist' ? font.bold : font.book, }}>Mangalist</Label>
+                       {a && <Pressable onPress={() => { setType('Mangalist') }} style={{ marginRight: 8, paddingVertical: 8, paddingHorizontal: 16, backgroundColor: type === 'Mangalist' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
+                            <Label style={{ color: type === 'Mangalist' ? color.off : color.title, fontFamily: type === 'Mangalist' ? font.bold : font.book, fontSize: 16, }}>Mangalist</Label>
                         </Pressable>}
-                        <Pressable onPress={() => { navigation.navigate('Collections') }} style={{ marginRight: 8, paddingVertical: 10, paddingHorizontal: 16, backgroundColor: type === 'Collections' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
-                            <Label style={{ color: type === 'Collections' ? color.off : color.title, fontFamily: type === 'Collections' ? font.bold : font.book, }}>Coleções</Label>
+                        <Pressable onPress={() => { navigation.navigate('Collections') }} style={{ marginRight: 8, paddingVertical: 8, paddingHorizontal: 14, backgroundColor: type === 'Collections' ? color.light : color.off, borderRadius: 100, zIndex: 99, }}>
+                            <Label style={{ color: type === 'Collections' ? color.off : color.title, fontFamily: type === 'Collections' ? font.bold : font.book, fontSize: 16, }}>Coleções</Label>
                         </Pressable>
                     </Row>
                 </Column>

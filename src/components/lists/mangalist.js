@@ -9,15 +9,17 @@ import { useNavigation } from '@react-navigation/native';
 export function MangalistWeekendComponent() {
     const [data, setData] = useState([]);
     useEffect(() => {
-        axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=weekend')
-            .then(response => {
-                setData(response.data);
-            })
-            .catch(error => {
-                console.log(error);
-            })
+        const fecthData = async () => {
+            try {
+                const res = await axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=weekend')
+                console.log(res.data)
+                setData(res.data)
+            } catch (error) {
+                console.log(error)                
+            }
+        }
+        fecthData()
     }, [])
-
         return (
             <Column style={{ marginHorizontal: 20, }}>
                 {data.length === 0  ? <Skeleton colorMode='dark' width={200} height={26}  radius={4} /> : 
@@ -45,13 +47,16 @@ export function MangalistWeekendComponent() {
 export function MangalistLastedComponent() {
     const [data, setData] = useState([]);
     useEffect(() => {
-        axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=lasted')
-            .then(response => {
-                setData(response.data);
-            })
-            .catch(error => {
-                console.log(error);
-            })
+        const fecthData = async () => {
+            try {
+                const res = await axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=lasted')
+                console.log(res.data)
+                setData(res.data)
+            } catch (error) {
+                console.log(error)                
+            }
+        }
+        fecthData()
     }, [])
 
         return (
@@ -81,13 +86,16 @@ export function MangalistLastedComponent() {
 export  function MangalistRateComponent() {
     const [data, setData] = useState([]);
     useEffect(() => {
-        axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=rate')
-            .then(response => {
-                setData(response.data);
-            })
-            .catch(error => {
-                console.log(error);
-            })
+        const fecthData = async () => {
+            try {
+                const res = await axios.get('https://www.s2mangas.com/api/mangalist?page=1&type=rate')
+                console.log(res.data)
+                setData(res.data)
+            } catch (error) {
+                console.log(error)                
+            }
+        }
+        fecthData()
     }, [])
 
         return (

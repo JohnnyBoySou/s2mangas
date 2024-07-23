@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Main, Scroll, Title, Label, Row, Column, } from '../../theme/global';
-import { Pressable, FlatList, Image, ScrollView, ImageBackground, ActivityIndicator } from 'react-native';
+import { Pressable, FlatList, Image, ScrollView, ImageBackground, ActivityIndicator,  RefreshControl } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { Skeleton } from 'moti/skeleton';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -62,7 +62,7 @@ export default function AccountPage({ navigation, route }) {
 
     useEffect(() => {
         fetchData();
-    }, [isFocused, page]);
+    }, [page]);
 
     useEffect(() => {
         setPage(1); // Resetar a página quando o tipo mudar
@@ -161,6 +161,9 @@ export default function AccountPage({ navigation, route }) {
                     </Column>}
                     horizontal={false}
                     numColumns={2}
+                    onRefresh={fetchData}
+                    refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchData} tintColor={color.primary} colors={[color.primary]}/>}
+                    refreshing={loading}
                     columnWrapperStyle={{ marginHorizontal: 20, justifyContent: 'center', marginTop: 2 }}
                     ListEmptyComponent={<CollectionEmpty />}
                     showsVerticalScrollIndicator={false}
@@ -262,8 +265,8 @@ const CollectionItem = ({ item, type, openModal, index }) => {
 
             <Pressable onPress={() => { navigation.navigate('MangaDetails', { id: item?.id, }) }} style={{ margin: 10, borderRadius: 8, }} onLongPress={() => openModal(item)}>
                 <Image source={{ uri: item.capa }} style={{ width: 150, height: 190, borderTopLeftRadius: 8, borderTopRightRadius: 8, }} />
-                <Column style={{ paddingVertical: 6, backgroundColor: '#262626', borderBottomLeftRadius: 6, borderBottomRightRadius: 6, paddingHorizontal: 6, }}>
-                    <Title style={{ fontSize: 18, }}>{item?.name?.slice(0, 16)}</Title>
+                <Column style={{ paddingVertical: 8, backgroundColor: '#262626', borderBottomLeftRadius: 6, borderBottomRightRadius: 6, paddingHorizontal: 6, }}>
+                    <Title style={{ fontSize: 16, lineHeight: 16, width: 140,}}>{item?.name?.slice(0, 16)}</Title>
                     <Label style={{ fontSize: 12, marginTop: 2, }}>{item?.rate} • {item?.type}</Label>
                     {type === 'complete' ? 
                     <Label style={{ fontSize: 12, paddingVertical: 6, paddingHorizontal: 10, backgroundColor: '#4FB286', color: "#000", borderRadius: 4, marginTop: 6, marginBottom: -6,  position: 'absolute', top: -180, left: -10, transform: [{rotate: '90deg',}] }}>Completo</Label> :

@@ -2,8 +2,6 @@ import React, { useContext, useState, useEffect, } from 'react';
 import { PanResponder, View, Image } from 'react-native';
 import { Main, Scroll, Column, Label, Title, Row, Button } from '@theme/global';
 import { ThemeContext } from 'styled-components/native';
-import requestWeekend from '@api/manga/weekend';
-
 import { Skeleton } from 'moti/skeleton'
 import Card from '@components/lists/card';
 
@@ -22,8 +20,9 @@ import animatedLogo from '@imgs/stk1.png';
 import refreshIcon from '@imgs/refresh.png';
 import { ArrowLeft, } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
+import  requestRate from '@api/manga/rate';
 
-export default function WeekendSectionScreen({ navigation, }) {
+export default function RateSectionScreen({ navigation, }) {
     const { color, font, } = useContext(ThemeContext);
 
     const [data, setData] = useState([]);
@@ -34,7 +33,7 @@ export default function WeekendSectionScreen({ navigation, }) {
         const fecthData = async () => {
             setloading(true)
             try {
-                const res = await requestWeekend();
+                const res = await requestRate();
                 setData(res.mangas);
             } catch (error) {
                 console.log(error)
@@ -88,7 +87,6 @@ export default function WeekendSectionScreen({ navigation, }) {
                     isReadyToRefresh.value === false
                 ) {
                     isReadyToRefresh.value = true;
-                    console.log('Ready to refresh');
                 }
 
                 if (
@@ -96,7 +94,6 @@ export default function WeekendSectionScreen({ navigation, }) {
                     isReadyToRefresh.value === true
                 ) {
                     isReadyToRefresh.value = false;
-                    console.log('Will not refresh on release');
                 }
             },
             onPanResponderRelease: onPanRelease,
@@ -166,8 +163,8 @@ const Header = () => {
                 <ArrowLeft size={28} color="#fff" />
             </Button>
             <Column style={{ justifyContent: 'center', alignItems: 'center', }}>
-                <Title style={{ fontSize: 22, }}>Em alta</Title>
-                <Label style={{ fontSize: 16, }}>Mais lidos da semana</Label>
+                <Title style={{ fontSize: 22, }}>Melhor nota</Title>
+                <Label style={{ fontSize: 16, }}>Mais bem avaliados</Label>
             </Column>
             <Column style={{ width: 56, }} />
         </Row>
