@@ -1,6 +1,6 @@
 import axios from 'axios';
 import iso639Languages from './iso639';
-const baseUrl = 'https://api.mangadex.org';
+const baseUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export async function getManga(mangaID = '8f3e1818-a015-491d-bd81-3addc4d7d56a') {
     try {

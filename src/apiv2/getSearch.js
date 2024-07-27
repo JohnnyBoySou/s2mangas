@@ -1,24 +1,17 @@
 import axios from 'axios';
+const baseUrl = process.env.EXPO_PUBLIC_API_URL;
 
-const baseUrl = 'https://api.mangadex.org';
-
-export async function getCategory(name, page) {
+export async function getSearch(name = 'Arpeggio of Blue', publico, status, classificacao, ) {
     try {
-
-        const includedTagNames = [name];
-        const tags = await axios(`${baseUrl}/manga/tag`);
-
-        const includedTagIDs = tags.data.data
-            .filter(tag => includedTagNames.includes(tag.attributes.name.en))
-            .map(tag => tag.id);
         const resp = await axios({
             method: 'GET',
             url: `${baseUrl}/manga/`,
             params: {
-                'includedTags': includedTagIDs,
-                availableTranslatedLanguage: ['pt-br'],
-                includes: ['cover_art', 'score', 'chapter',],
-                offset: 20 * page,
+                title: name,
+                publicationDemographic: [publico],
+                status: [status],
+                contentRating: [classificacao],
+                includes: ['cover_art', ],
             }
         });
         
@@ -31,6 +24,39 @@ export async function getCategory(name, page) {
         console.log('Finalizou');
     }
 }
+
+export async function getSearchFilters(params) {
+    try {
+        const resp = await axios({
+            method: 'GET',
+            url: `${baseUrl}/manga/`,
+            params: {
+                title: name,
+                publicationDemographic: [publico],
+                status: [status],
+                contentRating: [classificacao],
+                includes: ['cover_art', ],
+            }
+        });
+        
+        const data = transformDataArray(resp?.data?.data)
+        return data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    } finally {
+        console.log('Finalizou');
+    }
+}
+
+
+
+
+
+
+
+
+
 
 const removeLinksFromText = (text) => {
     // Remove qualquer URL da string

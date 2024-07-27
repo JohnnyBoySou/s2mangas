@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const baseUrl = 'https://api.mangadex.org';
+const baseUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export async function getChapters(mangaID, lg = 'pt-br') {
     try {
