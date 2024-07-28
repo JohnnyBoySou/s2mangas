@@ -4,13 +4,13 @@ import { Pressable, TextInput, Image } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { AnimatePresence, MotiImage, MotiView, useAnimationState } from 'moti';
-import { saveWord, listWords, excludeWords, excludeWord } from '@api/history';
-import { tags } from '@api/tags';
+import { saveWord, listWords, excludeWords, excludeWord } from '@hooks/history';
+import { tags } from '@hooks/tags';
 import { Skeleton } from 'moti/skeleton';
-import { getPreferences } from '@api/user/preferences';
+import { getPreferences } from '@hooks/preferences';
 import { useNavigation } from '@react-navigation/native';
 import { getSearch, } from '@apiv2/getSearch';
-import { Modalize } from 'react-native-modalize';
+import Modal from '@components/modal/modal';
 import { FlatList, } from 'react-native-gesture-handler';
 import { X } from 'lucide-react-native';
 
@@ -179,7 +179,7 @@ export default function SearchPage({ navigation }) {
             </Scroll>
 
 
-            <Modalize ref={filtersModal} modalStyle={{ backgroundColor: '#171717', }} adjustToContentHeight childrenStyle={{ height: 460 }} >
+            <Modal ref={filtersModal} modalStyle={{ backgroundColor: '#171717', }} adjustToContentHeight childrenStyle={{ height: 460 }} >
                 <Column style={{ paddingHorizontal: 20, paddingVertical: 20, }}>
                     <Title >Filtros avançados</Title>
                     <Column style={{ marginVertical: 10, marginTop: 20, }}>
@@ -201,7 +201,7 @@ export default function SearchPage({ navigation }) {
                         <Title style={{ fontSize: 18, }}>Pesquisar</Title>
                     </Pressable>
                 </Column>
-            </Modalize>
+            </Modal>
 
         </Main>
     )

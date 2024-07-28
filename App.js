@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import React, { useCallback, useState, useEffect } from 'react';
 import { ThemeProvider } from 'styled-components/native';
-import Router from './src/routes/index';
+import Router from './src/router';
 import dark from './src/theme/dark';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';

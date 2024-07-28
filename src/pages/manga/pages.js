@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Main, Title, Label, Column } from '@theme/global';
-import { Pressable, FlatList, Dimensions, View, ActivityIndicator, Image } from 'react-native';
-import { addChaptersToManga } from '@api/user/progress';
+import { Pressable, FlatList, Dimensions, View, ActivityIndicator, } from 'react-native';
+//components
 import { MotiView, } from 'moti';
-import { ArrowLeft, ChevronFirst, ChevronLast } from 'lucide-react-native';
-import { getPages } from '@apiv2/getPages';
+import { Image } from 'expo-image';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-import { Image as ExpoImage } from 'expo-image';
+
+//icons
+import { ArrowLeft, ChevronFirst, ChevronLast } from 'lucide-react-native';
+
+//hooks
+import { getPages } from '@apiv2/getPages';
+import { addChaptersToManga } from '@hooks/progress';
 
 export default function MangaPages({ route, navigation }) {
     const itm = route?.params?.itm

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Pressable } from 'react-native';
 import { MotiImage } from 'moti';
-import { getPreferences } from '../../api/user/preferences';
+import { getPreferences } from '@hooks/preferences';
 import { useNavigation } from '@react-navigation/native';
 
 export default function Avatar({ width = 64, height = 64, radius = 500, borderWidth = 2, borderColor = '#fff'}){

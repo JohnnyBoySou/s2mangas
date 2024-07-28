@@ -1,5 +1,5 @@
 import React, { useEffect} from 'react';
-import { getPreferences } from '@api/user/preferences';
+import { getPreferences } from '@hooks/preferences';
 import { Main} from '@theme/global';
 import { useWindowDimensions, StyleSheet,  } from 'react-native';
 import Animated, { useSharedValue, withSequence, withTiming, useAnimatedStyle, runOnJS, withSpring } from 'react-native-reanimated';

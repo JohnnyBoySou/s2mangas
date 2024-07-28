@@ -10,7 +10,7 @@ import Header from '@components/header';
 import CollectionsComponent from '@components/lists/collections';
 import { AnimatePresence, MotiImage, MotiView } from 'moti';
 import { Ionicons } from '@expo/vector-icons';
-import { listLastManga } from '@api/user/progress';
+import { listLastManga } from '@hooks/progress';
 
 export default function HomePage({ navigation }) {
     const { color, font } = useContext(ThemeContext);

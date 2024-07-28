@@ -27,7 +27,6 @@ import WeekendSectionScreen from '@pages/sections/weekend';
 import LastedSectionScreen from '@pages/sections/lasted';
 import RateSectionScreen from '@pages/sections/rate';
 
-import LoginPage from '@pages/auth/login';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -51,7 +50,6 @@ export default function Router() {
             <Stack.Screen name="Search" component={SearchPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Category" component={CategoryPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="NSFW" component={NSFWPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
-            <Stack.Screen name="Login" component={LoginPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
 
             <Stack.Screen name="Lasted" component={LastedSectionScreen} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
             <Stack.Screen name="Rate" component={RateSectionScreen} options={{...TransitionPresets.SlideFromRightIOS   , }}/>

@@ -20,7 +20,7 @@ import animatedLogo from '@imgs/stk1.png';
 import refreshIcon from '@imgs/refresh.png';
 import { ArrowLeft, } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
-import  requestRate from '@api/manga/rate';
+import  requestRate from '@apiv1/manga/rate';
 
 export default function RateSectionScreen({ navigation, }) {
     const { color, font, } = useContext(ThemeContext);

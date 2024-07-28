@@ -1,7 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Column, Row, Title, Label, } from '@theme/global';
 import { FlatList, Pressable, Image } from 'react-native';
-import { listCollections } from '@api/collections';
+import { listCollections } from '@hooks/collections';
 import { useNavigation } from '@react-navigation/native';
 import { MotiImage } from 'moti';
 

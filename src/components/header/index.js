@@ -1,9 +1,9 @@
 import React, { useEffect, useState, memo, useContext } from 'react';
 import { Pressable, Dimensions } from 'react-native';
-import { Column, Row, Title, Spacer } from '../../theme/global'
+import { Column, Row, Title, Spacer } from '@theme/global'
 import { MotiImage, MotiText, MotiView } from 'moti';
 import { Feather } from '@expo/vector-icons';
-import { getPreferences } from '../../api/user/preferences';
+import { getPreferences } from '@hooks/preferences';
 const { height, width } = Dimensions.get('window');
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from 'styled-components/native';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, } from 'react';
 import { Column, Title, Label, Row, Button, } from '@theme/global';
-import requestRate from '@api/manga/rate';
+import requestRate from '@apiv1/manga/rate';
 import FlatComponent from '@components/flat/normal';
 import { ArrowUpRight } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';

@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from "react";
-import { Column, Row, Title, Label } from "../../theme/global";
+import { Column, Row, Title, Label } from "@theme/global";
 import { FlatList, Pressable } from "react-native";
-import { addMangasToCollection, listCollections } from "../../api/collections";
+import { addMangasToCollection, listCollections } from "@hooks/collections";
 import { MotiImage, MotiView } from "moti";
 import { useNavigation } from "@react-navigation/native";
 import { Feather, Ionicons } from "@expo/vector-icons";

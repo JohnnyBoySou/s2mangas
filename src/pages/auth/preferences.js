@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Image, TouchableOpacity, TextInput, ScrollView, } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
-import { tags } from '@api/tags/index';
+import { tags } from '@hooks/tags';
 import { Column, Row, Title, Label, Main, Spacing, Scroll, Button,  } from '@theme/global'
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import axios from 'axios';
 import { ThemeContext } from 'styled-components/native'
-import { createPreferences } from '@api/user/preferences';
+import { createPreferences } from '@hooks/preferences';
 import { MotiImage, MotiView } from 'moti';
 
 export default function PreferencesPage({ navigation, route, }) {

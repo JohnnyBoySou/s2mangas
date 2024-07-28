@@ -1,16 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Column, Main, Scroll, Row, Title, Label , } from '../../theme/global';
+import { Column, Main, Scroll, Row, Title, Label , } from '@theme/global';
 import { FlatList, Pressable, Dimensions, Animated, TextInput } from 'react-native';
+
+//icons
 import { AntDesign, Feather, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
+
+//components
 import { useNavigation } from '@react-navigation/native';
-import { Modalize } from 'react-native-modalize';
 import { ExpandingDot } from "react-native-animated-pagination-dots";
 import { AnimatePresence, MotiImage, MotiView, useAnimationState } from 'moti';
 import { Skeleton } from 'moti/skeleton';
-import { requestCollectionsBackground } from '../../api/shop/collections';
-import { editCollection, getCollection, removeCollection, removeMangaInCollection } from '../../api/collections';
-
 import SwipeableItem, { useSwipeableItemParams } from 'react-native-swipeable-item';
+
+//hooks
+import { editCollection, getCollection, removeCollection, removeMangaInCollection, requestCollectionsBackground } from '@hooks/collections';
 
 const { width, height } = Dimensions.get('window');
 
@@ -203,7 +206,7 @@ export default function CollectionsDetailsPage({ navigation , route}) {
             </Scroll>
 
             <Action openSuggest={openSuggest} openFilters={openFilters} openEdit={openEdit} />
-            <Modalize ref={modalSuggest} modalHeight={600} handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
+            <Modal ref={modalSuggest} modalHeight={600} handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
                 <Column style={{ padding: 20, }}>
                     <Title style={{ fontSize: 28, marginBottom: 10, marginTop: 10, }}>Sugestões</Title>
                     <FlatList
@@ -214,9 +217,9 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                         renderItem={({ item }) => <Grid2 item={item} />}
                     />
                 </Column>
-            </Modalize>
+            </Modal>
 
-            <Modalize ref={modalFilters} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
+            <Modal ref={modalFilters} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
                 <Column style={{ padding: 20, }}>
                     <Title style={{ fontSize: 28, marginBottom: 10, marginTop: 10, }}>Filtros</Title>
                     <Title style={{ fontSize: 24, marginBottom: 10, marginTop: 10, }}>Mostrar primeiro</Title>
@@ -248,9 +251,9 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                     </Row>
                   
                 </Column>
-            </Modalize>
+            </Modal>
 
-            <Modalize ref={modalEdit} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
+            <Modal ref={modalEdit} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
                 <Column style={{ padding: 20, }}>
                     <Pressable onPress={() => setConfirm(true)} style={{ paddingHorizontal: 16, paddingVertical: 10, backgroundColor: '#EB575730',  borderRadius: 100, alignSelf: 'flex-end', marginVertical: 12,}}>
                         <Row style={{ justifyContent: 'center', alignItems: 'center',  }}>
@@ -290,7 +293,7 @@ export default function CollectionsDetailsPage({ navigation , route}) {
                         </Pressable>
                     </Row>
                 </Column>
-            </Modalize>
+            </Modal>
 
         </Main>
     )
@@ -503,58 +506,6 @@ const SkeletonBody = () => {
   )
 }
 
-const SkeletonList = () => { 
-    return(
-        <Column style={{ paddingHorizontal: 20, }}>
-        <Row style={{borderBottomColor: '#303030', borderBottomWidth: 2, paddingBottom: 20, marginTop: 12,}}>
-            <Skeleton width={64} height={84} radius={6} />
-            <Spacer width={16} height={10} />
-            <Column style={{justifyContent: 'center',  }}>
-                <Skeleton width={164} height={34} radius={4} />
-                <Spacer width={16} height={10} />
-                <Skeleton width={124} height={24} radius={4} />
-            </Column>
-        </Row>
-        <Row style={{borderBottomColor: '#303030', borderBottomWidth: 2, paddingBottom: 20, marginTop: 20,}}>
-            <Skeleton width={64} height={84} radius={6} />
-            <Spacer width={16} height={10} />
-            <Column style={{justifyContent: 'center',  }}>
-                <Skeleton width={164} height={34} radius={4} />
-                <Spacer width={16} height={10} />
-                <Skeleton width={124} height={24} radius={4} />
-            </Column>
-        </Row>
-        <Row style={{borderBottomColor: '#303030', borderBottomWidth: 2, paddingBottom: 20, marginTop: 20,}}>
-            <Skeleton width={64} height={84} radius={6} />
-            <Spacer width={16} height={10} />
-            <Column style={{justifyContent: 'center',  }}>
-                <Skeleton width={164} height={34} radius={4} />
-                <Spacer width={16} height={10} />
-                <Skeleton width={124} height={24} radius={4} />
-            </Column>
-        </Row>
-        <Row style={{borderBottomColor: '#303030', borderBottomWidth: 2, paddingBottom: 20, marginTop: 20,}}>
-            <Skeleton width={64} height={84} radius={6} />
-            <Spacer width={16} height={10} />
-            <Column style={{justifyContent: 'center',  }}>
-                <Skeleton width={164} height={34} radius={4} />
-                <Spacer width={16} height={10} />
-                <Skeleton width={124} height={24} radius={4} />
-            </Column>
-        </Row>
-        <Row style={{borderBottomColor: '#303030', borderBottomWidth: 2, paddingBottom: 20, marginTop: 20,}}>
-            <Skeleton width={64} height={84} radius={6} />
-            <Spacer width={16} height={10} />
-            <Column style={{justifyContent: 'center',  }}>
-                <Skeleton width={164} height={34} radius={4} />
-                <Spacer width={16} height={10} />
-                <Skeleton width={124} height={24} radius={4} />
-            </Column>
-        </Row>
-        </Column>
-    )
- }
- 
  const SkeletonList2 = () => { 
     return(
          <Row>

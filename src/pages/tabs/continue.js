@@ -1,20 +1,23 @@
 import React, { useEffect, useState, memo, useRef} from 'react';
 import { Pressable, Dimensions, FlatList, Image } from 'react-native';
-import { Column, Row, Title, Label, Main, Scroll } from '../../theme/global';
-import { Ionicons, MaterialCommunityIcons, AntDesign, FontAwesome5, SimpleLineIcons } from '@expo/vector-icons';
-import { MotiImage, MotiView, AnimatePresence, useAnimationState, } from 'moti';
-import requestSimilar from '../../api/manga/similar';
+import { Column, Row, Title, Label, Main, Scroll } from '@theme/global';
+import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+
+//components
+import Toast from '@components/toast';
+import Modal from '@components/modal/modal';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Modalize } from 'react-native-modalize';
-import { addComplete, addLike, getPreferences, removeComplete, removeLike, verifyLiked } from '../../api/user/preferences';
-import Toast from '../../components/toast';
-import { listLastManga } from '../../api/user/progress';
-import ModalAddCollection from '../../components/modal/collection';
-
-import { Audio, Video } from 'expo-av';
-
+import { MotiImage, MotiView, AnimatePresence, useAnimationState, } from 'moti';
+import ModalAddCollection from '@components/modal/collection';
+import { Video } from 'expo-av';
 const { width, height } = Dimensions.get('window');
+
+//hooks
+import { addComplete, addLike, removeComplete, removeLike, verifyLiked } from '@hooks/preferences';
+import { listLastManga } from '@hooks/progress';
+
+
 
 export default function ContinuePage({ navigation }) {
   
@@ -283,14 +286,14 @@ export default function ContinuePage({ navigation }) {
 
     </Main>
 
-      <Modalize ref={modalRead} adjustToContentHeight={true} modalStyle={{backgroundColor: "#171717", }} handlePosition='inside' handleStyle={{backgroundColor: "#505050"}}>
+      <Modal ref={modalRead} adjustToContentHeight={true} modalStyle={{backgroundColor: "#171717", }} handlePosition='inside' handleStyle={{backgroundColor: "#505050"}}>
         <ListReads current={item}/>
-      </Modalize>
+      </Modal>
 
 
-      <Modalize ref={modalAdd} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
+      <Modal ref={modalAdd} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
         <ModalAddCollection item={item}/>
-      </Modalize>
+      </Modal>
   </>
   )
 }

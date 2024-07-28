@@ -19,7 +19,7 @@ import animatedLogo from '@imgs/stk1.png';
 import refreshIcon from '@imgs/refresh.png';
 import { ArrowLeft, } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
-import requestLasted from '@api/manga/lasted';
+import requestLasted from '@apiv1/manga/lasted';
 
 export default function LastedSectionScreen({ navigation, }) {
     const { color, font, } = useContext(ThemeContext);

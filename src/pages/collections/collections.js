@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Main, Scroll, Title, Label, Row, Column, } from '../../theme/global';
+import { Main, Scroll, Title, Label, Row, Column, } from '@theme/global';
 import { Pressable, FlatList, TextInput, Image } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
+
+//components
 import { MotiImage, MotiView } from 'moti';
 import { Skeleton } from 'moti/skeleton';
-import { Modalize } from 'react-native-modalize';
-import { requestCollectionsBackground } from '../../api/shop/collections';
-import { createCollection, listCollections, removeAllCollections } from './../../api/collections/index';
 import { useNavigation,useIsFocused } from '@react-navigation/native';
+import Modal from '@components/modal/modal';
+//hooks
+import { createCollection, listCollections, requestCollectionsBackground } from '@hooks/collections';
 
 export default function CollectionsPage({ navigation }) {
     const [loading, setLoading] = useState();
@@ -147,7 +149,7 @@ export default function CollectionsPage({ navigation }) {
                 }
             </Scroll>
 
-            <Modalize ref={modalCreate} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
+            <Modal ref={modalCreate} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
                 <Column style={{ padding: 20, }}>
                     <Title style={{ fontSize: 28, marginTop: 10, marginBottom: 10, textAlign: 'center', }}>Criar coleção</Title>
 
@@ -178,7 +180,7 @@ export default function CollectionsPage({ navigation }) {
                         </Pressable>
                     </Row>
                 </Column>
-            </Modalize>
+            </Modal>
             <Pressable onPress={() => {modalCreate.current?.open()}}  style={{ zIndex: 99, position: 'absolute', bottom: 30, right: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: "#fff", width: 50, height: 50, borderRadius: 100, }}>
                 <AntDesign name="plus" size={24} color="#000" />
             </Pressable>

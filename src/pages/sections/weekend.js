@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, } from 'react';
 import { PanResponder, View, Image } from 'react-native';
 import { Main, Scroll, Column, Label, Title, Row, Button } from '@theme/global';
 import { ThemeContext } from 'styled-components/native';
-import requestWeekend from '@api/manga/weekend';
+import requestWeekend from '@apiv1/manga/weekend';
 
 import { Skeleton } from 'moti/skeleton'
 import Card from '@components/lists/card';

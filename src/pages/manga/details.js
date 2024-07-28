@@ -7,11 +7,11 @@ import { ThemeContext } from 'styled-components/native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Skeleton } from 'moti/skeleton';
 import { AnimatePresence, MotiImage, MotiView } from 'moti';
-import { addComplete, addFollow, addLike, removeComplete, removeFollow, removeLike, verifyComplete, verifyFollow, verifyLiked } from '@api/user/preferences';
+import { addComplete, addFollow, addLike, removeComplete, removeFollow, removeLike, verifyComplete, verifyFollow, verifyLiked } from '@hooks/preferences';
 import ModalAddCollection from '@components/modal/collection';
-import { Modalize } from 'react-native-modalize';
+import Modal from '@components/modal/modal';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { listChaptersToManga } from '@api/user/progress';
+import { listChaptersToManga } from '@hooks/progress';
 import { getManga } from '@apiv2/getManga';
 import { getChapters } from '@apiv2/getChapters';
 import { getCovers } from '@apiv2/getCovers';
@@ -329,13 +329,13 @@ export default function MangaDetailsPage({ route, navigation }) {
 
             </AnimatePresence>
 
-            <Modalize ref={modalAdd} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
+            <Modal ref={modalAdd} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
                 <Column>
                     <ModalAddCollection item={itm} />
                 </Column>
-            </Modalize>
+            </Modal>
 
-            <Modalize ref={modalDesc} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }}>
+            <Modal ref={modalDesc} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }}>
                 <Column style={{ padding: 20, }}>
                     <Title>Descrição</Title>
                     <Label style={{ fontSize: 18, lineHeight: 24, marginTop: 12,  marginBottom: 12,}}>{item?.description}</Label>
@@ -359,9 +359,9 @@ export default function MangaDetailsPage({ route, navigation }) {
                         <Label style={{ fontSize: 18, color: color.off, fontFamily: font.medium, }}>Fechar</Label>
                     </Pressable>
                 </Column>
-            </Modalize>
+            </Modal>
 
-            <Modalize ref={modalTranslate} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }}>
+            <Modal ref={modalTranslate} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }}>
                 <Column style={{ padding: 20, }}>
                     <Title>Tradução</Title>
                     <Label>Esses são os idiomas disponíveis</Label>
@@ -386,7 +386,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                         <Label style={{ fontSize: 18, color: color.off, fontFamily: font.medium, }}>Fechar</Label>
                     </Pressable>
                 </Column>
-            </Modalize>
+            </Modal>
         </Main>
     )
 }
