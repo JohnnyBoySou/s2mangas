@@ -1,53 +1,214 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
-import { Image, Pressable, Animated, Dimensions, FlatList } from 'react-native';
+import { Image, View, Dimensions, FlatList } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { Column, Title, Main, Row, Label, Button, Scroll } from '@theme/global';
 import { ArrowRight, CircleAlert } from 'lucide-react-native';
-import { ExpandingDot } from "react-native-animated-pagination-dots";
-import { AnimatePresence, MotiImage, MotiView, useAnimationState } from 'moti';
+import { AnimatePresence, MotiImage, MotiView, } from 'moti';
 import Select from '@components/select';
 import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
+import PagerView from 'react-native-pager-view';
+
+import Animated, { useAnimatedStyle, withSpring, interpolate } from 'react-native-reanimated';
 
 export default function OnboardingPage({ navigation, route, }) {
     const { color, font } = useContext(ThemeContext)
-    const scrollX = useRef(new Animated.Value(0)).current;
-    const screens = [<Screen1 />,  <Screen2 />]
 
+    const pagerRef = useRef();
+    const handleScreen = (position) => {
+        pagerRef.current.setPage(position);
+        setCurrentIndex(position);
+        console.log(position)
+    }
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const numberOfDots = 4;
+
+    const goToNext = () => {
+        let next = (currentIndex + 1) % numberOfDots;
+        setCurrentIndex(next);
+        pagerRef.current.setPage(next);
+    };
+
+    const goToPrevious = () => {
+        setCurrentIndex((prev) => (prev - 1 + numberOfDots) % numberOfDots);
+    };
 
     return (
-        <Main style={{ paddingTop: 50, }}>
+        <Main style={{}}>
+            <MotiImage source={require('@imgs/logo_black.png')} style={{ width: 84, height: 84, zIndex: 99, objectFit: 'contain', marginTop: 30, marginBottom: -30, marginLeft: 20, }} />
+            <PagerView style={{ flex: 1, }} initialPage={0} ref={pagerRef} onPageSelected={(event) => { handleScreen(event.nativeEvent.position) }}>
+                <Screen0 />
+                <Screen1 />
+                <Screen2 />
+                <Screen3 />
+            </PagerView>
+            <Row style={{ marginBottom: 30, width: width, zIndex: 99, paddingHorizontal: 30, justifyContent: 'space-between', }}>
+                <PaginationDots
+                    index={currentIndex}
+                    numberOfDots={numberOfDots}
+                    activityColor={color.primary}
+                    disableColor="#303030" />
 
-            <Row style={{ position: 'absolute', bottom: 40, zIndex: 99, justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingHorizontal: 30, marginBottom: 20, }}>
-                <ExpandingDot
-                    data={screens}
-                    expandingDotWidth={25}
-                    scrollX={scrollX}
-                    containerStyle={{ position: 'relative', marginTop: 0, top: 0, }}
-                    dotStyle={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: 5,
-                        marginHorizontal: 2,
-                    }}
-                    activeDotColor={color.primary}
-                    inActiveDotColor={color.primary + 50}
-                />
 
+                {currentIndex == 3 && <Column style={{ width: 54, height: 54, borderRadius: 100, }}>
+                </Column>}
+                <AnimatePresence>
+                    {currentIndex != 3 &&
+                        <MotiView from={{ opacity: 0, scale: 0, }} animate={{ opacity: 1, scale: 1, }} exit={{ opacity: 0, scale: 0, }}>
+                            <Button onPress={goToNext} style={{ width: 54, height: 54, borderRadius: 100, backgroundColor: color.primary, justifyContent: 'center', alignItems: 'center', }}>
+                                <ArrowRight size={28} color="#fff" />
+                            </Button>
+                        </MotiView>
+                    }
+                </AnimatePresence>
             </Row>
-
-            <Scroll horizontal pagingEnabled onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: false, })} showsHorizontalScrollIndicator={false}>{screens}</Scroll>
-
         </Main>
     )
 }
+const Screen0 = ({ }) => {
+    return (
+        <Column style={{ flex: 1, marginHorizontal: 30, justifyContent: 'center', }}>
+            <MotiImage from={{ opacity: 0, scale: 0, rotate: '12deg' }} animate={{ opacity: 1, scale: 1, rotate: '0deg' }} source={require('@imgs/onboarding_home.png')} style={{ width: '100%', height: 400, objectFit: 'contain', }} />
+            <Title style={{ letterSpacing: -1, fontSize: 28, lineHeight: 32 }}>Bem-vindo ao S2Mangás!</Title>
+            <Label style={{ letterSpacing: -0.5, fontSize: 18, lineHeight: 22, }}>Mergulhe em uma experiência única de leitura de mangás. Organize suas coleções, compartilhe com amigos e aproveite seu tempo lendo.</Label>
+        </Column>
+
+    )
+}
+
+const Screen1 = () => {
+    return (
+        <Column style={{ flex: 1, marginHorizontal: 30, justifyContent: 'center', }}>
+            <MotiImage from={{ opacity: 0, scale: 0, rotate: '-12deg' }} animate={{ opacity: 1, scale: 1, rotate: '0deg' }} source={require('@imgs/onboarding_search.png')} style={{ width: '100%', height: 400, objectFit: 'contain', }} />
+            <Title style={{ letterSpacing: -1, fontSize: 28, lineHeight: 32 }}>Explore Mangás</Title>
+            <Label style={{ letterSpacing: -0.5, fontSize: 18, lineHeight: 22, }}>Descubra uma vasta seleção de mangás. Use nossa poderosa ferramenta de busca para encontrar seus títulos favoritos e novos lançamentos.</Label>
+        </Column>
+    )
+}
+
+const Screen2 = () => {
+    return (
+        <Column style={{ flex: 1, marginHorizontal: 30, justifyContent: 'center', }}>
+            <MotiImage from={{ opacity: 0, scale: 0, rotate: '12deg' }} animate={{ opacity: 1, scale: 1, rotate: '0deg' }} source={require('@imgs/onboarding_collection.png')} style={{ width: '100%', height: 400, objectFit: 'contain', }} />
+            <Title style={{ letterSpacing: -1, fontSize: 28, lineHeight: 32 }}>Organize do seu jeito!</Title>
+            <Label style={{ letterSpacing: -0.5, fontSize: 18, lineHeight: 22, }}>Com nossas coleções, você pode organizar seus mangás do jeito que preferir e ainda compartilhá-los com seus amigos.</Label>
+        </Column>
+    )
+}
+
+const Screen3 = ({ }) => {
+    const { color, font } = useContext(ThemeContext)
+    const navigation = useNavigation();
+    const [languagesSelect, setlanguagesSelect] = useState(['pt-br']);
+    const languages = [
+        { type: 'pt-br', name: 'Português' },
+        { type: 'en', name: 'Inglês' },
+        { type: 'es', name: 'Espanhol' },
+        { type: 'ja', name: 'Japonês' },
+        { type: 'ko', name: 'Coreano' },
+        { type: 'zh', name: 'Chinês' },
+    ]
+
+    const toggleLanguage = (type) => {
+        setlanguagesSelect((prev) => {
+            // Verifica se o tipo já está na lista
+            const isSelected = prev.includes(type);
+    
+            // Se o tipo está na lista e há mais de um item, remove o tipo
+            if (isSelected && prev.length > 1) {
+                return prev.filter(item => item !== type);
+            }
+            // Se o tipo não está na lista, adiciona o tipo
+            if (!isSelected) {
+                return [...prev, type];
+            }
+            // Caso contrário, retorna a lista inalterada
+            return prev;
+        });
+    };
 
 
+    return (
+        <Column style={{  marginHorizontal: 30, marginTop: 0, justifyContent: 'center', }}>
+            <MotiImage from={{ opacity: 0, scale: 0, rotate: '12deg' }} animate={{ opacity: 1, scale: 1, rotate: '0deg' }} source={require('@imgs/onboarding_translate.png')} style={{ width: '100%', height:250, objectFit: 'contain', }} />
+            <Title style={{ letterSpacing: -1, fontSize: 28, lineHeight: 32 }}>Selecione os idiomas que deseja ler:</Title>
+        
+            <FlatList
+                data={languages}
+                style={{ alignSelf: 'center', }}
+                numColumns={2}
+                columnWrapperStyle={{ justifyContent: 'space-between', columnGap: 12, }}
+                renderItem={({ item }) => (
+                    <Button
+                        onPress={() => toggleLanguage(item.type)}
+                        style={{ borderRadius: 8, marginTop: 12,  }}
+                    >
+                        <Select status={languagesSelect.includes(item.type)} name={item.name} />
+                    </Button>
+                )}
+                keyExtractor={(item) => item.type}
+            />
+
+
+            <Button onPress={() => {navigation.navigate('Preferences', {lg: languagesSelect})}}  style={{ paddingHorizontal: 52, marginTop: 20, alignSelf: 'center', paddingVertical: 12, borderRadius: 100, backgroundColor: color.primary, justifyContent: 'center', alignItems: 'center',  }}>
+                <Title style={{ fontFamily: font.medium, fontSize: 20, letterSpacing: -1, }}>Pronto</Title>
+            </Button>
+
+        </Column>
+    )
+}
+
+const PaginationDots = ({ index, numberOfDots, activityColor, disableColor }) => {
+    // Animated styles
+    const dotStyle = (dotIndex) => {
+        return useAnimatedStyle(() => {
+
+            // Animated width
+            const width = withSpring(index === dotIndex ? 45 : 20);
+
+            return {
+                backgroundColor: index === dotIndex ? activityColor : disableColor,
+                width,
+            };
+        });
+    };
+
+    return (
+        <View style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginVertical: 10,
+        }}>
+
+            {Array.from({ length: numberOfDots }).map((_, dotIndex) => (
+                <Animated.View
+                    key={dotIndex}
+                    style={[{
+                        height: 20,
+                        borderRadius: 100,
+                        margin: 5,
+                    }, dotStyle(dotIndex)]}
+                />
+            ))}
+        </View>
+    );
+};
+
+
+/* 
+
+
+            <Row style={{ alignSelf: 'center', }}>
+                <AnimatePresence>
+                    {languagesSelect?.map((item) => <MotiView from={{ opacity: 0, scale: 0, }} animate={{ opacity: 1, scale: 1, }} exit={{ opacity: 0, scale: 0, }} transition={{ type: 'spring', duration: 300 }}><Label key={item} style={{ color: color.off, marginHorizontal: 6, backgroundColor: '#fff', paddingHorizontal: 6, paddingVertical: 4, borderRadius: 5, textAlign: 'center', fontFamily: 'Font_Bold', textTransform: 'uppercase', }}>{item}</Label></MotiView>)}
+                </AnimatePresence>
+            </Row>
 
 const Screen1 = ({ }) => {
     const [refresh, setrefresh] = useState(false);
-    const { color} = useContext(ThemeContext)
+    const { color } = useContext(ThemeContext)
     const scale = useAnimationState({
         from: {
             scale: 1.7,
@@ -58,10 +219,10 @@ const Screen1 = ({ }) => {
     })
 
     const toggle = () => {
-        if(refresh){
+        if (refresh) {
             setrefresh(false)
             scale.transitionTo('from')
-        }else{
+        } else {
             setrefresh(true)
             scale.transitionTo('to')
         }
@@ -72,7 +233,7 @@ const Screen1 = ({ }) => {
     }, [])
 
     return (
-        <MotiView style={{ width: width,overflow: 'hidden' }}>
+        <MotiView style={{ width: width, overflow: 'hidden' }}>
             <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 60, }}>
                 <MotiImage source={{ uri: 'https://i.pinimg.com/564x/e0/b6/7a/e0b67a673882c4f727d2289689dd4c04.jpg' }} from={{ translateY: -300, rotate: '10deg', }} transition={{ duration: 12500, delay: 1000, }} animate={{ translateY: 90, rotate: '0deg' }} style={{ borderRadius: 12, width: 104, height: 150, backgroundColor: '#303030', position: 'absolute', }} />
                 <MotiImage source={{ uri: 'https://i.pinimg.com/736x/91/a9/06/91a90649fc657370c6ab99388c91b468.jpg' }} from={{ translateY: -300, rotate: '-20deg', }} transition={{ duration: 12500, delay: 1500, }} animate={{ translateY: 80, rotate: '12deg' }} style={{ borderRadius: 12, width: 104, height: 150, left: 30, position: 'absolute', backgroundColor: '#303030', }} />
@@ -88,77 +249,20 @@ const Screen1 = ({ }) => {
             </Row>
             <Pressable onPress={toggle} style={{ position: 'absolute', alignSelf: 'center', bottom: -110, }}>
                 <AnimatePresence>
-                {refresh && <MotiView style={{ position: 'absolute', zIndex: 99, top: -220, backgroundColor: '#fff', borderRadius: 12, padding: 20, width: 300, alignSelf: 'center',}} from={{opacity: 0,}} animate={{opacity: 1,}} exit={{opacity: 0,}} transition={{ type: 'timing', duration: 200, }}>
-                    <MotiImage source={require('@imgs/circle_logo.png')} style={{ width: 64, height: 64, alignSelf: 'center', }} />
-                    <Title style={{ textAlign: 'center', color: "#000000", }}>Sua experiência {'\n'}melhor aqui!</Title>
-                    <Label style={{ textAlign: 'center', color: "#00000090",}}>Personalize sua experiência. {'\n'}Ajuste o modo de leitura, crie listas personalizadas, aplique filtros e muito mais.</Label>
-                    <Label style={{ textAlign: 'center', color: color.primary, fontFamily: 'Font_Bold',}}>arrasta pro lado</Label>
-                </MotiView>}
+                    {refresh && <MotiView style={{ position: 'absolute', zIndex: 99, top: -220, backgroundColor: '#fff', borderRadius: 12, padding: 20, width: 300, alignSelf: 'center', }} from={{ opacity: 0, }} animate={{ opacity: 1, }} exit={{ opacity: 0, }} transition={{ type: 'timing', duration: 200, }}>
+                        <MotiImage source={require('@imgs/circle_logo.png')} style={{ width: 64, height: 64, alignSelf: 'center', }} />
+                        <Title style={{ textAlign: 'center', color: "#000000", }}>Sua experiência {'\n'}melhor aqui!</Title>
+                        <Label style={{ textAlign: 'center', color: "#00000090", }}>Personalize sua experiência. {'\n'}Ajuste o modo de leitura, crie listas personalizadas, aplique filtros e muito mais.</Label>
+                        <Label style={{ textAlign: 'center', color: color.primary, fontFamily: 'Font_Bold', }}>arrasta pro lado</Label>
+                    </MotiView>}
                 </AnimatePresence>
 
                 <Column style={{ justifyContent: 'center', zIndex: 99, top: 50, }}>
                     <Title style={{ textAlign: 'center' }}>Bem vindo ao {'\n'}S2Mangás</Title>
-                    <Label style={{ textAlign: 'center', color: color.title+99, }}>Clique aqui</Label>
+                    <Label style={{ textAlign: 'center', color: color.title + 99, }}>Clique aqui</Label>
                 </Column>
                 <MotiImage state={scale} from={{ rotate: '20deg', }} delay={200} animate={{ rotate: '-20deg' }} source={require('@imgs/circle.png')} style={{ width: 200, height: 200, borderRadius: 100, }} />
             </Pressable>
         </MotiView>
     )
-}
-
-const Screen2 = ({ }) => {
-    const { color } = useContext(ThemeContext)
-    const navigation = useNavigation();
-    const [languagesSelect, setlanguagesSelect] = useState(['pt-br']);
-    const languages = [
-        { type: 'pt-br', name: 'Português Brasileiro' },
-        { type: 'en', name: 'Inglês' },
-        { type: 'es', name: 'Espanhol' },
-        { type: 'ja', name: 'Japonês' },
-        { type: 'ko', name: 'Coreano' },
-        { type: 'zh', name: 'Chinês' },
-    ]
-
-    const toggleLanguage = (type) => {
-        setlanguagesSelect((prev) =>
-            prev.includes(type)
-                ? prev.filter(item => item !== type)
-                : [...prev, type]
-        );
-    };
-
-
-    return (
-        <MotiView style={{ width: width, justifyContent: 'center', alignItems: 'center', padding: 30, }}>
-            <Title style={{ textAlign: 'center', }}>Selecione as linguagens que deseja ler</Title>
-            <AnimatePresence>
-                <Row style={{ marginTop: 10, }}>
-                    {languagesSelect?.map((item) => <MotiView from={{ opacity: 0, scale: 0, }} animate={{ opacity: 1, scale: 1, }} exit={{ opacity: 0, scale: 0, }} transition={{ type: 'spring', duration: 300 }}><Label key={item} style={{ color: color.off, marginHorizontal: 6, backgroundColor: '#fff', paddingHorizontal: 6, paddingVertical: 4, borderRadius: 5, textAlign: 'center', fontFamily: 'Font_Bold', textTransform: 'uppercase', }}>{item}</Label></MotiView>)}
-                </Row>
-            </AnimatePresence>
-            <FlatList
-                data={languages}
-                renderItem={({ item }) => (
-                    <Button
-                        onPress={() => toggleLanguage(item.type)}
-                        style={{ borderRadius: 8, marginTop: 16 }}
-                    >
-                        <Select status={languagesSelect.includes(item.type)} name={item.name} />
-                    </Button>
-                )}
-                keyExtractor={(item) => item.type}
-            />
-
-
-
-            <Row style={{ top: -25, }}>
-                <CircleAlert size={24} color={color.primary} />
-                <Label style={{ color: color.primary, marginLeft: 6, }}>Selecione pelo menos uma</Label>
-            </Row>
-            
-            <Button disabled={languagesSelect.length < 1} onPress={() => {navigation.navigate('Preferences', {lg: languagesSelect})}}  style={{ zIndex: 99, backgroundColor: color.primary, borderRadius: 100, justifyContent: 'center', alignItems: 'center', width: 52, height: 52, }}>
-                    <ArrowRight size={28} color="#fff" />
-                </Button>
-        </MotiView>
-    )
-}
+}*/

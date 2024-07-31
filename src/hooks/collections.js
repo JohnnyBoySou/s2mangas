@@ -2,7 +2,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import axios from "axios";
 
-
 //chamada exterma
 export async function requestCollectionsBackground() {
   const res = await axios.get('https://www.s2mangas.com/api/shop/collections');

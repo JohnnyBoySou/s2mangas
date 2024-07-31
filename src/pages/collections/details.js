@@ -12,6 +12,7 @@ import { AnimatePresence, MotiImage, MotiView, useAnimationState } from 'moti';
 import { Skeleton } from 'moti/skeleton';
 import SwipeableItem, { useSwipeableItemParams } from 'react-native-swipeable-item';
 
+import Modal from '@components/modal/modal';
 //hooks
 import { editCollection, getCollection, removeCollection, removeMangaInCollection, requestCollectionsBackground } from '@hooks/collections';
 

@@ -10,14 +10,14 @@ import { MotiView } from 'moti';
 const Select = ({ status, name }) => {
     const { color } = useContext(ThemeContext);
     return (
-        <Column style={{ width: 280, borderWidth: 2, borderRadius: 10, borderColor: status ? color.primary : '#909090', backgroundColor: status ? color.primary + 50 : '#303030', paddingVertical: 12, paddingHorizontal: 12, }}>
+        <Column style={{ width: 140,  borderWidth: 2, borderRadius: 10, borderColor: status ? color.primary : '#909090', backgroundColor: status ? color.primary + 50 : '#303030', paddingVertical: 12, paddingHorizontal: 12, }}>
             <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
                 <Title style={{ fontSize: 16, }}>{name}</Title>
 
-                <Column style={{ width: 32, height: 32, borderRadius: 100, backgroundColor: status ? color.primary : '#90909020', borderWidth: 2, borderColor: status ? color.primary : '#909090', justifyContent: 'center', alignItems: 'center', }}>
+                <Column style={{ width: 26, height: 26, borderRadius: 100, backgroundColor: status ? color.primary : '#90909020', borderWidth: 2, borderColor: status ? color.primary : '#909090', justifyContent: 'center', alignItems: 'center', }}>
                     {status &&
                         <MotiView from={{ opacity: 0, scale: 0, }} animate={{ opacity: 1, scale: 1, }} transition={{ type: 'timing', duration: 300 }}>
-                            <Check size={24} color='#fff' />
+                            <Check size={18} color='#fff' />
                         </MotiView>}
                 </Column>
 

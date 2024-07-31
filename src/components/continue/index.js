@@ -94,7 +94,7 @@ export default function ContinueSheet({ min, max, valueMin, valueMax, item }) {
                     {currentStatus === 'max' && <Column style={{ height: 40, marginBottom: -40, }}></Column>}
                 </Column>
             </GestureDetector>
-            <Column style={{  marginTop: -20, }}>
+            <Column style={{  marginTop: 0, }}>
                 {currentStatus === 'max' && max}
             </Column>
         </Animated.View>

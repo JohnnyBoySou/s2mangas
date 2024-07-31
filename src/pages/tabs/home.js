@@ -104,7 +104,7 @@ export default function HomePage({ navigation }) {
                 </>
                 <Column style={{ height: 60, }} />
             </Scroll>
-            {!loading &&
+            {!loading && item &&
                 <ContinueSheet
                     valueMin={70}
                     valueMax={0.9 * height}
@@ -123,19 +123,19 @@ const Continue = ({ item }) => {
     const { name, chapter, rate, type, id, capa } = item;
     return (
         <Column>
+            <LinearGradient colors={['#171717', 'transparent']} style={{ width: '100%', height: 50, marginBottom: -50, zIndex: 99 }} />
             <ImageBackground source={{ uri: capa }} style={{ flexGrow: 1, justifyContent: 'center', }} imageStyle={{ zIndex: -3,}} >
-               
                 <Column style={{height: 250, }} />
                 <Column style={{ marginHorizontal: 20, }}>
                     <Avatar width={100} height={100}/>
-                    <Title style={{ marginTop: 10, }}>{name}</Title>
+                    <Title style={{ marginTop: 10, marginBottom: 10, fontSize: 28, }}>{name}</Title>
 
                     <Row style={{alignItems: 'center',  }}>
-                        <Label style={{ paddingVertical: 8, lineHeight: 20, paddingBottom: 4, fontSize: 16, borderWidth: 2, borderColor:color.primary, paddingHorizontal: 16, backgroundColor: color.primary+30, borderRadius: 100, color: color.primary, fontFamily: font.bold, }}>{type}</Label>
-                        <Label style={{ lineHeight: 20, marginLeft: 12,  paddingVertical: 8, paddingBottom: 4, fontSize: 16, borderWidth: 2, borderColor: color.blue, paddingHorizontal: 16, backgroundColor: color.blue+30, borderRadius: 100, color: color.blue, fontFamily: font.bold,  }}>{rate}</Label>
+                        <Label style={{ paddingVertical: 8, lineHeight: 20, paddingBottom: 4, fontSize: 16, borderWidth: 2, borderColor: "#ffffff90", color: "#fff", backgroundColor: "#ffffff50",  paddingHorizontal: 16,borderRadius: 100,  fontFamily: font.bold, }}>{type}</Label>
+                        <Label style={{ lineHeight: 20, marginLeft: 12,  paddingVertical: 8, paddingBottom: 4, fontSize: 16, borderWidth: 2,   paddingHorizontal: 16, borderColor: "#ffffff90", color: "#fff", backgroundColor: "#ffffff50", borderRadius: 100,   fontFamily: font.bold,  }}>{rate}</Label>
                     </Row>
-                    <Label style={{ fontFamily: font.bold, color: '#fff', }}>Sobre</Label>
-                    <Label>Sobre</Label>
+                    <Label style={{ fontFamily: font.bold, color: '#fff',marginTop: 10, }}>Sobre</Label>
+                    <Label style={{ marginVertical: 4, fontSize: 16, }}>Sobre</Label>
                 </Column>
 
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -160,18 +160,8 @@ const Continue = ({ item }) => {
                         </Column>
                     </Row>
                     <Column style={{width: 20, }} />
-                    <Row style={{ backgroundColor: '#232323', borderRadius: 8, padding: 12, marginTop: 10, width: 200, justifyContent: 'center', alignItems: 'center',  }}>
-                        <Column style={{ width: 42, height: 42, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: color.primary+30, }}>
-                            <BookMarked size={20} color={color.primary} />
-                        </Column>
-                        <Column style={{ marginLeft: 12, }}>
-                            <Title style={{ fontSize: 14, }}>Sem marcadores</Title>
-                            <Label style={{ fontSize: 10, width: 130, }}>Adicione marcadores no mangá para revisitá-los mais tarde.</Label>
-                        </Column>
-                    </Row>
-                    <Column style={{width: 20, }} />
                 </ScrollView>
-                <LinearGradient colors={['transparent', '#171717']} style={{ width: '100%', height:350, position: 'absolute', bottom: 0, zIndex: -2, }} />
+                <LinearGradient colors={['transparent', '#171717']} style={{ width: '100%', height: 450, position: 'absolute', bottom: 0, zIndex: -2, }} />
 
             </ImageBackground>
 

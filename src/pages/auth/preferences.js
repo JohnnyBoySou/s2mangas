@@ -199,7 +199,7 @@ export default function PreferencesPage({ navigation, route, }) {
 
           {step == 4 &&
             <Animated.View entering={FadeInUp}>
-              <Column style={{ marginTop: 20, }}>
+              <Column style={{ marginTop: 20, marginBottom: 30, }}>
                 <Title style={{ textAlign: 'center' }}>O que você quer ver?</Title>
                 <Label style={{ textAlign: 'center' }}>Restam {8 - Number(selectedItems.length)} opções</Label>
                 <Spacing />

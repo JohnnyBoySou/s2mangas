@@ -33,23 +33,30 @@ const Tab = createBottomTabNavigator();
 export default function Router() {
   return (
     <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='AsyncStatic'>
+        <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='Collections'>
             <Stack.Screen name="Tabs" component={Tabs} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
-            <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS ,  backBehavior: 'none',}}/>
-            <Stack.Screen name="Novidades" component={NovidadesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
+            
             <Stack.Screen name="MangalistDetails" component={MangalistDetailsPage} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
+            <Stack.Screen name="Novidades" component={NovidadesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
+            
             <Stack.Screen name="MangaDetails" component={MangaDetailsPage} options={{...TransitionPresets.ModalSlideFromBottomIOS   , }}/>
             <Stack.Screen name="MangaPages" component={MangaPages} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
+            
             <Stack.Screen name="Onboarding" component={OnboardingPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
-            <Stack.Screen name="Continue" component={ContinuePage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
+            <Stack.Screen name="Async" component={AsyncStatic} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Preferences" component={PreferencesPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
-            <Stack.Screen name="AsyncStatic" component={AsyncStatic} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
-            <Stack.Screen name="Collections" component={CollectionsPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
-            <Stack.Screen name="CollectionDetails" component={CollectionDetailsPage} options={{...TransitionPresets.ModalPresentationIOS    , }}/>
+           
+            <Stack.Screen name="Continue" component={ContinuePage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
+
+            <Stack.Screen name="Home" component={HomePage} options={{...TransitionPresets.ModalSlideFromBottomIOS ,  backBehavior: 'none',}}/>
             <Stack.Screen name="Account" component={AccountPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="Search" component={SearchPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
+           
             <Stack.Screen name="Category" component={CategoryPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="NSFW" component={NSFWPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
+            
+            <Stack.Screen name="Collections" component={CollectionsPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
+            <Stack.Screen name="CollectionDetails" component={CollectionDetailsPage} options={{...TransitionPresets.ModalPresentationIOS    , }}/>
 
             <Stack.Screen name="Lasted" component={LastedSectionScreen} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
             <Stack.Screen name="Rate" component={RateSectionScreen} options={{...TransitionPresets.SlideFromRightIOS   , }}/>

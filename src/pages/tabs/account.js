@@ -145,6 +145,7 @@ export default function AccountPage({ navigation, route }) {
 
         return (
             <Column style={{ flex: 1, }}>
+                {(data?.length >= LIMIT) || (page > 1) ?
                 <Row style={{ backgroundColor: '#303030', justifyContent: 'space-between', alignItems: 'center', zIndex: 99, marginHorizontal: 20, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 12, }}>
                     <Row>
                         <Button onPress={handlePrevPage} disabled={loading}
@@ -161,7 +162,8 @@ export default function AccountPage({ navigation, route }) {
                         <Title style={{ fontSize: 14, paddingVertical: 6, paddingHorizontal: 12, backgroundColor: '#ffffff30', borderRadius: 8, }}>Página {page}</Title>
                         {loading && <ActivityIndicator color={color.primary} size={24} />}
                     </Row>
-                </Row>
+                </Row> : null}
+
                 {!loading &&
                     <FlatList
                         data={data}
