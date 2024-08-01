@@ -18,6 +18,8 @@ import { getCovers } from '@apiv2/getCovers';
 import Check from '@components/check';
 import LottieView from 'lottie-react-native';
 
+const { width, height } = Dimensions.get('window');
+
 export default function MangaDetailsPage({ route, navigation }) {
     const id = route?.params?.id ? route.params.id : '58b09ce2-ea05-405e-8e1c-a9361df9bdd9'
     const [headerShown, setHeaderShown] = useState();
@@ -28,7 +30,6 @@ export default function MangaDetailsPage({ route, navigation }) {
     const [loading, setLoading] = useState(true);
     const [covers, setCovers] = useState();
     const [lidos, setlidos] = useState(false);
-    const a = false;
 
     const [lg, setlg] = useState('pt-br');
 
@@ -40,16 +41,16 @@ export default function MangaDetailsPage({ route, navigation }) {
         id: item?.id,
         chapter: chapters?.length,
         long: item?.long,
+        date: date,
     };
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const mangaResponse = await getManga(id);
                 setItem(mangaResponse);
-                
+
                 const coversResponse = await getCovers(id);
                 setCovers(coversResponse);
-                console.log(coversResponse)
 
                 const chaptersResponse = await getChapters(id, lg);
                 setChapters(chaptersResponse);
@@ -126,10 +127,9 @@ export default function MangaDetailsPage({ route, navigation }) {
                 if (r) setFollow(true);
             });
         }
-    }; 
+    };
 
     const cl = item?.type === 'MANGA' ? "#FFA8B7" : item?.type === 'MANHWA' ? "#BBD2FF" : item?.type === 'MANHUA' ? "#BFFFC6" : '#FFF';
-   
 
     const [type, setType] = useState('Capitulos');
 
@@ -140,13 +140,16 @@ export default function MangaDetailsPage({ route, navigation }) {
 
     const scrollTop = () => { scrollMain.current?.scrollTo({ x: 0, y: 0, animated: true }); }
     const scrollY = useSharedValue(0);
-    
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1; 
+    const year = currentDate.getFullYear();
+    const date = `${day}/${month}/${year}`
 
     if (loading) return <Main><Scroll><LinearGradient colors={['#404040', 'transparent']} style={{ width: '100%', height: 300, position: 'absolute', top: 0, left: 0, }} /><SkeletonBody /></Scroll></Main>
     return (
         <Main>
-            <Scroll stickyHeaderIndices={[1]} onScroll={(event) => {const scrolling = event.nativeEvent.contentOffset.y;scrollY.value = scrolling;if (scrolling > 630) {setHeaderShown(true);} else {setHeaderShown(false);}}} scrollEventThrottle={16} ref={scrollMain}>
-
+            <Scroll stickyHeaderIndices={[1]} onScroll={(event) => { const scrolling = event.nativeEvent.contentOffset.y; scrollY.value = scrolling; if (scrolling > 630) { setHeaderShown(true); } else { setHeaderShown(false); } }} scrollEventThrottle={16} ref={scrollMain}>
                 <Column style={{ marginBottom: -20, zIndex: 98, }}>
                     <Pressable onPress={() => { navigation.goBack() }} style={{ width: 90, height: 10, backgroundColor: '#30303090', borderRadius: 100, alignSelf: 'center', marginBottom: -20, zIndex: 99, marginTop: 10, }} />
                     <ImageBackground blurRadius={40} source={{ uri: item?.capa }} style={{ height: 410, flexGrow: 1, justifyContent: 'center', }} >
@@ -156,7 +159,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                     <LinearGradient colors={['transparent', '#171717']} style={{ width: '100%', height: 200, marginTop: -198, }} />
 
                     <Title style={{ fontSize: 32, marginBottom: 5, marginTop: 10, fontFamily: 'Font_Bold', letterSpacing: -1, marginHorizontal: 20, }}>{item?.name}</Title>
-                    <TouchableOpacity onPress={() => { modalDesc.current?.open() }}>
+                    <TouchableOpacity onPress={() => { modalDesc.current?.expand() }}>
                         <Label style={{ fontSize: 18, lineHeight: 26, marginHorizontal: 20, }}>{item?.description?.slice(0, 138)}...</Label>
                     </TouchableOpacity>
 
@@ -209,10 +212,10 @@ export default function MangaDetailsPage({ route, navigation }) {
                                     <FontAwesome name='bell-o' size={26} color="#d4d4d4" />
                                 </MotiView>}
                         </Pressable>
-                        <Pressable onPress={() => { modalAdd.current?.open() }} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                        <Pressable onPress={() => { modalAdd.current?.expand() }} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
                             <Ionicons name="add-circle-outline" size={32} color="#d4d4d4" />
                         </Pressable>
-                        <Pressable onPress={() => { modalTranslate.current?.open() }} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
+                        <Pressable onPress={() => { modalTranslate.current?.expand() }} style={{ width: 42, height: 42, justifyContent: 'center', alignItems: 'center', }}>
                             <MaterialIcons name="translate" size={28} color="#d4d4d4" />
                         </Pressable>
                     </Row>
@@ -229,7 +232,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                         <Label style={{ fontSize: 18, color: type === 'Capas' ? color.off : color.title, fontFamily: type === 'Capas' ? font.bold : font.book, }}>Capas</Label>
                     </Pressable>
                 </Row>
-                
+
                 {type == 'Marcadores' && <>
                     <Column style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, paddingVertical: 30, }}>
                         <Image source={{ uri: 'https://i.pinimg.com/736x/4e/e7/c9/4ee7c956df651885166f2af1e53b0988.jpg' }} style={{ width: 100, height: 150, borderRadius: 12, transform: [{ rotate: '12deg', }] }} />
@@ -239,53 +242,52 @@ export default function MangaDetailsPage({ route, navigation }) {
                             <Label style={{ color: "#000" }}>Adicionar marcador</Label>
                         </Pressable>
                     </Column>
-                </>
-                }
+                </>}
                 {type == 'Capitulos' && <>
-                   {chapters?.length > 0 ? <>
-                    <Column style={{ paddingHorizontal: 20, marginTop: 10, borderRadius: 16, }}>
-                        <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
-                            <Column>
-                                <Title style={{ fontSize: 24, marginTop: 8, }}>Recentes</Title>
-                                <Label style={{}}>Confira os últimos capítulos</Label>
-                            </Column>
-                            <Pressable style={{ width: 42, height: 42, borderRadius: 100, backgroundColor: "#404040", justifyContent: 'center', alignItems: 'center', }}>
-                                <Feather name="search" size={18} color="#fff" />
-                            </Pressable>
-                        </Row>
-                        <FlatList
-                            style={{ marginTop: 20, }}
-                            data={chapters?.slice(0, 5)}
-                            keyExtractor={(item) => item.number}
-                            renderItem={({ item }) => <Card item={item} id={id} itm={itm} lg={lg} />}
-                        />
-                    </Column>
-                    <Column style={{ marginTop: 20, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16, marginBottom: 20, }}>
-                        <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
-
-                            <Column>
-                                <Title style={{ fontSize: 24, marginTop: 8, }}>Todos ({chapters?.length})</Title>
-                                <Label style={{}}>Confira todos capítulos</Label>
-                            </Column>
-                            <Column style={{ justifyContent: 'center', alignItems: 'center', }}>
-                                <Pressable onPress={() => { setlidos(!lidos) }} >
-                                    <Check status={lidos} />
+                    {chapters?.length > 0 ? <>
+                        <Column style={{ paddingHorizontal: 20, marginTop: 10, borderRadius: 16, }}>
+                            <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
+                                <Column>
+                                    <Title style={{ fontSize: 24, marginTop: 8, }}>Recentes</Title>
+                                    <Label style={{}}>Confira os últimos capítulos</Label>
+                                </Column>
+                                <Pressable style={{ width: 42, height: 42, borderRadius: 100, backgroundColor: "#404040", justifyContent: 'center', alignItems: 'center', }}>
+                                    <Feather name="search" size={18} color="#fff" />
                                 </Pressable>
-                            </Column>
-                        </Row>
-                        <ListChapters chapters={chapters} id={id} itm={itm} chaptersRead={chaptersRead} lidos={lidos} lg={lg} />
-                    </Column>
+                            </Row>
+                            <FlatList
+                                style={{ marginTop: 20, }}
+                                data={chapters?.slice(0, 5)}
+                                keyExtractor={(item) => item.number}
+                                renderItem={({ item }) => <Card item={item} id={id} itm={itm} lg={lg} />}
+                            />
+                        </Column>
+                        <Column style={{ marginTop: 20, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 16, marginBottom: 20, }}>
+                            <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
+
+                                <Column>
+                                    <Title style={{ fontSize: 24, marginTop: 8, }}>Todos ({chapters?.length})</Title>
+                                    <Label style={{}}>Confira todos capítulos</Label>
+                                </Column>
+                                <Column style={{ justifyContent: 'center', alignItems: 'center', }}>
+                                    <Pressable onPress={() => { setlidos(!lidos) }} >
+                                        <Check status={lidos} />
+                                    </Pressable>
+                                </Column>
+                            </Row>
+                            <ListChapters chapters={chapters} id={id} itm={itm} chaptersRead={chaptersRead} lidos={lidos} lg={lg} />
+                        </Column>
                     </> :
-                    <Column style={{ justifyContent: 'center', alignItems: 'center', marginVertical: 40, marginHorizontal: 32, }}>
-                        <Title style={{ textAlign: 'center', fontSize: 24, lineHeight: 26, fontFamily: 'Font_Medium' }}>Não encontramos nenhum capítulo traduzido para o idioma brasileiro.</Title>
-                        <Row style={{ justifyContent: 'center', alignItems: 'center', borderRadius: 100, backgroundColor: '#d4d4d4', marginVertical: 12,}}>
-                        <Pressable onPress={() => { modalTranslate.current?.open() }} style={{ width: 42, height: 42, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', }}>
-                            <MaterialIcons name="translate" size={28} color="#000" />
-                        </Pressable>
-                        <Title style={{ fontSize: 18, fontFamily: 'Font_Medium', marginHorizontal: 12, color: "#00000099", marginRight: 14,}}>Alterar idioma</Title>
-                        </Row>
-                        <Label style={{ textAlign: 'center', }}>Selecione outro idioma para ver os capítulos traduzidos.</Label>
-                    </Column>
+                        <Column style={{ justifyContent: 'center', alignItems: 'center', marginVertical: 40, marginHorizontal: 32, }}>
+                            <Title style={{ textAlign: 'center', fontSize: 24, lineHeight: 26, fontFamily: 'Font_Medium' }}>Não encontramos nenhum capítulo traduzido para o idioma brasileiro.</Title>
+                            <Row style={{ justifyContent: 'center', alignItems: 'center', borderRadius: 100, backgroundColor: '#d4d4d4', marginVertical: 12, }}>
+                                <Pressable onPress={() => { modalTranslate.current?.expand() }} style={{ width: 42, height: 42, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', }}>
+                                    <MaterialIcons name="translate" size={28} color="#000" />
+                                </Pressable>
+                                <Title style={{ fontSize: 18, fontFamily: 'Font_Medium', marginHorizontal: 12, color: "#00000099", marginRight: 14, }}>Alterar idioma</Title>
+                            </Row>
+                            <Label style={{ textAlign: 'center', }}>Selecione outro idioma para ver os capítulos traduzidos.</Label>
+                        </Column>
                     }
 
                 </>}
@@ -299,12 +301,11 @@ export default function MangaDetailsPage({ route, navigation }) {
                             numColumns={2}
                             columnWrapperStyle={{ justifyContent: 'space-between', }}
                             keyExtractor={(item) => item.id}
-                            renderItem={({ item }) => <MotiImage source={{uri: item?.img}} style={{ flexGrow: 1, height: 220, margin: 8, borderRadius: 6, objectFit: 'cover', }} />}
+                            renderItem={({ item }) => <MotiImage source={{ uri: item?.img }} style={{ flexGrow: 1, height: 220, margin: 8, borderRadius: 6, objectFit: 'cover', }} />}
                         />
-                        <Column style={{height: 50, }} />
+                        <Column style={{ height: 50, }} />
                     </Column>
-                </>
-                }
+                </>}
             </Scroll>
 
             <AnimatePresence>
@@ -316,7 +317,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                         exitTransition={{ type: 'spring', duration: 300, }}
                         style={{ zIndex: 3, position: 'absolute', alignSelf: 'center', top: 100, }}>
                         <Pressable onPress={scrollTop} style={{ flexDirection: 'row' }}>
-                            <Column style={{ width: 42, height: 42, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', marginRight: -15,  zIndex: 99,}}>
+                            <Column style={{ width: 42, height: 42, borderRadius: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', marginRight: -15, zIndex: 99, }}>
                                 <AntDesign name='arrowup' size={24} color="#000" />
                             </Column>
                             <MotiImage
@@ -329,27 +330,25 @@ export default function MangaDetailsPage({ route, navigation }) {
 
             </AnimatePresence>
 
-            <Modal ref={modalAdd} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }} >
-                <Column>
-                    <ModalAddCollection item={itm} />
-                </Column>
+            <Modal ref={modalAdd} snapPoints={[0.1, 600]}>
+                <ModalAddCollection item={itm} />
             </Modal>
 
-            <Modal ref={modalDesc} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }}>
+            <Modal ref={modalDesc} snapPoints={[0.1, 600]}>
                 <Column style={{ padding: 20, }}>
                     <Title>Descrição</Title>
-                    <Label style={{ fontSize: 18, lineHeight: 24, marginTop: 12,  marginBottom: 12,}}>{item?.description}</Label>
+                    <Label style={{ fontSize: 18, lineHeight: 24, marginTop: 12, marginBottom: 12, }}>{item?.description}</Label>
                     <Label style={{ fontSize: 14, lineHeight: 20, }}>Lançado em: {item?.create_date}</Label>
-                    <Label style={{ fontSize: 14, lineHeight: 20,}}>Status: {item?.status}.</Label>
+                    <Label style={{ fontSize: 14, lineHeight: 20, }}>Status: {item?.status}.</Label>
                     <Label style={{ fontSize: 14, lineHeight: 20, }}>Seguidores: {item?.followers}</Label>
                     <Label style={{ fontSize: 14, lineHeight: 20, }}>Tipo: {item?.type}</Label>
                     {item.categories?.length > 0 && <Label style={{ fontSize: 14, }}>Categorias: {item?.categories?.join(', ')}</Label>}
 
-                    
-                    <Row>
-                    <Label style={{ fontSize: 14, lineHeight: 20, }}>Idiomas: </Label>
-                    {item.languages?.length > 0 && item.languages.map((lang, index) => (
-                        <Label key={index} style={{ fontSize: 14, }}>- {lang.name} </Label>
+
+                    <Row style={{ flexWrap: 'wrap' }}>
+                        <Label style={{ fontSize: 14, lineHeight: 20, }}>Idiomas: </Label>
+                        {item.languages?.length > 0 && item.languages.map((lang, index) => (
+                            <Label key={index} style={{ fontSize: 14, }}>- {lang.name} </Label>
                         ))}
                     </Row>
 
@@ -361,24 +360,24 @@ export default function MangaDetailsPage({ route, navigation }) {
                 </Column>
             </Modal>
 
-            <Modal ref={modalTranslate} adjustToContentHeight handlePosition="inside" handleStyle={{ backgroundColor: '#d7d7d790' }} modalStyle={{ backgroundColor: "#171717", borderTopLeftRadius: 20, borderTopRightRadius: 20, }}>
-                <Column style={{ padding: 20, }}>
+            <Modal ref={modalTranslate} snapPoints={[0.1, height]}>
+                <Column style={{ paddingHorizontal: 20, }}>
                     <Title>Tradução</Title>
                     <Label>Esses são os idiomas disponíveis</Label>
-                        <FlatList
-                            style={{ marginTop: 10, }}
-                            data={item?.languages}
-                            keyExtractor={(item) => item.id}
-                            renderItem={({ item }) => <Pressable onPress={() => {setlg(item.id); modalTranslate.current?.close()}}  style={{ 
-                                backgroundColor: item.id === lg ? color.light : color.off,
-                                borderRadius: 18, 
-                                paddingVertical: 14, 
-                                paddingHorizontal: 16, 
-                                marginTop: 15, 
-                             }}>
-                                <Label style={{ color: item.id === lg ? color.off : color.light, textAlign: 'center', fontFamily: lg === item.id ? 'Font_Bold' : 'Font_Medium' }}>{item?.name}</Label></Pressable>}
-                        />
-                        <Label style={{ textAlign: 'center', marginVertical: 12, fontSize: 14, }}>Selecione outro idioma para ver os capítulos traduzidos.</Label>
+                    <FlatList
+                        style={{ marginTop: 10, }}
+                        data={item?.languages.slice(0, 8)}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => <Pressable onPress={() => { setlg(item.id); modalTranslate.current?.close() }} style={{
+                            backgroundColor: item.id === lg ? color.light : color.off,
+                            borderRadius: 18,
+                            paddingVertical: 14,
+                            paddingHorizontal: 16,
+                            marginTop: 15,
+                        }}>
+                            <Label style={{ color: item.id === lg ? color.off : color.light, textAlign: 'center', fontFamily: lg === item.id ? 'Font_Bold' : 'Font_Medium' }}>{item?.name}</Label></Pressable>}
+                    />
+                    <Label style={{ textAlign: 'center', marginVertical: 12, fontSize: 14, }}>Selecione outro idioma para ver os capítulos traduzidos.</Label>
 
 
 
@@ -432,7 +431,7 @@ const ListChapters = ({ chapters, id, itm, chaptersRead, lidos, lg }) => {
 
                 </Column>}
                 keyExtractor={(item) => item.number}
-                renderItem={({ item }) => <Card item={item} id={id} itm={itm} chaptersRead={chaptersRead} lidos={lidos} total={chapters}  lg={lg}/>}
+                renderItem={({ item }) => <Card item={item} id={id} itm={itm} chaptersRead={chaptersRead} lidos={lidos} total={chapters} lg={lg} />}
             />
 
             <Pagination
@@ -455,7 +454,7 @@ const Card = ({ item, id, itm, chaptersRead, lidos, total, lg }) => {
         <Row style={{ backgroundColor: "#202020", paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 16, opacity: read ? 0.4 : 1, }}>
             {read && <Title style={{ fontSize: 12, backgroundColor: color.green, paddingVertical: 4, paddingHorizontal: 8, borderBottomRightRadius: 6, borderTopLeftRadius: 6, position: 'absolute', top: 0, left: 0, }}>Lido</Title>}
             <Row style={{ justifyContent: 'center', alignItems: 'center', }}>
-                <Title style={{ fontSize: 22, marginLeft: 20,  }}>#{item?.chapter}</Title>
+                <Title style={{ fontSize: 22, marginLeft: 20, }}>#{item?.chapter}</Title>
 
                 <Column style={{ marginLeft: 20, }}>
                     <Title style={{ fontSize: 14, fontFamily: 'Font_Medium', letterSpacing: -0.5, textTransform: 'lowercase' }}>{item?.title?.length > 23 ? item?.title?.slice(0, 23) + '...' : item?.title} </Title>

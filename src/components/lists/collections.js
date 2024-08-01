@@ -29,8 +29,8 @@ export default function CollectionsComponent() {
                 </Pressable>
                 </Column> : 
                 <Column>
-                <Title>Suas coleções</Title>
-                <Label>Veja o que você salvou</Label>
+                <Title style={{ fontSize: 22, letterSpacing: -1, }}>Suas coleções</Title>
+                <Label style={{ fontSize: 16, letterSpacing: -1, }}>Veja o que você salvou</Label>
                 </Column>}
                 <FlatList
                     style={{ marginVertical: 16, marginHorizontal: -20, }}
@@ -50,8 +50,8 @@ const Card = memo(({ item }) => {
     return (
         <Pressable onPress={() => { navigation.navigate('CollectionDetails', {item: item });}} style={{ backgroundColor: "#303030", borderRadius: 6, width: 162, marginRight: 16, padding: 12, }}>
             <Image source={{ uri: item.capa }} style={{ width: 142, height: 142, borderRadius: 6, alignSelf: 'center', marginBottom: 6, }} />
-            <Title style={{ fontSize: 18, }}>{item?.name.slice(0,12)}</Title>
-            <Label style={{ fontSize: 14, }}>{item?.mangas.length} • {item?.date}</Label>
+            <Title style={{ fontSize: 18, }}>{item?.name?.slice(0,12)}</Title>
+            <Label style={{ fontSize: 14, }}>{item?.mangas?.length} • {item?.date}</Label>
         </Pressable>
     )
 })

@@ -70,15 +70,26 @@ export default function CollectionsPage({ navigation }) {
             mangas: [],
             date: formatarData(new Date()),
         }
-        if (name?.length < 2 && capa?.length < 2) {
-            setError('Preencha o nome e a capa.');
+        if (name?.length == undefined) {
+            setError('Preencha o nome');
             setLoadingCreate(false);
             return;
-        } else {
-            createCollection(coll).then(res => {
-                setLoadingCreate(false);
-                modalCreate.current?.close();
-            });
+        }
+        if (capa?.length == undefined) {
+            setError('Selecione uma imagem');
+            setLoadingCreate(false);
+            return;
+        }
+        try {
+            const res = await createCollection(coll);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoadingCreate(false);
+            modalCreate.current?.close();
+            setCapa(backgrounds[0]);
+            setName();
+            setSelectedItems([]);
         }
     }
 
@@ -186,21 +197,14 @@ export default function CollectionsPage({ navigation }) {
 
             <Modal ref={modalCreate} snapPoints={[0.1, height]}>
                 {isOpen &&
-                    <Column style={{}}>
+                    <Column >
                         <Row style={{ justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, }}>
                             <Button onPress={() => { modalCreate.current?.close(); setisOpen(false); }} style={{ width: 42, height: 42, backgroundColor: '#fff', borderRadius: 100, justifyContent: 'center', alignItems: 'center', }} >
                                 <X name="arrowleft" size={20} color="#000" />
                             </Button>
-                            <Title style={{ fontSize: 28, textAlign: 'center', }}>Criar coleção</Title>
+                            <Title style={{ fontSize: 20, letterSpacing: -1, textAlign: 'center', }}>Criar coleção</Title>
                             <Column style={{ width: 42, height: 42, }} />
                         </Row>
-
-                        <MotiImage from={{ opacity: 0, scale: 0, rotate: '30deg' }} animate={{ opacity: 1, scale: 1, rotate: '0deg', }} transition={{ type: 'timing', duration: 300, }} source={{ uri: capa }}
-                            style={{ width: 160, height: 160, borderRadius: 8, marginVertical: 12, borderWidth: 4, backgroundColor: '#303030', alignSelf: 'center', }} />
-
-                        {error.length > 1 && <MotiView from={{ opacity: 0, }} animate={{ opacity: 1, }} transition={{ type: 'timing', duration: 300, delay: 200 }}>
-                            <Title style={{ fontSize: 28, textAlign: 'center', backgroundColor: "#EB575730", color: "#EB5757", borderRadius: 6, fontSize: 18, paddingVertical: 8, }}>{error}</Title>
-                        </MotiView>}
 
                         <Column style={{ paddingHorizontal: 20, }}>
                             <Title style={{ fontSize: 22, letterSpacing: -0.6, marginTop: 10, }}>Nome *</Title>
@@ -227,7 +231,7 @@ export default function CollectionsPage({ navigation }) {
                             </Row>
                         </Column>
 
-                        <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false}  onScroll={RNAnimated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: false, })}>
+                        <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false} onScroll={RNAnimated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: false, })}>
                             <Column style={{ width: width, paddingHorizontal: 20, }}>
                                 <FlatList
                                     data={backgrounds.slice(0, 9)}
@@ -237,9 +241,9 @@ export default function CollectionsPage({ navigation }) {
                                     contentContainerStyle={{ rowGap: 12, }}
                                     showsHorizontalScrollIndicator={false}
                                     renderItem={({ item }) =>
-                                        <Pressable onPress={() => { setCapa(item) }} style={{ flexGrow: 1, }}>
-                                            <MotiImage source={{ uri: item }} style={{ width: '100%', height: 100, borderRadius: 8, borderWidth: 4, borderColor: item === capa ? "#fff" : 'transparent', }} />
-                                        </Pressable>}
+                                        <Button onPress={() => { setCapa(item) }} style={{ flexGrow: 1, borderRadius: 16, }}>
+                                            <MotiImage source={{ uri: item }} style={{ width: '100%', height: 100, borderRadius: 16, borderWidth: 4, borderColor: item === capa ? "#fff" : 'transparent', }} />
+                                        </Button>}
                                 />
                             </Column>
                             <Column style={{ width: width, paddingHorizontal: 20, }}>
@@ -251,9 +255,9 @@ export default function CollectionsPage({ navigation }) {
                                     contentContainerStyle={{ rowGap: 12, }}
                                     showsHorizontalScrollIndicator={false}
                                     renderItem={({ item }) =>
-                                        <Pressable onPress={() => { setCapa(item) }} style={{ flexGrow: 1, }}>
-                                            <MotiImage source={{ uri: item }} style={{ width: '100%', height: 100, borderRadius: 8, borderWidth: 4, borderColor: item === capa ? "#fff" : 'transparent', }} />
-                                        </Pressable>}
+                                        <Button onPress={() => { setCapa(item) }} style={{ flexGrow: 1, borderRadius: 16, }}>
+                                            <MotiImage source={{ uri: item }} style={{ width: '100%', height: 100, borderRadius: 16, borderWidth: 4, borderColor: item === capa ? "#fff" : 'transparent', }} />
+                                        </Button>}
                                 />
                             </Column>
                         </ScrollView>
@@ -266,14 +270,17 @@ export default function CollectionsPage({ navigation }) {
                             ListFooterComponent={<Column style={{ width: 0, }} />}
                             keyExtractor={item => item.id}
                             showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{  columnGap: 12, }}
-                            renderItem={({ item }) => <Button onPress={() => handleItemClick(item)} style={{ justifyContent: 'center', paddingHorizontal: 12, paddingVertical: 10,  borderRadius: 100, backgroundColor: !selectedItems.some(selectedItem => selectedItem.id === item.id) ? "#303030" : '#ED274A', }}>
+                            contentContainerStyle={{ columnGap: 12, }}
+                            renderItem={({ item }) => <Button onPress={() => handleItemClick(item)} style={{ justifyContent: 'center', paddingHorizontal: 12, paddingVertical: 10, borderRadius: 100, backgroundColor: !selectedItems.some(selectedItem => selectedItem.id === item.id) ? "#303030" : '#ED274A', }}>
                                 <Title style={{ fontSize: 18, fontFamily: font.book, zIndex: 999, marginHorizontal: 10, textAlign: 'left' }}>{item?.name}</Title>
                             </Button>}
                         />
 
+                        {error && <MotiView from={{ opacity: 0, }} animate={{ opacity: 1, }} transition={{ type: 'timing', duration: 300, delay: 200 }}>
+                            <Title style={{ fontSize: 28, textAlign: 'center', backgroundColor: "#EB575730", color: "#EB5757", borderRadius: 6, fontSize: 18, paddingVertical: 8, marginHorizontal: 20, marginVertical: 12, }}>{error}</Title>
+                        </MotiView>}
 
-                        <Button onPress={create} style={{ paddingVertical: 10, paddingHorizontal: 40, alignSelf: 'center', backgroundColor: color.primary, borderRadius: 40, marginTop: 20, marginBottom: 30,  }}>
+                        <Button onPress={create} style={{ paddingVertical: 10, paddingHorizontal: 40, alignSelf: 'center', backgroundColor: color.primary, borderRadius: 40, marginTop: 20, marginBottom: 30, }}>
                             <Label style={{ color: "#fff", letterSpacing: -0.6, textAlign: 'center', fontFamily: font.bold, }}>Pronto</Label>
                         </Button>
                     </Column>}
