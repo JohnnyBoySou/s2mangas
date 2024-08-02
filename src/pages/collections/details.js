@@ -1,12 +1,13 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect, useContext, useMemo } from 'react';
 import { Column, Main, Scroll, Row, Title, Label, Button } from '@theme/global';
-import { Pressable, Dimensions, Animated as RAnimated, TextInput, Image, Animated as RNAnimated } from 'react-native';
+import { Pressable, Dimensions, Animated as RAnimated, TextInput, Animated as RNAnimated } from 'react-native';
 
+import { Image} from 'expo-image'
 //icons
 import { AntDesign, Feather, Ionicons, } from '@expo/vector-icons';
 
 //components
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { ExpandingDot } from "react-native-animated-pagination-dots";
 import { AnimatePresence, MotiImage, MotiView, useAnimationState } from 'moti';
 import { Skeleton } from 'moti/skeleton';
@@ -31,7 +32,7 @@ import Check from '@components/check';
 const { width, height } = Dimensions.get('window');
 
 export default function CollectionsDetailsPage({ navigation, route }) {
-    const itm = route.params?.item ? route.params?.item : { "capa": "https://i.pinimg.com/736x/35/d9/86/35d986ff686546bc4c505fc6e2c378ef.jpg", "date": "31 de Jul, 2024", "genres": [], "id": "909lw", "mangas": [], "name": "Gj" }
+    const itm = route.params?.item
     const [item, setItem] = useState(itm);
     const [loading, setLoading] = useState(true);
 
@@ -81,7 +82,7 @@ export default function CollectionsDetailsPage({ navigation, route }) {
 
     const [rate, setrate] = useState();
     const [lasted, setlasted] = useState();
-    
+
     const fetchData = async () => {
         setLoading(true)
         try {
@@ -91,11 +92,8 @@ export default function CollectionsDetailsPage({ navigation, route }) {
             setCapa(col?.capa)
             setName(col?.name)
             setSelectedItems(col?.genres)
-            const rate = col?.mangas.sort((a, b) => parseFloat(b.rate) - parseFloat(a.rate));
-            console.log(rate)
-            console.log(col.mangas)
-            setrate(rate)
-            setlasted(col.mangas)
+            const rates = col?.mangas.sort((a, b) => parseFloat(b.rate) - parseFloat(a.rate));
+            setrate(rates)
             setBackgrounds(res);
         } catch (error) {
             console.log(error)
@@ -104,11 +102,20 @@ export default function CollectionsDetailsPage({ navigation, route }) {
         }
     }
 
+    const isFocused = useIsFocused();
     useEffect(() => {
-
         fetchData();
-    }, [])
+    }, [isFocused])
 
+    const renderItem = useMemo(
+        () => ({ item }) => <Grid item={item} collection={itm?.id} />,
+        [itm?.id]
+      );
+    
+      const keyExtractor = useMemo(
+        () => (item) => item.id.toString(),
+        []
+      );
     
     if (loading) { return <SkeletonBody /> }
 
@@ -134,7 +141,7 @@ export default function CollectionsDetailsPage({ navigation, route }) {
 
                     <Column style={{ justifyContent: 'center', }}>
                         <Title style={{ fontSize: 22, letterSpacing: -1, }}>{item?.name}</Title>
-                        <Label style={{ fontSize: 16, marginVertical: 4, letterSpacing: -1, }}>{item?.mangas.length} mangás • {item?.date}</Label>
+                        <Label style={{ fontSize: 16, marginVertical: 4, letterSpacing: -1, }}>{item?.mangas?.length} mangás • {item?.date}</Label>
                     </Column>
                 </Column>
 
@@ -145,12 +152,22 @@ export default function CollectionsDetailsPage({ navigation, route }) {
                     </Button>
                 </Row>
                 <FlatList
-                    data={filter ? lasted : rate}
-                    keyExtractor={item => item.id}
+                    data={filter ? rate : item?.mangas}
+                    keyExtractor={keyExtractor}
+                    windowSize={5}
+                    getItemLayout={(data, index) => ({
+                      length: 80,
+                      offset: 80 * index,
+                      index,
+                    })}
                     showsHorizontalScrollIndicator={false}
+                    removeClippedSubviews
+                    maxToRenderPerBatch={5}
+                    initialNumToRender={5}
+                    updateCellsBatchingPeriod={100}
                     ListFooterComponent={<Column style={{ height: 30, }}></Column>}
                     ListEmptyComponent={<EmptyList />}
-                    renderItem={({ item }) => <Grid item={item} collection={itm?.id} />}
+                    renderItem={renderItem}
                 />
             </Scroll>
 
@@ -158,15 +175,15 @@ export default function CollectionsDetailsPage({ navigation, route }) {
                 <Column style={{ paddingHorizontal: 20, }}>
                     <Title style={{ fontSize: 24, marginBottom: 10, letterSpacing: -1, }}>Mostrar primeiro</Title>
 
-                    <Row style={{ justifyContent: 'space-between', alignItems: 'center', paddingVertical: 20, paddingHorizontal: 20, backgroundColor: '#303030', borderRadius: 20, marginVertical: 12,  }}>
+                    <Row style={{ justifyContent: 'space-between', alignItems: 'center', paddingVertical: 20, paddingHorizontal: 20, backgroundColor: '#303030', borderRadius: 20, marginVertical: 12, }}>
                         <Title style={{ fontSize: 18, color: "#fff", }}>Recém adicionados</Title>
-                        <Button onPress={() => {setFilter(true)}} style={{ borderRadius: 100, }}>
+                        <Button onPress={() => { setFilter(true) }} style={{ borderRadius: 100, }}>
                             <Check status={filter} />
                         </Button>
                     </Row>
-                    <Row style={{ justifyContent: 'space-between', alignItems: 'center', paddingVertical: 20, paddingHorizontal: 20, backgroundColor: '#303030', borderRadius: 20,}}>
+                    <Row style={{ justifyContent: 'space-between', alignItems: 'center', paddingVertical: 20, paddingHorizontal: 20, backgroundColor: '#303030', borderRadius: 20, }}>
                         <Title style={{ fontSize: 18, color: "#fff", }}>Melhor nota</Title>
-                        <Button onPress={() => {setFilter(false)}} style={{ borderRadius: 100, }}>
+                        <Button onPress={() => { setFilter(false) }} style={{ borderRadius: 100, }}>
                             <Check status={!filter} />
                         </Button>
                     </Row>
@@ -272,69 +289,26 @@ export default function CollectionsDetailsPage({ navigation, route }) {
 }
 
 
-const DraggableImage = ({ source }) => {
-    const translateX = useSharedValue(0);
-    const translateY = useSharedValue(0);
-
-    const panGesture = Gesture.Pan()
-        .onUpdate((event) => {
-            translateX.value = event.translationX;
-            translateY.value = event.translationY;
-        })
-        .onEnd(() => {
-            translateX.value = withSpring(0, { damping: 10 });
-            translateY.value = withSpring(0, { damping: 10 });
-        });
-
-    const animatedStyle = useAnimatedStyle(() => ({
-        transform: [
-            { translateX: translateX.value },
-            { translateY: translateY.value }
-        ],
-    }));
-
-    return (
-        <GestureHandlerRootView>
-            <GestureDetector gesture={panGesture}>
-                <Animated.Image
-                    source={{ uri: source.uri }}
-                    resizeMode="cover"
-                    style={[
-                        {
-                            width: 168,
-                            height: 168,
-                            borderRadius: 12,
-                            alignSelf: 'center',
-                            zIndex: 99,
-                            marginTop: 20,
-                            marginBottom: 20,
-                        },
-                        animatedStyle,
-                    ]}
-                />
-            </GestureDetector>
-        </GestureHandlerRootView>
-    );
-};
-
-
-const Grid = ({ item, collection, }) => {
+const Grid = ({ item, collection }) => {
     const navigation = useNavigation();
-    const SWIPE_THRESHOLD = -115
-    const MAX_TRANSLATE_X = -130;
 
-    const { color } = useContext(ThemeContext)
+    // Memorize constants with useMemo
+    const SWIPE_THRESHOLD = useMemo(() => -115, []);
+    const MAX_TRANSLATE_X = useMemo(() => -130, []);
+
+    const { color } = useContext(ThemeContext);
     const [remove, setremove] = useState(false);
     const translateX = useSharedValue(0);
-    const heightTam  = useSharedValue(65)
+    const heightTam = useSharedValue(80);
     const opacityVal = useSharedValue(1);
+
     const removeManga = async () => {
         try {
-            const res = await removeMangaInCollection(collection, item?.id)
+            await removeMangaInCollection(collection, item?.id);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
+    };
 
     const panGesture = Gesture.Pan()
         .onUpdate((event) => {
@@ -343,20 +317,20 @@ const Grid = ({ item, collection, }) => {
                 translateX.value = MAX_TRANSLATE_X;
             }
             if (translateX.value < -80) {
-                runOnJS(setremove)(true)
+                runOnJS(setremove)(true);
             } else {
-                runOnJS(setremove)(false)
+                runOnJS(setremove)(false);
             }
         })
         .onEnd(() => {
             if (translateX.value < SWIPE_THRESHOLD) {
-                translateX.value = withSpring(0, { stiffness: 150, damping: 25 },)
+                translateX.value = withSpring(0, { stiffness: 150, damping: 25 });
                 opacityVal.value = withSpring(0, { stiffness: 150, damping: 25 }, () => {
                     heightTam.value = withSpring(0, { stiffness: 150, damping: 25 });
                     runOnJS(removeManga)();
-                })
+                });
             } else {
-                runOnJS(setremove)(false)
+                runOnJS(setremove)(false);
                 translateX.value = withSpring(0);
             }
         });
@@ -371,32 +345,32 @@ const Grid = ({ item, collection, }) => {
         <GestureHandlerRootView>
             <GestureDetector gesture={panGesture}>
                 <Animated.View style={[{ flexDirection: 'row' }, rStyle]}>
-                    <Row style={{ justifyContent: 'space-between', alignItems: 'center', width: width, paddingHorizontal: 20,  }}>
+                    <Row style={{ justifyContent: 'space-between', alignItems: 'center', width: width, paddingHorizontal: 20 }}>
                         <Row>
-                            <MotiImage source={{ uri: item.capa }} style={{ width: 46, height: 46, borderRadius: 4, }} />
-                            <Column style={{ justifyContent: 'center', marginLeft: 12, }}>
-                                <Title style={{ fontSize: 18, letterSpacing: -1, }}>{item?.name.length > 24 ? item?.name?.slice(0, 24) + '...' : item?.name}</Title>
-                                <Label style={{ fontSize: 14, letterSpacing: -0.5, }}>{item?.rate} • {item?.type}</Label>
+                            <Image source={{ uri: item.capa }} style={{ width: 54, height: 66, borderRadius: 6 }} />
+                            <Column style={{ justifyContent: 'center', marginLeft: 12 }}>
+                                <Title style={{ fontSize: 18, letterSpacing: -1 }}>{item?.name.length > 24 ? item?.name?.slice(0, 24) + '...' : item?.name}</Title>
+                                <Label style={{ fontSize: 14, letterSpacing: -0.5 }}>{item?.rate} • {item?.type}</Label>
                             </Column>
                         </Row>
-                        <Button style={{ width: 32, height: 32, borderRadius: 100, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', }} onPress={() => { navigation.navigate('MangaDetails', { id: item.id }); }} >
+                        <Button style={{ width: 32, height: 32, borderRadius: 100, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center' }} onPress={() => { navigation.navigate('MangaDetails', { id: item.id }); }}>
                             <ArrowRight size={18} color="#000" />
                         </Button>
                     </Row>
-                    <Column style={{ height: 1, backgroundColor: remove ? color.red : '#303030', width: 200, height: 65, borderRadius: 12, justifyContent: 'center', paddingLeft: 24, }} >
+                    <Column style={{ height: 1, backgroundColor: remove ? color.red : '#303030', width: 200, height: 80, borderRadius: 12, justifyContent: 'center', paddingLeft: 24 }}>
                         <Trash size={24} color={remove ? "#fff" : color.red} />
                     </Column>
                 </Animated.View>
             </GestureDetector>
         </GestureHandlerRootView>
-    )
-}
+    );
+};
 
 const SkeletonBody = () => {
     return (
         <Main>
             <Column style={{ paddingHorizontal: 20, paddingVertical: 50, }}>
-                <Row style={{ justifyContent: 'center', alignItems: 'center',  }}>
+                <Row style={{ justifyContent: 'center', alignItems: 'center', }}>
                     <Skeleton width={158} height={158} />
                 </Row>
 
@@ -497,6 +471,50 @@ const EmptyList = () => {
 const Spacer = ({ height = 16, width = 16, }) => <Column style={{ height, width }} />
 
 
+const DraggableImage = ({ source }) => {
+    const translateX = useSharedValue(0);
+    const translateY = useSharedValue(0);
+
+    const panGesture = Gesture.Pan()
+        .onUpdate((event) => {
+            translateX.value = event.translationX;
+            translateY.value = event.translationY;
+        })
+        .onEnd(() => {
+            translateX.value = withSpring(0, { damping: 10 });
+            translateY.value = withSpring(0, { damping: 10 });
+        });
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [
+            { translateX: translateX.value },
+            { translateY: translateY.value }
+        ],
+    }));
+
+    return (
+        <GestureHandlerRootView>
+            <GestureDetector gesture={panGesture}>
+                <Animated.Image
+                    source={{ uri: source.uri }}
+                    resizeMode="cover"
+                    style={[
+                        {
+                            width: 168,
+                            height: 168,
+                            borderRadius: 12,
+                            alignSelf: 'center',
+                            zIndex: 99,
+                            marginTop: 20,
+                            marginBottom: 20,
+                        },
+                        animatedStyle,
+                    ]}
+                />
+            </GestureDetector>
+        </GestureHandlerRootView>
+    );
+};
 
 /* 
 

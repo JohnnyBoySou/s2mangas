@@ -2,12 +2,14 @@ import axios from 'axios';
 const baseUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export async function getChapters(mangaID, lg = 'pt-br') {
+    console.log(lg)
     try {
         const resp = await axios({
             method: 'GET',
             url: `${baseUrl}/manga/${mangaID}/feed`,
             params: {
                 translatedLanguage: [lg],
+                contentRating: ['safe', 'suggestive', 'erotica', 'pornographic'],
                 order: {
                     chapter: 'desc',
                 },

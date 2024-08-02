@@ -14,6 +14,8 @@ import NSFWPage from '@pages/tabs/search/nsfw';
 import MangalistDetailsPage from '@pages/mangalists/details';
 import MangaDetailsPage from '@pages/manga/details';
 import MangaPages from '@pages/manga/pages';
+import MangaCapa from '@pages/manga/capa';
+
 import NovidadesPage from '@pages/novidades';
 
 import PreferencesPage from '@pages/auth/preferences';
@@ -41,6 +43,7 @@ export default function Router() {
             
             <Stack.Screen name="MangaDetails" component={MangaDetailsPage} options={{...TransitionPresets.ModalSlideFromBottomIOS   , }}/>
             <Stack.Screen name="MangaPages" component={MangaPages} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
+            <Stack.Screen name="MangaCapa" component={MangaCapa} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             
             <Stack.Screen name="Onboarding" component={OnboardingPage} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>
             <Stack.Screen name="Async" component={AsyncStatic} options={{...TransitionPresets.ModalSlideFromBottomIOS  , }}/>

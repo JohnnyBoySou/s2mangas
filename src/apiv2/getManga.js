@@ -9,6 +9,7 @@ export async function getManga(mangaID = '8f3e1818-a015-491d-bd81-3addc4d7d56a')
             url: `${baseUrl}/manga/${mangaID}`,
             params: {
                 includes: ['cover_art',],
+                
             }
         });
         const stat = await axios({
