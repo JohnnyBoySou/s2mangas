@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext, useMemo } from 'react';
 import { Column, Main, Scroll, Row, Title, Label, Button } from '@theme/global';
 import { Pressable, Dimensions, Animated as RAnimated, TextInput, Animated as RNAnimated } from 'react-native';
 
-import { Image} from 'expo-image'
+import { Image } from 'expo-image'
 //icons
 import { AntDesign, Feather, Ionicons, } from '@expo/vector-icons';
 
@@ -110,13 +110,13 @@ export default function CollectionsDetailsPage({ navigation, route }) {
     const renderItem = useMemo(
         () => ({ item }) => <Grid item={item} collection={itm?.id} />,
         [itm?.id]
-      );
-    
-      const keyExtractor = useMemo(
+    );
+
+    const keyExtractor = useMemo(
         () => (item) => item.id.toString(),
         []
-      );
-    
+    );
+
     if (loading) { return <SkeletonBody /> }
 
     return (
@@ -156,9 +156,9 @@ export default function CollectionsDetailsPage({ navigation, route }) {
                     keyExtractor={keyExtractor}
                     windowSize={5}
                     getItemLayout={(data, index) => ({
-                      length: 80,
-                      offset: 80 * index,
-                      index,
+                        length: 80,
+                        offset: 80 * index,
+                        index,
                     })}
                     showsHorizontalScrollIndicator={false}
                     removeClippedSubviews
@@ -285,6 +285,19 @@ export default function CollectionsDetailsPage({ navigation, route }) {
             </Modal>
 
         </Main>
+    )
+}
+
+
+const AddMangas = () => {
+    return (
+        <Column>
+            <Scroll pagingEnabled>
+                <FlatList style={{ flex: 1, backgroundColor: 'red', }} />
+                <FlatList style={{ flex: 1, backgroundColor: 'blue', }} />
+                <FlatList style={{ flex: 1, backgroundColor: 'green', }} />
+            </Scroll>
+        </Column>
     )
 }
 
