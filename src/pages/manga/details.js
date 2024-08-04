@@ -55,6 +55,12 @@ export default function MangaDetailsPage({ route, navigation }) {
 
     const [lg, setlg] = useState('pt-br');
 
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getFullYear();
+    const date = `${day}/${month}/${year}`
+
     const itm = {
         name: item?.name,
         capa: item?.capa,
@@ -174,11 +180,7 @@ export default function MangaDetailsPage({ route, navigation }) {
 
     const scrollTop = () => { scrollMain.current?.scrollTo({ x: 0, y: 0, animated: true }); }
     const scrollY = useSharedValue(0);
-    const currentDate = new Date();
-    const day = currentDate.getDate();
-    const month = currentDate.getMonth() + 1;
-    const year = currentDate.getFullYear();
-    const date = `${day}/${month}/${year}`
+    
 
 
     const bts = ['Capitulos', 'Marcadores', 'Capas'];
@@ -196,12 +198,11 @@ export default function MangaDetailsPage({ route, navigation }) {
                     <LinearGradient colors={['transparent', '#171717']} style={{ width: '100%', height: 200, marginTop: -198, }} />
 
 
-                    <Column style={{ marginHorizontal: 40, }}>
+                    <Column style={{ marginHorizontal: 30, }}>
                         <Title style={{ fontSize: 32, marginBottom: 5,  fontFamily: 'Font_Bold', letterSpacing: -1, }}>{item?.name}</Title>
-                        <Button onPress={() => { modalDesc.current?.expand() }} style={{ borderRadius: 12, }}>
+                        <Button onPress={() => { modalDesc.current?.expand() }} style={{ borderRadius: 12, paddingVertical: 8, paddingHorizontal: 10, marginHorizontal: -10,}}>
                             <Label style={{ fontSize: 16, lineHeight: 20, }}>{item?.description?.length > 200 ? item?.description?.slice(0, 200) + '...' : item?.description}</Label>
                         </Button>
-
                         <Row style={{ alignItems: 'center', marginTop: 20, }}>
                             <Label style={{ backgroundColor: cl, color: "#000", fontSize: 16, lineHeight: 20, borderRadius: 100, paddingVertical: 10, paddingHorizontal: 10, }}>✶ {item?.type} ✦</Label>
                             <Row style={{ backgroundColor: "#303030", borderRadius: 100, justifyContent: 'center', marginHorizontal: 10, alignItems: 'center', }}>
@@ -259,7 +260,7 @@ export default function MangaDetailsPage({ route, navigation }) {
                         </Button>
                 </Row>
 
-                <Row style={{ paddingHorizontal: 30, marginTop: 40, }}>
+                <Row style={{ paddingHorizontal: 20, marginTop: 40, }}>
                     {bts.map((bt, index) => (
                         <Button key={index} onPress={() => setType(bt)} style={{ paddingVertical: 10, paddingHorizontal: 16, marginLeft: 10, backgroundColor: bt === type ? color.light : color.off, borderRadius: 100, }}>
                             <Label style={{ fontSize: 18, color: bt === type ? color.off : color.title, fontFamily: bt === type ? font.bold : font.book, letterSpacing: -0.6, }}>{bt}</Label>
@@ -269,6 +270,8 @@ export default function MangaDetailsPage({ route, navigation }) {
                 {type == 'Marcadores' && <Marcadores marks={marks} id={id} setlidos={setlidos} lidos={lidos} loadingChapters={loadingChapters} />}
                 {type == 'Capitulos' && <Capitulos chapters={chapters} itm={itm} id={id} lg={lg} chaptersRead={chaptersRead} lidos={lidos} setlidos={setlidos} loadingChapters={loadingChapters} />}
                 {type == 'Capas' && <Capas covers={covers} />}
+
+                <Column style={{ height: 30, }}></Column>
             </Scroll>
 
             <AnimatePresence>
@@ -292,6 +295,9 @@ export default function MangaDetailsPage({ route, navigation }) {
                     </MotiView>}
 
             </AnimatePresence>
+
+
+
 
             <Modal ref={modalAdd} snapPoints={[0.1, 600]}>
                 <ModalAddCollection item={itm} />
@@ -421,7 +427,7 @@ const Capitulos = ({ chapters, itm, id, lg, chaptersRead, lidos, setlidos, loadi
     return (
         <>
             {chapters?.length > 0 ? <>
-                <Column style={{ paddingHorizontal: 40, marginTop: 20, borderRadius: 16, }}>
+                <Column style={{ paddingHorizontal:30, marginTop: 20, borderRadius: 16, }}>
                     <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
                         <Column>
                             <Title style={{ fontSize: 20, letterSpacing: -1, marginTop: 8, }}>Recentes</Title>
@@ -442,7 +448,7 @@ const Capitulos = ({ chapters, itm, id, lg, chaptersRead, lidos, setlidos, loadi
                     showsVerticalScrollIndicator={false}
                     renderItem={({ item }) => <Card item={item} id={id} itm={itm} lg={lg} />}
                 />
-                <Column style={{ marginTop: 20, paddingHorizontal: 40, }}>
+                <Column style={{ marginTop: 20, paddingHorizontal: 30, }}>
                     <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
                         <Column>
                             <Title style={{ fontSize: 20, letterSpacing: -1, marginTop: 8, }}>Todos ({chapters?.length})</Title>
@@ -534,7 +540,7 @@ const Card = ({ item, id, itm, chaptersRead, lidos, total, lg }) => {
     const read = chaptersRead?.includes(item.chapter);
     const navigation = useNavigation();
 
-    const MAX_TRANSLATE_X = useMemo(() => 75, []);
+    const MAX_TRANSLATE_X = useMemo(() => 50, []);
     const translateX = useSharedValue(0);
     const scale = useSharedValue(-50)
 
@@ -544,7 +550,7 @@ const Card = ({ item, id, itm, chaptersRead, lidos, total, lg }) => {
             try {
                 const res = await verifyMarkToManga(id, item.id)
                 if (res) {
-                    scale.value = withSpring(-15, { stiffness: 150, damping: 25 });
+                    scale.value = withSpring(-25, { stiffness: 150, damping: 25 });
                 } else {
                     scale.value = withSpring(-50, { stiffness: 150, damping: 25 });
                 }
@@ -560,7 +566,7 @@ const Card = ({ item, id, itm, chaptersRead, lidos, total, lg }) => {
             translateX.value = Math.min(Math.max(event.translationX, -MAX_TRANSLATE_X), MAX_TRANSLATE_X);
 
             if (translateX.value > MAX_TRANSLATE_X) {
-                scale.value = withSpring(-15, { stiffness: 150, damping: 25 });
+                scale.value = withSpring(-25, { stiffness: 150, damping: 25 });
             }
         })
         .onEnd(() => {
@@ -570,7 +576,7 @@ const Card = ({ item, id, itm, chaptersRead, lidos, total, lg }) => {
                 translateX.value = withSpring(0, { stiffness: 150, damping: 25 });
             } else {
                 runOnJS(addMarkToManga)(id, item);
-                scale.value = withSpring(-15, { stiffness: 150, damping: 25 });
+                scale.value = withSpring(-25, { stiffness: 150, damping: 25 });
                 translateX.value = withSpring(0, { stiffness: 150, damping: 25 });
             }
         });
@@ -591,9 +597,9 @@ const Card = ({ item, id, itm, chaptersRead, lidos, total, lg }) => {
                 <Animated.View style={[{ justifyContent: 'center', alignItems: 'flex-end', paddingRight: 8, width: 46, zIndex: 99, borderRadius: 12, top: 0, bottom: 10, position: 'absolute', backgroundColor: color.blue, }, rButton]}>
                     <Bookmark size={18} color="#fff" />
                 </Animated.View>
-                <Animated.View style={[{ flexDirection: 'row', marginHorizontal: 40, flexGrow: 2, }, rStyle]}>
+                <Animated.View style={[{ flexDirection: 'row', marginHorizontal: 30, flexGrow: 2, }, rStyle]}>
                     <Row style={{ backgroundColor: "#202020", flexGrow: 2, paddingVertical: 10, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, borderRadius: 16, opacity: read ? 0.4 : 1, }}>
-                        {read && <Title style={{ fontSize: 12, backgroundColor: color.green, paddingVertical: 4, paddingHorizontal: 8, borderBottomRightRadius: 6, borderTopLeftRadius: 6, position: 'absolute', top: 0, left: 0, }}>Lido</Title>}
+                        {read && <Title style={{ fontSize: 12, backgroundColor: color.green, paddingVertical: 4, paddingHorizontal: 8, borderBottomRightRadius: 6, borderTopLeftRadius: 6, position: 'absolute', top: 0, left: 0, zIndex: 99, }}>Lido</Title>}
 
                         <Row>
                             <GestureDetector gesture={panGesture} >

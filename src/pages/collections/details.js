@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useContext, useMemo } from 'react';
 import { Column, Main, Scroll, Row, Title, Label, Button } from '@theme/global';
-import { Pressable, Dimensions, Animated as RAnimated, TextInput, Animated as RNAnimated } from 'react-native';
+import { Pressable, Dimensions, Animated as RAnimated, TextInput, Animated as RNAnimated, ActivityIndicator } from 'react-native';
 
 import { Image } from 'expo-image'
 //icons
@@ -22,12 +22,19 @@ import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withSpring,
+    withTiming,
     runOnJS,
+    FadeInUp,
 } from 'react-native-reanimated';
-import { ArrowRight, Trash, X } from 'lucide-react-native';
+import { ArrowRight, GripVertical, Plus, Trash, X } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { tags } from '@hooks/tags';
 import Check from '@components/check';
+import requestRate from '@apiv1/manga/rate';
+import requestWeekend from '@apiv1/manga/weekend';
+import requestLasted from '@apiv1/manga/lasted';
+import { useTheme } from '@hooks/theme';
+import { addMangasToCollection } from './../../hooks/collections';
 
 const { width, height } = Dimensions.get('window');
 
@@ -45,6 +52,9 @@ export default function CollectionsDetailsPage({ navigation, route }) {
 
     const modalFilters = useRef(null);
     const modalEdit = useRef(null);
+    const modalAdd = useRef(null);
+
+
     const [confirm, setConfirm] = useState(false);
     const [filter, setFilter] = useState(false);
     const [backgrounds, setBackgrounds] = useState();
@@ -81,7 +91,6 @@ export default function CollectionsDetailsPage({ navigation, route }) {
     }
 
     const [rate, setrate] = useState();
-    const [lasted, setlasted] = useState();
 
     const fetchData = async () => {
         setLoading(true)
@@ -140,8 +149,13 @@ export default function CollectionsDetailsPage({ navigation, route }) {
                     </Column>
 
                     <Column style={{ justifyContent: 'center', }}>
-                        <Title style={{ fontSize: 22, letterSpacing: -1, }}>{item?.name}</Title>
-                        <Label style={{ fontSize: 16, marginVertical: 4, letterSpacing: -1, }}>{item?.mangas?.length} mangás • {item?.date}</Label>
+                        <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
+                            <Title style={{ fontSize: 22, letterSpacing: -1, }}>{item?.name}</Title>
+                            <Button onPress={() => { modalAdd.current?.expand() }} style={{ width: 42, height: 42, backgroundColor: '#fff', borderRadius: 100, justifyContent: 'center', alignItems: 'center',  }} >
+                                <Plus size={20} color="#000"/>
+                            </Button>
+                        </Row>
+                        <Label style={{ fontSize: 16, marginVertical: -4, letterSpacing: -1, }}>{item?.mangas?.length} mangás • {item?.date}</Label>
                     </Column>
                 </Column>
 
@@ -164,12 +178,22 @@ export default function CollectionsDetailsPage({ navigation, route }) {
                     removeClippedSubviews
                     maxToRenderPerBatch={5}
                     initialNumToRender={5}
-                    updateCellsBatchingPeriod={100}
-                    ListFooterComponent={<Column style={{ height: 30, }}></Column>}
+                    ListFooterComponent={<Row style={{ justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 20, marginVertical: 12, borderRadius: 12, backgroundColor: '#252525', marginHorizontal: 20, }}>
+                        <Title style={{ fontSize: 18, }}>Que tal adicionar {'\n'}mais mangás?</Title>
+                        <Button onPress={() => { modalAdd.current?.expand() }} style={{ paddingHorizontal: 20, paddingVertical: 12, backgroundColor: '#fff', borderRadius: 100, alignSelf: 'center', }} >
+                            <Label style={{ textAlign: 'center', fontFamily: font.bold, letterSpacing: -1, color: '#000' }}>Adicionar</Label>
+                        </Button>
+                    </Row>}
                     ListEmptyComponent={<EmptyList />}
                     renderItem={renderItem}
                 />
             </Scroll>
+
+            <Modal ref={modalAdd} snapPoints={[0.1, height]} >
+                <Column style={{}}>
+                    <AddMangas collection={itm?.id} />
+                </Column>
+            </Modal>
 
             <Modal ref={modalFilters} snapPoints={[0.1, 260]} >
                 <Column style={{ paddingHorizontal: 20, }}>
@@ -289,14 +313,83 @@ export default function CollectionsDetailsPage({ navigation, route }) {
 }
 
 
-const AddMangas = () => {
+const AddMangas = ({ collection }) => {
+    const { color } = useTheme();
+    const [loading, setLoading] = useState(false);
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const [lastedRes, rateRes, weekendRes] = await Promise.all([
+                    requestLasted(),
+                    requestRate(),
+                    requestWeekend(),
+                ]);
+
+                setData({ lasted: lastedRes.mangas, rate: rateRes.mangas, weekend: weekendRes.mangas },);
+                console.log(data)
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (loading) { return <Column style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 30, }} ><ActivityIndicator color={color.primary} size={32} /></Column>; }
+
     return (
         <Column>
-            <Scroll pagingEnabled>
-                <FlatList style={{ flex: 1, backgroundColor: 'red', }} />
-                <FlatList style={{ flex: 1, backgroundColor: 'blue', }} />
-                <FlatList style={{ flex: 1, backgroundColor: 'green', }} />
-            </Scroll>
+            <ScrollView pagingEnabled style={{ width: '100%', height: '100%', }} horizontal>
+                <Column style={{ borderRadius: 16, overflow: 'hidden', width: width, paddingHorizontal: 20, }}>
+                    <Title style={{ fontSize: 24, letterSpacing: -1, textAlign: 'center', marginTop: 8, }}>Recém adicionados</Title>
+                    <Label style={{ letterSpacing: -1, marginBottom: 18, textAlign: 'center', }}>Chegaram faz pouco tempo</Label>
+                    <Column style={{ backgroundColor: '#171717', borderRadius: 16, paddingHorizontal: 20, paddingVertical: 14, height: height * 0.8, }}>
+
+                        <FlatList
+                            data={data.lasted}
+                            keyExtractor={item => item.id}
+                            numColumns={1}
+                            showsVerticalScrollIndicator={false}
+                            renderItem={({ item }) => <GridAdd item={item} collection={collection} />}
+                            style={{}} />
+                    </Column>
+                </Column>
+
+                <Column style={{ borderRadius: 16, overflow: 'hidden', width: width, paddingHorizontal: 20, }}>
+                    <Title style={{ fontSize: 24, letterSpacing: -1, textAlign: 'center', marginTop: 8, }}>Melhores notas</Title>
+                    <Label style={{ letterSpacing: -1, marginBottom: 18, textAlign: 'center', }}>Qualidade indiscutível</Label>
+                    <Column style={{ backgroundColor: '#171717', borderRadius: 16, paddingHorizontal: 20, paddingVertical: 14, height: height * 0.8, }}>
+
+                        <FlatList
+                            data={data.rate}
+                            keyExtractor={item => item.id}
+                            numColumns={1}
+                            showsVerticalScrollIndicator={false}
+                            renderItem={({ item }) => <GridAdd item={item} collection={collection} />}
+                            style={{}} />
+                    </Column>
+                </Column>
+
+                <Column style={{ borderRadius: 16, overflow: 'hidden', width: width, paddingHorizontal: 20, }}>
+                    <Title style={{ fontSize: 24, letterSpacing: -1, textAlign: 'center', marginTop: 8, }}>Em alta</Title>
+                    <Label style={{ letterSpacing: -1, marginBottom: 18, textAlign: 'center', }}>Mais acessados na semana</Label>
+                    <Column style={{ backgroundColor: '#171717', borderRadius: 16, paddingHorizontal: 20, paddingVertical: 14, height: height * 0.8, }}>
+                        <FlatList
+                            data={data.weekend}
+                            keyExtractor={item => item.id}
+                            numColumns={1}
+                            showsVerticalScrollIndicator={false}
+                            renderItem={({ item }) => <GridAdd item={item} collection={collection} />}
+                            style={{}} />
+                    </Column>
+                </Column>
+
+            </ScrollView>
         </Column>
     )
 }
@@ -356,25 +449,25 @@ const Grid = ({ item, collection }) => {
 
     return (
         <GestureHandlerRootView>
-            <GestureDetector gesture={panGesture}>
-                <Animated.View style={[{ flexDirection: 'row' }, rStyle]}>
-                    <Row style={{ justifyContent: 'space-between', alignItems: 'center', width: width, paddingHorizontal: 20 }}>
-                        <Row>
-                            <Image source={{ uri: item.capa }} style={{ width: 54, height: 66, borderRadius: 6 }} />
-                            <Column style={{ justifyContent: 'center', marginLeft: 12 }}>
-                                <Title style={{ fontSize: 18, letterSpacing: -1 }}>{item?.name.length > 24 ? item?.name?.slice(0, 24) + '...' : item?.name}</Title>
-                                <Label style={{ fontSize: 14, letterSpacing: -0.5 }}>{item?.rate} • {item?.type}</Label>
-                            </Column>
-                        </Row>
-                        <Button style={{ width: 32, height: 32, borderRadius: 100, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center' }} onPress={() => { navigation.navigate('MangaDetails', { id: item.id }); }}>
-                            <ArrowRight size={18} color="#000" />
-                        </Button>
+            <Animated.View style={[{ flexDirection: 'row' }, rStyle]}>
+                <Row style={{ justifyContent: 'space-between', alignItems: 'center', width: width, paddingHorizontal: 20 }}>
+                    <Row>
+                        <Image source={{ uri: item.capa }} style={{ width: 54, height: 66, borderRadius: 6 }} />
+                        <Column style={{ justifyContent: 'center', marginLeft: 12 }}>
+                            <Title style={{ fontSize: 18, letterSpacing: -1 }}>{item?.name.length > 24 ? item?.name?.slice(0, 24) + '...' : item?.name}</Title>
+                            <Label style={{ fontSize: 14, letterSpacing: -0.5 }}>{item?.rate} • {item?.type}</Label>
+                        </Column>
                     </Row>
-                    <Column style={{ height: 1, backgroundColor: remove ? color.red : '#303030', width: 200, height: 80, borderRadius: 12, justifyContent: 'center', paddingLeft: 24 }}>
-                        <Trash size={24} color={remove ? "#fff" : color.red} />
-                    </Column>
-                </Animated.View>
-            </GestureDetector>
+                    <GestureDetector gesture={panGesture} >
+                        <Column style={{ backgroundColor: '#202020', paddingVertical: 12, borderRadius: 12, width: 32, marginVertical: -12, justifyContent: 'center', alignItems: 'center', }}>
+                            <GripVertical size={24} color="#fff" />
+                        </Column>
+                    </GestureDetector>
+                </Row>
+                <Column style={{ height: 1, backgroundColor: remove ? color.red : '#303030', width: 200, height: 80, borderRadius: 12, justifyContent: 'center', paddingLeft: 24 }}>
+                    <Trash size={24} color={remove ? "#fff" : color.red} />
+                </Column>
+            </Animated.View>
         </GestureHandlerRootView>
     );
 };
@@ -528,6 +621,85 @@ const DraggableImage = ({ source }) => {
         </GestureHandlerRootView>
     );
 };
+
+
+
+
+const GridAdd = ({ item, collection }) => {
+    const { color } = useTheme();
+
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getFullYear();
+    const date = `${day}/${month}/${year}`
+    const itm = {
+        name: item?.name,
+        capa: item?.capa,
+        rate: item?.score,
+        type: item?.type,
+        id: item?.id,
+        chapter: 0,
+        long: item?.long,
+        date: date,
+    };
+
+
+    const translateX = useSharedValue(0);
+    const heightTam = useSharedValue(80);
+    const opacityVal = useSharedValue(1);
+    const rotateVal = useSharedValue(0);
+    const addManga = async () => {
+        try {
+            const res = await addMangasToCollection(collection, itm);
+            if (res) {
+                opacityVal.value = withSpring(0, { stiffness: 150, damping: 25 }, () => {
+                    heightTam.value = withSpring(0, { stiffness: 150, damping: 25 });
+                });
+            } else {
+                rotateVal.value = withTiming(45)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const rStyle = useAnimatedStyle(() => ({
+        transform: [{ translateX: translateX.value }],
+        height: heightTam.value,
+        opacity: opacityVal.value,
+    }));
+
+    const rotateStyle = useAnimatedStyle(() => ({
+        transform: [{ rotate: `${rotateVal.value}deg` }],
+    }));
+
+    return (
+        <Animated.View entering={FadeInUp} style={[{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }, rStyle]}>
+            <Row>
+                <Image source={{ uri: item.capa }} style={{ width: 54, height: 66, borderRadius: 6 }} />
+                <Column style={{ justifyContent: 'center', marginLeft: 12 }}>
+                    <Title style={{ fontSize: 18, letterSpacing: -1 }}>{item?.name.length > 18 ? item?.name?.slice(0, 18) + '...' : item?.name}</Title>
+                    <Label style={{ fontSize: 14, letterSpacing: -0.5 }}>{item?.score} • {item?.type}</Label>
+                </Column>
+            </Row>
+            <Button onPress={addManga} style={{ backgroundColor: '#FFF', height: 42, borderRadius: 12, width: 42, justifyContent: 'center', alignItems: 'center', }}>
+                <Animated.View style={[rotateStyle]}>
+                    <Plus size={24} color="#000" />
+                </Animated.View>
+            </Button>
+        </Animated.View>
+    );
+};
+
+
+
+
+
+
+
+
+
 
 /* 
 

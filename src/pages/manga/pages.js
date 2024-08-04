@@ -6,7 +6,7 @@ import { MotiImage, MotiView, } from 'moti';
 const { width: SCREEN_WIDTH, height } = Dimensions.get('window');
 import Check from '@components/check';
 //icons
-import { ArrowLeft, CircleX, ImageOff, Image as ImageOn, Newspaper } from 'lucide-react-native';
+import { ArrowLeft, CircleX, Combine, Home, ImageOff, Image as ImageOn, Library, Newspaper, Search } from 'lucide-react-native';
 
 //hooks
 import { getPages } from '@apiv2/getPages';
@@ -92,7 +92,7 @@ export default function MangaPages({ route, navigation }) {
     const heightFilter = useSharedValue(80);
     const toggleFiler = () => {
         if (heightFilter.value === 80) {
-            heightFilter.value = withTiming(220)
+            heightFilter.value = withTiming(230)
         } else {
             heightFilter.value = withTiming(80)
         }
@@ -105,6 +105,7 @@ export default function MangaPages({ route, navigation }) {
     })
 
     const opacityValues = ['0%', '30%', '50%', '70%', '90%',];
+    const filterColors = ['#f4a261', '#3a86ff', '#c8b6ff', '#ef476f', '#38b000', '#262425']
 
     return (
         <Main style={{ justifyContent: 'center', alignItems: 'center', paddingTop: 0, }}>
@@ -122,26 +123,23 @@ export default function MangaPages({ route, navigation }) {
                     style={{ zIndex: -1, }}
                     renderItem={({ item }) => <ImagesVertical url={item} setScrollEnabled={setScrollEnabled} blur={blur} filter={filter} opacity={opacity} />}
                 />}
-            <Modal ref={modalDetails} snapPoints={[84, height]} style={{ zIndex: 99, }}>
+
+                <Button style={{ width: 50, height: 50, borderRadius: 100, backgroundColor: '#303030', position: 'absolute', bottom: 10, }} onPress={() => { modalDetails.current.expand()}} >
+                    <Column></Column>
+                </Button>
+            <Modal ref={modalDetails} snapPoints={[0.1, 500]} style={{ zIndex: 99, }}>
                 <Column>
-                    <Row style={{ zIndex: 99, marginTop: 0, paddingHorizontal: 20, backgroundColor: '#202020', width: '100%', justifyContent: 'space-between', alignItems: 'center', }}>
-                        <Button style={{ backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', borderRadius: 100, width: 42, height: 42, }} onPress={() => navigation.goBack()} >
-                            <ArrowLeft size={24} stroke='#000' />
+                    <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 20,  }}>
+                        <Button onPress={handlePrevChapter} disabled={!prevChap} style={{ backgroundColor: prevChap ? '#FFF' : '#505050', justifyContent: 'center', flexGrow: 1, alignItems: 'center', borderRadius: 18, paddingHorizontal: 18, paddingVertical: 18, }}>
+                            <Label style={{ fontFamily: font.bold, color: prevChap ? '#000' : '#FFF', letterSpacing: -1, }}>Anterior</Label>
                         </Button>
-                        <Row>
-                            <Pressable onPress={handlePrevChapter} style={{ backgroundColor: prevChap ? '#FFF' : '#505050', justifyContent: 'center', alignItems: 'center', borderRadius: 16, paddingHorizontal: 18, paddingVertical: 8, }}>
-                                <Label style={{ fontFamily: font.bold, color: prevChap ? '#000' : '#FFF', letterSpacing: -1, }}>Anterior</Label>
-                            </Pressable>
-                            <Column style={{ width: 12 }}></Column>
-                            <Pressable onPress={handleNextChapter} style={{ backgroundColor: nextChap ? '#FFF' : '#505050', justifyContent: 'center', alignItems: 'center', borderRadius: 16, paddingHorizontal: 18, paddingVertical: 8, }}>
-                                <Label style={{ fontFamily: font.bold, color: nextChap ? '#000' : '#FFF', letterSpacing: -1, }}>Próximo</Label>
-                            </Pressable>
-                        </Row>
+                        <Column style={{ width: 12 }}></Column>
+                        <Button onPress={handleNextChapter} disabled={!nextChap} style={{ backgroundColor: nextChap ? '#FFF' : '#505050', justifyContent: 'center', flexGrow: 1, alignItems: 'center', borderRadius: 18, paddingHorizontal: 18, paddingVertical: 18, }}>
+                            <Label style={{ fontFamily: font.bold, color: nextChap ? '#000' : '#FFF', letterSpacing: -1, }}>Próximo</Label>
+                        </Button>
                     </Row>
 
                     <Column style={{ paddingHorizontal: 20, paddingVertical: 20, }}>
-
-
                         <Animated.View style={[{
                             borderRadius: 26,
                             overflow: 'hidden',
@@ -154,7 +152,7 @@ export default function MangaPages({ route, navigation }) {
                                 paddingHorizontal: 16,
                             }} onPress={toggleFiler}>
                                 <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
-                                    <Label style={{ color: color.light, textAlign: 'center', fontFamily: 'Font_Medium' }}>Filtros</Label>
+                                    <Label style={{ color: color.light, textAlign: 'center', fontFamily: 'Font_Medium', letterSpacing: -1, fontSize: 24 }}>Filtros</Label>
                                     <Row>
                                         <Column style={{ width: 54, height: 54, borderRadius: 100, backgroundColor: "#3a86ff", justifyContent: 'center', alignItems: 'center', marginRight: -22, borderWidth: 4, borderColor: color.off, }} />
                                         <Column style={{ width: 54, height: 54, borderRadius: 100, backgroundColor: '#f4a261', justifyContent: 'center', alignItems: 'center', marginRight: -22, borderWidth: 4, borderColor: color.off, }} />
@@ -163,28 +161,26 @@ export default function MangaPages({ route, navigation }) {
                                 </Row>
                             </Button>
 
-                            <Column style={{ paddingHorizontal: 20, }}>
+                            <Column style={{ paddingHorizontal: 20, marginVertical: 12, }}>
 
-                                <Row>
-                                    <Button style={{ borderRadius: 100, borderWidth: 2, borderColor: filter === 'transparent' ? '#000' : '#404040', }} onPress={() => { setfilter('transparent'); setopacity('0'); }} >
-                                        <Column style={{ width: 42, height: 42, borderRadius: 100, backgroundColor: '#FFF', }}></Column>
+                                <Row style={{ justifyContent: 'center', alignItems: 'center', }}>
+                                    <Button style={{ borderRadius: 100, borderWidth: 3, borderColor: filter === 'transparent' ? '#000' : '#404040', }} onPress={() => { setfilter('transparent'); setopacity('00'); }} >
+                                        <Column style={{ width: 36, height: 36, borderRadius: 100, backgroundColor: '#FFF', }}></Column>
                                     </Button>
-                                    <Button style={{ borderRadius: 100, borderWidth: 2, borderColor: filter === '#f4a261' ? '#FFFFFF' : '#404040', }} onPress={() => { setfilter('#f4a261') }} >
-                                        <Column style={{ width: 42, height: 42, borderRadius: 100, backgroundColor: '#f4a261', }}></Column>
-                                    </Button>
-                                    <Button style={{ borderRadius: 100, borderWidth: 2, borderColor: filter === '#c8b6ff' ? '#FFFFFF' : '#404040', }} onPress={() => { setfilter('#c8b6ff') }} >
-                                        <Column style={{ width: 42, height: 42, borderRadius: 100, backgroundColor: '#c8b6ff', }}></Column>
-                                    </Button>
-                                    <Button style={{ borderRadius: 100, borderWidth: 2, borderColor: filter === '#3a86ff' ? '#FFFFFF' : '#404040', }} onPress={() => { setfilter('#3a86ff') }} >
-                                        <Column style={{ width: 42, height: 42, borderRadius: 100, backgroundColor: '#3a86ff', }}></Column>
-                                    </Button>
+
+                                    {filterColors.map((item, index) => (
+                                        <Button style={{ borderRadius: 100, borderWidth: 3, borderColor: filter === item ? '#FFFFFF' : '#404040', }} onPress={() => { setfilter(item) }} >
+                                            <Column style={{ width: 36, height: 36, borderRadius: 100, backgroundColor: item, }}></Column>
+                                        </Button>
+                                    ))}
+
                                 </Row>
 
-                                <Label>Opacidade</Label>
+                                <Label style={{ marginTop: 12, }}>Opacidade</Label>
                                 <Row style={{ justifyContent: 'space-between', marginTop: 8, alignItems: 'center', }}>
                                     {opacityValues.map((item, index) => (
-                                        <Button key={index} style={{ borderRadius: 8, backgroundColor: opacity === item.slice(0, -1) ? '#FFFFFF' : '#505050', alignItems:'center', justifyContent: 'center', paddingVertical: 6, paddingHorizontal: 8, }} onPress={() => { setopacity(item.slice(0, -1)) }} >
-                                                <Title style={{ fontSize: 18, color: opacity === item.slice(0, -1) ? '#000' : '#FFF', }}>{item}</Title>
+                                        <Button key={index} style={{ borderRadius: 8, backgroundColor: opacity === item.slice(0, -1) ? '#FFFFFF' : '#505050', alignItems: 'center', justifyContent: 'center', paddingVertical: 6, paddingHorizontal: 8, }} onPress={() => { setopacity(item.slice(0, -1)) }} >
+                                            <Title style={{ fontSize: 18, color: opacity === item.slice(0, -1) ? '#000' : '#FFF', }}>{item}</Title>
                                         </Button>
                                     ))}
                                 </Row>
@@ -192,13 +188,9 @@ export default function MangaPages({ route, navigation }) {
 
                         </Animated.View>
 
-
-
-
-
-                        <Row style={{ columnGap: 20, marginVertical: 20, }}>
+                        <Row style={{ columnGap: 20, marginVertical: 18, }}>
                             <Button onPress={() => { setblur(!blur) }} style={{
-                                borderRadius: 18,
+                                borderRadius: 26,
                                 paddingVertical: 20,
                                 paddingHorizontal: 20,
                                 backgroundColor: blur ? color.primary + 20 : color.off,
@@ -217,7 +209,7 @@ export default function MangaPages({ route, navigation }) {
 
                             <Button onPress={() => { }}
                                 style={{
-                                    borderRadius: 18,
+                                    borderRadius: 26,
                                     paddingVertical: 20,
                                     paddingHorizontal: 20,
                                     backgroundColor: "#ffffff10",
@@ -230,14 +222,21 @@ export default function MangaPages({ route, navigation }) {
                             </Button>
                         </Row>
 
-                        <Button style={{
-                            borderRadius: 18,
-                            paddingVertical: 14,
-                            paddingHorizontal: 16,
-                            backgroundColor: color.off,
-                        }}>
-                            <Label style={{ color: color.light, textAlign: 'center', fontFamily: 'Font_Medium' }}>Traduzir com IA (EM BREVE)</Label>
-                        </Button>
+                        <Row style={{ justifyContent: 'space-between', alignItems: 'center',  }}>
+                            <Button onPress={() => {navigation.navigate('Tabs', { screen: 'Home',})}}  style={{ width: 72, height: 72, borderRadius: 18, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center',  }}>
+                                <Home size={32} color={color.light} />
+                            </Button>
+                            <Button onPress={() => {navigation.navigate('Tabs', { screen: 'Search',})}}  style={{ width: 72, height: 72, borderRadius: 18, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center',  }}>
+                                <Search size={32} color={color.light} />
+                            </Button>
+                            <Button onPress={() => {navigation.navigate('Tabs', { screen: 'Account',})}}  style={{ width: 72, height: 72, borderRadius: 18, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center',  }}>
+                                <Library size={32} color={color.light} />
+                            </Button>
+                            <Button onPress={() => {navigation.navigate('Collections',)}} style={{ width: 72, height: 72, borderRadius: 18, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center',  }}>
+                                <Combine size={32} color={color.light} />
+                            </Button>
+                        </Row>
+
                     </Column>
                 </Column>
             </Modal>
