@@ -104,13 +104,6 @@ export default function HomePage({ navigation }) {
                 </>
                 <Column style={{ height: 60, }} />
             </Scroll>
-            {!loading && item &&
-                <ContinueSheet
-                    valueMin={70}
-                    valueMax={0.9 * height}
-                    item={item}
-                    max={<Continue item={item} />}
-                />}
         </Main>
     )
 }

@@ -13,7 +13,7 @@ export default function LastedComponent() {
         const fecthData = async () => {
             try {
                 const res = await requestLasted();
-                setData(res.mangas);
+                setData(res.mangas.reverse());
             } catch (error) {
                 console.log(error)
             }
@@ -30,7 +30,7 @@ export default function LastedComponent() {
                     <Title style={{ fontSize: 24, letterSpacing: -1, }}>Recém adicionados</Title>
                     <Label style={{ fontSize: 16, letterSpacing: -1, }}>Acabaram de entrar no catálogo</Label>
                 </Column>
-                <Button onPress={() => { navigation.navigate('Lasted') }} style={{ width: 46, height: 46, borderRadius: 100, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center', }}>
+                <Button onPress={() => { navigation.navigate('Section', { type: 'lasted'}) }} style={{ width: 46, height: 46, borderRadius: 100, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center', }}>
                     <ArrowUpRight size={28} color="#fff" />
                 </Button>
             </Row>

@@ -26,7 +26,7 @@ import CollectionsPage from '@pages/collections/collections';
 import CollectionDetailsPage from '@pages/collections/details';
 
 import WeekendSectionScreen from '@pages/sections/weekend';
-import LastedSectionScreen from '@pages/sections/lasted';
+import SectionScreen from '@pages/sections/index';
 import RateSectionScreen from '@pages/sections/rate';
 
 const Stack = createStackNavigator();
@@ -61,7 +61,7 @@ export default function Router() {
             <Stack.Screen name="Collections" component={CollectionsPage} options={{...TransitionPresets.ModalPresentationIOS   , }}/>
             <Stack.Screen name="CollectionDetails" component={CollectionDetailsPage} options={{...TransitionPresets.ModalPresentationIOS    , }}/>
 
-            <Stack.Screen name="Lasted" component={LastedSectionScreen} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
+            <Stack.Screen name="Section" component={SectionScreen} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
             <Stack.Screen name="Rate" component={RateSectionScreen} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
             <Stack.Screen name="Weekend" component={WeekendSectionScreen} options={{...TransitionPresets.SlideFromRightIOS   , }}/>
         </Stack.Navigator>

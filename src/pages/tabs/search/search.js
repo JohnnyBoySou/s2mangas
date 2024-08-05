@@ -125,7 +125,7 @@ export default function SearchPage({ navigation }) {
                     <MotiView state={toggleAnimation} transition={{ type: 'timing', duration: 300, }} style={{ marginHorizontal: -20, paddingHorizontal: 20, paddingBottom: 20, borderRadius: 16, }}>
                         <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: 16, }}>
                             <Title style={{ fontSize: 52, marginVertical: 24, letterSpacing: -3, }}>Buscar</Title>
-                            <Pressable onPress={() => { filtersModal.current.open() }} >
+                            <Pressable onPress={() => { filtersModal.current.expand() }} >
                                 <AntDesign name="filter" size={24} color={color.title} />
                             </Pressable>
                         </Row>

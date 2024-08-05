@@ -70,7 +70,6 @@ export default function CollectionsDetailsPage({ navigation, route }) {
         setSelectedItems(itemsCopy);
     };
 
-
     const excludeCollection = async () => {
         try {
             const res = await removeCollection(item.id)
@@ -89,7 +88,6 @@ export default function CollectionsDetailsPage({ navigation, route }) {
             console.log(error)
         }
     }
-
     const [rate, setrate] = useState();
 
     const fetchData = async () => {
@@ -111,10 +109,9 @@ export default function CollectionsDetailsPage({ navigation, route }) {
         }
     }
 
-    const isFocused = useIsFocused();
     useEffect(() => {
         fetchData();
-    }, [isFocused])
+    }, [])
 
     const renderItem = useMemo(
         () => ({ item }) => <Grid item={item} collection={itm?.id} />,
@@ -151,8 +148,8 @@ export default function CollectionsDetailsPage({ navigation, route }) {
                     <Column style={{ justifyContent: 'center', }}>
                         <Row style={{ justifyContent: 'space-between', alignItems: 'center', }}>
                             <Title style={{ fontSize: 22, letterSpacing: -1, }}>{item?.name}</Title>
-                            <Button onPress={() => { modalAdd.current?.expand() }} style={{ width: 42, height: 42, backgroundColor: '#fff', borderRadius: 100, justifyContent: 'center', alignItems: 'center',  }} >
-                                <Plus size={20} color="#000"/>
+                            <Button onPress={() => { modalAdd.current?.expand() }} style={{ width: 42, height: 42, backgroundColor: '#fff', borderRadius: 100, justifyContent: 'center', alignItems: 'center', }} >
+                                <Plus size={20} color="#000" />
                             </Button>
                         </Row>
                         <Label style={{ fontSize: 16, marginVertical: -4, letterSpacing: -1, }}>{item?.mangas?.length} mangás • {item?.date}</Label>
@@ -329,7 +326,7 @@ const AddMangas = ({ collection }) => {
                 ]);
 
                 setData({ lasted: lastedRes.mangas, rate: rateRes.mangas, weekend: weekendRes.mangas },);
-                console.log(data)
+                
             } catch (error) {
                 console.error(error);
             } finally {
@@ -451,13 +448,13 @@ const Grid = ({ item, collection }) => {
         <GestureHandlerRootView>
             <Animated.View style={[{ flexDirection: 'row' }, rStyle]}>
                 <Row style={{ justifyContent: 'space-between', alignItems: 'center', width: width, paddingHorizontal: 20 }}>
-                    <Row>
+                    <Pressable onPress={() => { navigation.navigate('MangaDetails', { id: item?.id }) }} style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Image source={{ uri: item.capa }} style={{ width: 54, height: 66, borderRadius: 6 }} />
                         <Column style={{ justifyContent: 'center', marginLeft: 12 }}>
                             <Title style={{ fontSize: 18, letterSpacing: -1 }}>{item?.name.length > 24 ? item?.name?.slice(0, 24) + '...' : item?.name}</Title>
                             <Label style={{ fontSize: 14, letterSpacing: -0.5 }}>{item?.rate} • {item?.type}</Label>
                         </Column>
-                    </Row>
+                    </Pressable>
                     <GestureDetector gesture={panGesture} >
                         <Column style={{ backgroundColor: '#202020', paddingVertical: 12, borderRadius: 12, width: 32, marginVertical: -12, justifyContent: 'center', alignItems: 'center', }}>
                             <GripVertical size={24} color="#fff" />
@@ -621,9 +618,6 @@ const DraggableImage = ({ source }) => {
         </GestureHandlerRootView>
     );
 };
-
-
-
 
 const GridAdd = ({ item, collection }) => {
     const { color } = useTheme();

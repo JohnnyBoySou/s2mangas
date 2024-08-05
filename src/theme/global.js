@@ -1,5 +1,12 @@
-import styled from 'styled-components/native';
+import { useContext } from "react";
 import {  TouchableRipple } from 'react-native-paper';
+import  styled , { ThemeContext } from "styled-components/native";
+
+export const useTheme = () => {
+    const { color, font, margin } = useContext(ThemeContext);
+    return { color, font, margin };
+}
+
 
 export const Main = styled.SafeAreaView`
   flex: 1;

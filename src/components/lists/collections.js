@@ -1,9 +1,10 @@
 import React, { useState, useEffect, memo } from 'react';
-import { Column, Row, Title, Label, } from '@theme/global';
+import { Column, Row, Title, Label, Button, } from '@theme/global';
 import { FlatList, Pressable, Image } from 'react-native';
 import { listCollections } from '@hooks/collections';
 import { useNavigation } from '@react-navigation/native';
 import { MotiImage } from 'moti';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function CollectionsComponent() {
     const navigation = useNavigation();
@@ -24,9 +25,9 @@ export default function CollectionsComponent() {
                         <Column style={{ transform: [{ rotate: '-12deg', }], borderWidth: 8, borderColor: "#171717", borderRadius: 16, }}><MotiImage source={{ uri: 'https://i.pinimg.com/564x/9c/93/8f/9c938f6ffd7510629bc36ebec7a1e5c6.jpg' }} style={{ width: 120, height: 180, borderRadius: 8, }} /></Column>
                     </Row>
 
-                <Pressable onPress={() => navigation.navigate('Collections')} style={{ padding: 12, backgroundColor: "#fff", borderRadius: 100, paddingHorizontal: 20, alignSelf:'center',  }}>
+                <Button onPress={() => navigation.navigate('Collections')} style={{ padding: 12, backgroundColor: "#fff", borderRadius: 100, paddingHorizontal: 20, alignSelf:'center',  }}>
                     <Label style={{ color: "#000", fontFamily: 'Font_Medium' }}>Criar coleção</Label>
-                </Pressable>
+                </Button>
                 </Column> : 
                 <Column>
                 <Title style={{ fontSize: 22, letterSpacing: -1, }}>Suas coleções</Title>
@@ -48,10 +49,14 @@ export default function CollectionsComponent() {
 const Card = memo(({ item }) => {
     const navigation = useNavigation();
     return (
-        <Pressable onPress={() => { navigation.navigate('CollectionDetails', {item: item });}} style={{ backgroundColor: "#303030", borderRadius: 6, width: 162, marginRight: 16, padding: 12, }}>
-            <Image source={{ uri: item.capa }} style={{ width: 142, height: 142, borderRadius: 6, alignSelf: 'center', marginBottom: 6, }} />
-            <Title style={{ fontSize: 18, }}>{item?.name?.slice(0,12)}</Title>
-            <Label style={{ fontSize: 14, }}>{item?.mangas?.length} • {item?.date}</Label>
-        </Pressable>
+        <Button onPress={() => { navigation.navigate('CollectionDetails', {item: item });}} style={{ backgroundColor: "#303030", borderRadius: 6, width: 162, marginRight: 16,  }}>
+            <Column style={{ paddingVertical: 12,  }}>
+            <Image transition={200} contentFit='cover' blurRadius={80} source={{ uri: item.capa }} style={{ width: 162, height: 164, borderTopLeftRadius: 6, borderTopRightRadius: 6, alignSelf: 'center', position: 'absolute', top: 0, }} />
+            <Image source={{ uri: item.capa }} style={{ width: 132, height: 132, borderRadius: 12, alignSelf: 'center', marginBottom: 6, }} />
+            <LinearGradient colors={['transparent', '#303030']} style={{ flexGrow: 1, height: 70, marginTop: -55, marginBottom: -12, }} />
+            <Title style={{ fontSize: 16, paddingHorizontal: 12, letterSpacing: -1, textAlign: 'center',}}>{item?.name?.slice(0,12)}</Title>
+            <Label style={{ fontSize: 12, paddingHorizontal: 12, textAlign: 'center', }}>{item?.mangas?.length} • {item?.date}</Label>
+            </Column>
+        </Button>
     )
 })

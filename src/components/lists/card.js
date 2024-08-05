@@ -15,7 +15,7 @@ const Card = memo(({ item, right, color = '#252525' }) => {
                     <Image transition={200} contentFit='cover' blurRadius={80} source={{ uri: item.capa }} style={{ width: 162, height: 182, borderTopLeftRadius: 6, borderTopRightRadius: 6, alignSelf: 'center', position: 'absolute', top: 0, }} />
                     <LinearGradient colors={['transparent', color]} style={{ flexGrow: 1, height: 70, marginTop: -55, marginBottom: 6, }} />
                     <Column style={{ padding: 12, alignItens: 'center', marginBottom: 6, }}>
-                        <Title style={{ fontSize: 16, marginTop: -18, textAlign: 'center', }}>{item?.name?.length > 16 ? item?.name?.slice(0, 16) + '...' : item?.name}</Title>
+                        <Title style={{ fontSize: 15, marginTop: -18, textAlign: 'center', }}>{item?.name?.length > 14 ? item?.name?.slice(0, 14) + '...' : item?.name}</Title>
                         <Label style={{ fontSize: 12, textAlign: 'center', }}>{item?.score?.length > 0 ? item?.score + ' •' : null} {item?.type}</Label>
                     </Column>
                 </Column> :

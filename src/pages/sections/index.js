@@ -20,20 +20,34 @@ import refreshIcon from '@imgs/refresh.png';
 import { ArrowLeft, } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import requestLasted from '@apiv1/manga/lasted';
+import requestRate from '@apiv1/manga/rate';
+import requestWeekend  from '@apiv1/manga/weekend';
 
-export default function LastedSectionScreen({ navigation, }) {
+export default function SectionScreen({ navigation, route }) {
     const { color, font, } = useContext(ThemeContext);
-
+    const type = route.params?.type;
     const [data, setData] = useState([]);
     const [loading, setloading] = useState(true);
-
     const [refreshing, setRefreshing] = useState(false);
+    const [message, setmessage] = useState();
+
     useEffect(() => {
         const fecthData = async () => {
             setloading(true)
             try {
-                const res = await requestLasted();
-                setData(res.mangas);
+                if(type === 'lasted'){
+                    const res = await requestLasted();
+                    setmessage({title: 'Últimos adicionados', label: 'Acabaram de entrar no catálogo',});
+                    setData(res.mangas);
+                }else if(type === 'rate'){
+                    const res = await requestRate();
+                    setmessage({title: 'Melhores notas', label: 'Os melhores, segundo os criticos',});
+                    setData(res.mangas);
+                }else if(type === 'weekend'){
+                    const res = await requestWeekend();
+                    setmessage({title: 'Mais lidos da semana', label: 'O que todo mundo está lendo',});
+                    setData(res.mangas);
+                }
             } catch (error) {
                 console.log(error)
             } finally {
@@ -110,7 +124,6 @@ export default function LastedSectionScreen({ navigation, }) {
         const scale = Math.min(1, Math.max(0, pullDownPosition.value / 75));
         const rotateValue = Math.min(pullDownPosition.value * 3, 460);
         return {
-            opacity: refreshing ? withDelay(100, withTiming(0, { duration: 20 })) : Math.max(0, pullDownPosition.value - 25) / 50,
             transform: [
                 {
                     scaleX: refreshing ? withTiming(0.15, { duration: 120 }) : scale,
@@ -139,12 +152,13 @@ export default function LastedSectionScreen({ navigation, }) {
                     scrollEventThrottle={16}
                     columnWrapperStyle={{ columnGap: 12, justifyContent: 'center', }}
                     contentContainerStyle={{ rowGap: 12, paddingHorizontal: 12, }}
-                    ListHeaderComponent={<Animated.View {...panResponderRef.current.panHandlers}><Header /></Animated.View>}
+                    ListHeaderComponent={<Animated.View {...panResponderRef.current.panHandlers}><Header message={message} navigation={navigation}/></Animated.View>}
                     keyExtractor={item => item.id}
                     renderItem={({ item }) => <Card item={item} right={true} />}
                     numColumns={2}
                     windowSize={6}
                     initialNumToRender={6}
+                    ListFooterComponent={<Column style={{ height: 20, }} />}
                     removeClippedSubviews
                     maxToRenderPerBatch={6}
                     updateCellsBatchingPeriod={100}
@@ -154,19 +168,18 @@ export default function LastedSectionScreen({ navigation, }) {
     )
 }
 
-const Header = () => {
-    const navigation = useNavigation();
+const Header = ({message, navigation}) => {
     return (
-        <Row style={{ justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 20, marginTop: 40, marginBottom: 12, }}>
+        <Column style={{  marginHorizontal: 20, marginTop: 40, marginBottom: 12, }}>
             <Button onPress={() => { navigation.goBack() }} style={{ width: 46, height: 46, borderRadius: 100, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center', }}>
                 <ArrowLeft size={28} color="#fff" />
             </Button>
             <Column style={{ justifyContent: 'center', alignItems: 'center', }}>
-                <Title style={{ fontSize: 22, }}>Recém adicionados</Title>
-                <Label style={{ fontSize: 16, }}>Acabaram de entrar no catálogo</Label>
+                <Title style={{ fontSize: 22, }}>{message?.title}</Title>
+                <Label style={{ fontSize: 16, }}>{message?.label}</Label>
             </Column>
             <Column style={{ width: 56, }} />
-        </Row>
+        </Column>
     )
 }
 

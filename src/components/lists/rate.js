@@ -13,7 +13,7 @@ export default function RateComponent() {
         const fecthData = async () => {
             try {
                 const res = await requestRate();
-                setData(res.mangas);
+                setData(res.mangas.reverse());
             } catch (error) {
                 console.log(error)
             }
@@ -31,7 +31,7 @@ export default function RateComponent() {
                     <Title style={{ fontSize: 24, letterSpacing: -1, }}>Melhor nota</Title>
                     <Label style={{ fontSize: 16, letterSpacing: -1, }}>Mais bem avaliados</Label>
                 </Column>
-                <Button onPress={() => { navigation.navigate('Rate') }} style={{ width: 46, height: 46, borderRadius: 100, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center', }}>
+                <Button onPress={() => { navigation.navigate('Section', { type: 'rate'}) }} style={{ width: 46, height: 46, borderRadius: 100, backgroundColor: '#303030', justifyContent: 'center', alignItems: 'center', }}>
                     <ArrowUpRight size={28} color="#fff" />
                 </Button>
             </Row>
